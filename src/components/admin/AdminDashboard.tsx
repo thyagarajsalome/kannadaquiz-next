@@ -14,10 +14,8 @@ import {
   collection,
   getDocs,
   limit,
-  orderBy,
   query,
   serverTimestamp,
-  where,
 } from "firebase/firestore";
 import { firebaseAuth, firestore, hasFirebaseConfig } from "@/lib/firebase";
 import { firestoreCollections } from "@/lib/firestore-schema";
@@ -53,6 +51,7 @@ export function AdminDashboard() {
   const [deadline, setDeadline] = useState("");
   const [message, setMessage] = useState("");
   const [items, setItems] = useState<PublishedItem[]>([]);
+  const [saving, setSaving] = useState(false);
 
   const canUseFirebase = hasFirebaseConfig && firebaseAuth && firestore;
 
@@ -94,10 +93,14 @@ export function AdminDashboard() {
       return;
     }
 
-    await setPersistence(firebaseAuth, browserLocalPersistence);
-    await signInWithEmailAndPassword(firebaseAuth, email, password);
-    setPassword("");
-    setMessage("");
+    try {
+      await setPersistence(firebaseAuth, browserLocalPersistence);
+      await signInWithEmailAndPassword(firebaseAuth, email, password);
+      setPassword("");
+      setMessage("");
+    } catch (error) {
+      setMessage(readFirebaseError(error));
+    }
   }
 
   async function loadItems(nextKind: ContentKind) {
@@ -105,26 +108,34 @@ export function AdminDashboard() {
       return;
     }
 
-    const docsQuery = query(
-      collection(firestore, firestoreCollections[nextKind]),
-      where("status", "==", "published"),
-      orderBy("updatedAt", "desc"),
-      limit(10),
-    );
+    try {
+      const docsQuery = query(collection(firestore, firestoreCollections[nextKind]), limit(25));
+      const snapshot = await getDocs(docsQuery);
+      const nextItems = snapshot.docs
+        .map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            title: String(data.title ?? data.headline ?? "Untitled"),
+            slug: typeof data.slug === "string" ? data.slug : undefined,
+            locale: typeof data.locale === "string" ? data.locale : undefined,
+            status: typeof data.status === "string" ? data.status : undefined,
+            updatedAt:
+              typeof data.updatedAt === "string"
+                ? data.updatedAt
+                : typeof data.updatedAt?.toDate === "function"
+                  ? data.updatedAt.toDate().toISOString()
+                  : "",
+          };
+        })
+        .filter((item) => item.status === "published")
+        .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+        .slice(0, 10);
 
-    const snapshot = await getDocs(docsQuery);
-    setItems(
-      snapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          title: String(data.title ?? data.headline ?? "Untitled"),
-          slug: typeof data.slug === "string" ? data.slug : undefined,
-          locale: typeof data.locale === "string" ? data.locale : undefined,
-          status: typeof data.status === "string" ? data.status : undefined,
-        };
-      }),
-    );
+      setItems(nextItems);
+    } catch (error) {
+      setMessage(readFirebaseError(error));
+    }
   }
 
   async function handleCreate(event: FormEvent<HTMLFormElement>) {
@@ -145,42 +156,50 @@ export function AdminDashboard() {
       updatedAt: serverTimestamp(),
     };
 
-    if (kind === "posts") {
-      await addDoc(collection(firestore, firestoreCollections.posts), {
-        ...base,
-        excerpt: excerpt.trim(),
-        body: body.trim(),
-        category: "General",
-      });
-    }
+    setSaving(true);
 
-    if (kind === "jobs") {
-      await addDoc(collection(firestore, firestoreCollections.jobs), {
-        ...base,
-        organization: organization.trim(),
-        deadline: deadline.trim(),
-        body: body.trim(),
-      });
-    }
+    try {
+      if (kind === "posts") {
+        await addDoc(collection(firestore, firestoreCollections.posts), {
+          ...base,
+          excerpt: excerpt.trim(),
+          body: body.trim(),
+          category: "General",
+        });
+      }
 
-    if (kind === "currentAffairs") {
-      await addDoc(collection(firestore, firestoreCollections.currentAffairs), {
-        locale,
-        headline: title.trim(),
-        status: "published",
-        publishedAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-    }
+      if (kind === "jobs") {
+        await addDoc(collection(firestore, firestoreCollections.jobs), {
+          ...base,
+          organization: organization.trim(),
+          deadline: deadline.trim(),
+          body: body.trim(),
+        });
+      }
 
-    setTitle("");
-    setSlug("");
-    setExcerpt("");
-    setBody("");
-    setOrganization("");
-    setDeadline("");
-    setMessage(`${kindLabels[kind]} saved to Firestore.`);
-    await loadItems(kind);
+      if (kind === "currentAffairs") {
+        await addDoc(collection(firestore, firestoreCollections.currentAffairs), {
+          locale,
+          headline: title.trim(),
+          status: "published",
+          publishedAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+      }
+
+      setTitle("");
+      setSlug("");
+      setExcerpt("");
+      setBody("");
+      setOrganization("");
+      setDeadline("");
+      setMessage(`${kindLabels[kind]} saved to Firestore.`);
+      await loadItems(kind);
+    } catch (error) {
+      setMessage(readFirebaseError(error));
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (!authReady) {
@@ -340,7 +359,7 @@ export function AdminDashboard() {
           ) : null}
 
           <button className="mt-5 rounded-md bg-[var(--secondary)] px-5 py-3 text-sm font-bold text-white">
-            Save published content
+            {saving ? "Saving..." : "Save published content"}
           </button>
           {message ? <p className="mt-3 text-sm font-semibold text-[var(--primary)]">{message}</p> : null}
         </form>
@@ -373,4 +392,14 @@ function AdminFrame({ children }: { children: React.ReactNode }) {
       <div className="kq-container py-8">{children}</div>
     </main>
   );
+}
+
+function readFirebaseError(error: unknown) {
+  if (typeof error === "object" && error && "code" in error && "message" in error) {
+    const code = String((error as { code?: unknown }).code ?? "unknown");
+    const message = String((error as { message?: unknown }).message ?? "Unknown Firebase error");
+    return `${code}: ${message}`;
+  }
+
+  return "Unexpected error while saving to Firestore.";
 }
