@@ -22,6 +22,43 @@ Phase 2 adds `/admin`:
 3. Public pages read published content.
 4. Important SEO pages use static rendering or revalidation where possible.
 
+## Admin Setup
+
+1. In Firebase Authentication, create your admin user with email/password.
+2. Copy that user's UID from Authentication.
+3. In Firestore, create this document:
+
+```text
+admins/{YOUR_AUTH_UID}
+```
+
+Example fields:
+
+```json
+{
+  "email": "your-email@example.com",
+  "role": "owner"
+}
+```
+
+The included `firestore.rules` file allows writes to content collections only when the signed-in user has this admin document.
+
+## Environment Variables
+
+Add these in Firebase App Hosting backend environment variables and in local `.env.local`:
+
+```text
+NEXT_PUBLIC_SITE_URL=https://kannadaquiz.in
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+```
+
+Get these values from Firebase Console -> Project settings -> General -> Your apps -> Web app.
+
 ## Suggested Firestore Collections
 
 ```text
