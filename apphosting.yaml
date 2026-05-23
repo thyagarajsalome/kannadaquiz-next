@@ -1,0 +1,15 @@
+# Firebase App Hosting configuration for KannadaQuiz.
+# Keep runtime behavior mostly static for SEO and fast loading.
+runConfig:
+  minInstances: 0
+  maxInstances: 10
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 512
+
+env:
+  - variable: NEXT_PUBLIC_SITE_URL
+    value: https://kannadaquiz.in
+    availability:
+      - BUILD
+      - RUNTIME
