@@ -1,0 +1,284 @@
+import { currentAffairs, jobs, posts } from "@/data/content";
+import type { Locale } from "@/lib/locales";
+
+const firestoreProjectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+const firestoreApiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+const revalidateSeconds = 300;
+
+type FirestoreValue = {
+  stringValue?: string;
+  integerValue?: string;
+  doubleValue?: number;
+  booleanValue?: boolean;
+  timestampValue?: string;
+  arrayValue?: { values?: FirestoreValue[] };
+  mapValue?: { fields?: Record<string, FirestoreValue> };
+  nullValue?: null;
+};
+
+type FirestoreDocument = {
+  name: string;
+  fields?: Record<string, FirestoreValue>;
+  createTime?: string;
+  updateTime?: string;
+};
+
+type RunQueryRow = {
+  document?: FirestoreDocument;
+};
+
+export type PublicPost = {
+  id: string;
+  slug: string;
+  locale: Locale;
+  title: string;
+  excerpt: string;
+  body: string;
+  category: string;
+  date: string;
+};
+
+export type PublicJob = {
+  id: string;
+  slug: string;
+  locale: Locale;
+  title: string;
+  organization: string;
+  deadline: string;
+  status: string;
+  body: string;
+  applyUrl?: string;
+};
+
+export type PublicCurrentAffair = {
+  id: string;
+  locale: Locale;
+  headline: string;
+  date: string;
+};
+
+export async function getPublicPosts(locale: Locale, count = 20): Promise<PublicPost[]> {
+  const remote = await queryPublished("posts", count);
+  const mapped = remote.map(toPublicPost).filter((post): post is PublicPost => Boolean(post));
+  const localized = mapped.filter((post) => post.locale === locale);
+
+  return localized.length ? localized : fallbackPosts(locale);
+}
+
+export async function getPublicJobs(locale: Locale, count = 20): Promise<PublicJob[]> {
+  const remote = await queryPublished("jobs", count);
+  const mapped = remote.map(toPublicJob).filter((job): job is PublicJob => Boolean(job));
+  const localized = mapped.filter((job) => job.locale === locale);
+
+  return localized.length ? localized : fallbackJobs(locale);
+}
+
+export async function getPublicCurrentAffairs(
+  locale: Locale,
+  count = 10,
+): Promise<PublicCurrentAffair[]> {
+  const remote = await queryPublished("currentAffairs", count);
+  const mapped = remote
+    .map(toPublicCurrentAffair)
+    .filter((item): item is PublicCurrentAffair => Boolean(item));
+  const localized = mapped.filter((item) => item.locale === locale);
+
+  return localized.length ? localized : fallbackCurrentAffairs(locale);
+}
+
+export async function getPublicPostBySlug(locale: Locale, slug: string) {
+  const allPosts = await getPublicPosts(locale, 50);
+  return allPosts.find((post) => post.slug === slug);
+}
+
+export async function getPublicJobBySlug(locale: Locale, slug: string) {
+  const allJobs = await getPublicJobs(locale, 50);
+  return allJobs.find((job) => job.slug === slug);
+}
+
+async function queryPublished(collectionId: string, limitCount: number) {
+  if (!firestoreProjectId || !firestoreApiKey) {
+    return [];
+  }
+
+  try {
+    const response = await fetch(
+      `https://firestore.googleapis.com/v1/projects/${firestoreProjectId}/databases/(default)/documents:runQuery?key=${firestoreApiKey}`,
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          structuredQuery: {
+            from: [{ collectionId }],
+            where: {
+              fieldFilter: {
+                field: { fieldPath: "status" },
+                op: "EQUAL",
+                value: { stringValue: "published" },
+              },
+            },
+            limit: limitCount,
+          },
+        }),
+        next: { revalidate: revalidateSeconds },
+      },
+    );
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const rows = (await response.json()) as RunQueryRow[];
+    return rows
+      .map((row) => row.document)
+      .filter((doc): doc is FirestoreDocument => Boolean(doc?.fields));
+  } catch {
+    return [];
+  }
+}
+
+function toPublicPost(doc: FirestoreDocument): PublicPost | null {
+  const data = parseFields(doc.fields);
+  const locale = parseLocale(data.locale);
+  const slug = stringOrEmpty(data.slug);
+  const title = stringOrEmpty(data.title);
+
+  if (!locale || !slug || !title) {
+    return null;
+  }
+
+  return {
+    id: docId(doc),
+    slug,
+    locale,
+    title,
+    excerpt: stringOrEmpty(data.excerpt),
+    body: stringOrEmpty(data.body),
+    category: stringOrDefault(data.category, "General"),
+    date: dateOnly(data.publishedAt ?? data.updatedAt ?? doc.updateTime),
+  };
+}
+
+function toPublicJob(doc: FirestoreDocument): PublicJob | null {
+  const data = parseFields(doc.fields);
+  const locale = parseLocale(data.locale);
+  const slug = stringOrEmpty(data.slug);
+  const title = stringOrEmpty(data.title);
+
+  if (!locale || !slug || !title) {
+    return null;
+  }
+
+  return {
+    id: docId(doc),
+    slug,
+    locale,
+    title,
+    organization: stringOrDefault(data.organization, "KannadaQuiz"),
+    deadline: stringOrDefault(data.deadline, "TBA"),
+    status: stringOrDefault(data.status, "published"),
+    body: stringOrEmpty(data.body),
+    applyUrl: typeof data.applyUrl === "string" ? data.applyUrl : undefined,
+  };
+}
+
+function toPublicCurrentAffair(doc: FirestoreDocument): PublicCurrentAffair | null {
+  const data = parseFields(doc.fields);
+  const locale = parseLocale(data.locale);
+  const headline = stringOrEmpty(data.headline ?? data.title);
+
+  if (!locale || !headline) {
+    return null;
+  }
+
+  return {
+    id: docId(doc),
+    locale,
+    headline,
+    date: dateOnly(data.publishedAt ?? data.updatedAt ?? doc.updateTime),
+  };
+}
+
+function parseFields(fields?: Record<string, FirestoreValue>) {
+  return Object.fromEntries(
+    Object.entries(fields ?? {}).map(([key, value]) => [key, parseValue(value)]),
+  );
+}
+
+function parseValue(value: FirestoreValue): unknown {
+  if ("stringValue" in value) return value.stringValue ?? "";
+  if ("integerValue" in value) return Number(value.integerValue ?? 0);
+  if ("doubleValue" in value) return value.doubleValue ?? 0;
+  if ("booleanValue" in value) return Boolean(value.booleanValue);
+  if ("timestampValue" in value) return value.timestampValue ?? "";
+  if ("arrayValue" in value) return (value.arrayValue?.values ?? []).map(parseValue);
+  if ("mapValue" in value) return parseFields(value.mapValue?.fields);
+  return null;
+}
+
+function parseLocale(value: unknown): Locale | null {
+  return value === "kn" || value === "en" ? value : null;
+}
+
+function stringOrEmpty(value: unknown) {
+  return typeof value === "string" ? value : "";
+}
+
+function stringOrDefault(value: unknown, fallback: string) {
+  return typeof value === "string" && value.trim() ? value : fallback;
+}
+
+function docId(doc: FirestoreDocument) {
+  return doc.name.split("/").at(-1) ?? doc.name;
+}
+
+function dateOnly(value: unknown) {
+  if (typeof value !== "string" || !value) {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  return value.slice(0, 10);
+}
+
+function fallbackPosts(locale: Locale): PublicPost[] {
+  return posts.map((post) => ({
+    id: post.slug,
+    slug: post.slug,
+    locale,
+    title: post.title[locale],
+    excerpt: post.excerpt[locale],
+    body:
+      locale === "kn"
+        ? "ಪೂರ್ಣ ಲೇಖನವನ್ನು Firestore ಅಥವಾ ವಿಷಯ ವ್ಯವಸ್ಥೆಯಿಂದ ಇಲ್ಲಿ ತೋರಿಸಲಾಗುತ್ತದೆ."
+        : "Full article content will appear here from Firestore or the content system.",
+    category: post.category,
+    date: post.date,
+  }));
+}
+
+function fallbackJobs(locale: Locale): PublicJob[] {
+  return jobs.map((job) => ({
+    id: job.slug,
+    slug: job.slug,
+    locale,
+    title: job.title[locale],
+    organization: job.organization,
+    deadline: job.deadline,
+    status: job.status,
+    body:
+      locale === "kn"
+        ? "ಪೂರ್ಣ ಉದ್ಯೋಗ ವಿವರಗಳನ್ನು Firestore ನಿಂದ ಇಲ್ಲಿ ತೋರಿಸಲಾಗುತ್ತದೆ."
+        : "Full job details will appear here from Firestore.",
+  }));
+}
+
+function fallbackCurrentAffairs(locale: Locale): PublicCurrentAffair[] {
+  return currentAffairs.map((item) => ({
+    id: item.date,
+    locale,
+    headline: item.headline[locale],
+    date: item.date,
+  }));
+}

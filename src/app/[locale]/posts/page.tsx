@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
-import { posts, siteText } from "@/data/content";
+import Link from "next/link";
+import { siteText } from "@/data/content";
 import { isLocale, locales, type Locale } from "@/lib/locales";
+import { getPublicPosts } from "@/lib/public-content";
+
+export const revalidate = 300;
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -14,6 +18,7 @@ export const metadata: Metadata = {
 export default async function PostsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: rawLocale } = await params;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
+  const posts = await getPublicPosts(locale);
 
   return (
     <section className="kq-container py-10">
@@ -22,15 +27,15 @@ export default async function PostsPage({ params }: { params: Promise<{ locale: 
       </h1>
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         {posts.map((post) => (
-          <article key={post.slug} className="kq-card p-5">
+          <Link key={post.slug} href={`/${locale}/posts/${post.slug}`} className="kq-card p-5">
             <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
               {post.category} • {post.date}
             </p>
             <h2 className="mt-3 font-serif text-2xl font-bold text-[var(--primary)]">
-              {post.title[locale]}
+              {post.title}
             </h2>
-            <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{post.excerpt[locale]}</p>
-          </article>
+            <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{post.excerpt}</p>
+          </Link>
         ))}
       </div>
     </section>

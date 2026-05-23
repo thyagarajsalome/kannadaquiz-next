@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { currentAffairs, jobs, posts, quizzes, siteText } from "@/data/content";
+import { quizzes, siteText } from "@/data/content";
 import { isLocale, locales, type Locale } from "@/lib/locales";
+import { getPublicCurrentAffairs, getPublicJobs, getPublicPosts } from "@/lib/public-content";
+
+export const revalidate = 300;
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -38,6 +41,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { locale: rawLocale } = await params;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
   const text = siteText[locale];
+  const [currentAffairs, posts, jobs] = await Promise.all([
+    getPublicCurrentAffairs(locale, 5),
+    getPublicPosts(locale, 4),
+    getPublicJobs(locale, 4),
+  ]);
 
   return (
     <>
@@ -74,7 +82,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               {currentAffairs.map((item) => (
                 <article key={item.date} className="border-b border-[var(--border)] pb-4 last:border-0">
                   <time className="text-xs font-bold text-[var(--secondary)]">{item.date}</time>
-                  <p className="mt-1 text-sm leading-6 text-[var(--muted)]">{item.headline[locale]}</p>
+                  <p className="mt-1 text-sm leading-6 text-[var(--muted)]">{item.headline}</p>
                 </article>
               ))}
             </div>
@@ -111,11 +119,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <h2 className="font-serif text-3xl font-bold text-[var(--primary)]">{text.posts}</h2>
             <div className="mt-5 grid gap-4">
               {posts.map((post) => (
-                <article key={post.slug} className="kq-card p-5">
+                <Link key={post.slug} href={`/${locale}/posts/${post.slug}`} className="kq-card p-5">
                   <p className="text-xs font-bold text-[var(--secondary)]">{post.category}</p>
-                  <h3 className="mt-2 text-xl font-bold text-[var(--primary)]">{post.title[locale]}</h3>
-                  <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{post.excerpt[locale]}</p>
-                </article>
+                  <h3 className="mt-2 text-xl font-bold text-[var(--primary)]">{post.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{post.excerpt}</p>
+                </Link>
               ))}
             </div>
           </div>
@@ -123,13 +131,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <h2 className="font-serif text-3xl font-bold text-[var(--primary)]">{text.jobs}</h2>
             <div className="mt-5 grid gap-4">
               {jobs.map((job) => (
-                <article key={job.slug} className="kq-card p-5">
+                <Link key={job.slug} href={`/${locale}/jobs/${job.slug}`} className="kq-card p-5">
                   <p className="text-xs font-bold text-[var(--secondary)]">{job.organization}</p>
-                  <h3 className="mt-2 text-xl font-bold text-[var(--primary)]">{job.title[locale]}</h3>
+                  <h3 className="mt-2 text-xl font-bold text-[var(--primary)]">{job.title}</h3>
                   <p className="mt-2 text-sm text-[var(--muted)]">
                     Deadline: <time>{job.deadline}</time>
                   </p>
-                </article>
+                </Link>
               ))}
             </div>
           </div>
