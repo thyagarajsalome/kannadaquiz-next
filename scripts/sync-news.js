@@ -46,13 +46,12 @@ const parser = new Parser({
 });
 
 const FEEDS = [
-  { name: "BBC News World", url: "http://feeds.bbci.co.uk/news/world/rss.xml" },
-  { name: "CNN World News", url: "http://rss.cnn.com/rss/edition_world.rss" },
-  { name: "Deutsche Welle (DW)", url: "https://rss.dw.com/rdf/rss-en-top" },
-  { name: "NPR World News", url: "https://feeds.npr.org/1004/rss.xml" },
-  { name: "Al Jazeera World", url: "https://www.aljazeera.com/xml/rss/all.xml" },
   { name: "Karnataka Jobs", url: "https://news.google.com/rss/search?q=karnataka+jobs+recruitment&hl=en-IN&gl=IN&ceid=IN:en" },
-  { name: "India National News", url: "https://news.google.com/rss/search?q=india+national+news&hl=en-IN&gl=IN&ceid=IN:en" }
+  { name: "Exam Notifications", url: "https://news.google.com/rss/search?q=kpsc+OR+kea+OR+fda+OR+sda+OR+psi+recruitment+exam+karnataka&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "Current Affairs & GK", url: "https://news.google.com/rss/search?q=daily+current+affairs+for+competitive+exams+india&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "Karnataka State News", url: "https://news.google.com/rss/search?q=karnataka+news+government&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "India National News", url: "https://news.google.com/rss/search?q=india+national+news&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "BBC News World", url: "http://feeds.bbci.co.uk/news/world/rss.xml" }
 ];
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
