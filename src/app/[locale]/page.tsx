@@ -77,6 +77,7 @@ const categoryTranslations: Record<string, Record<string, string>> = {
   jobs: { kn: "ಉದ್ಯೋಗ ಮಾಹಿತಿ", en: "Jobs & Careers" },
   kpsc: { kn: "ಪರೀಕ್ಷಾ ವಿವರಗಳು", en: "Exams & Education" },
   current_affairs: { kn: "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", en: "Current Affairs" },
+  agriculture: { kn: "ಕೃಷಿ ಮಾಹಿತಿ", en: "Agriculture Info" },
   general: { kn: "ಸಾಮಾನ್ಯ ಸುದ್ದಿ", en: "General News" }
 };
 
@@ -90,6 +91,9 @@ function getLocalizedCategory(category: string, locale: string): string {
   }
   if (norm.includes("affair") || norm.includes("current")) {
     return categoryTranslations.current_affairs[locale] || category;
+  }
+  if (norm.includes("agriculture") || norm.includes("krishi") || norm.includes("farm")) {
+    return categoryTranslations.agriculture[locale] || category;
   }
   return categoryTranslations.general[locale] || category;
 }

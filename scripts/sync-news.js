@@ -51,7 +51,8 @@ const FEEDS = [
   { name: "Current Affairs & GK", url: "https://news.google.com/rss/search?q=daily+current+affairs+for+competitive+exams+india&hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "Karnataka State News", url: "https://news.google.com/rss/search?q=karnataka+news+government&hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "India National News", url: "https://news.google.com/rss/search?q=india+national+news&hl=en-IN&gl=IN&ceid=IN:en" },
-  { name: "BBC News World", url: "http://feeds.bbci.co.uk/news/world/rss.xml" }
+  { name: "BBC News World", url: "http://feeds.bbci.co.uk/news/world/rss.xml" },
+  { name: "Agriculture & Krishi", url: "https://news.google.com/rss/search?q=karnataka+agriculture+OR+krishi+OR+farmers+OR+kpsc+agricultural+officer&hl=en-IN&gl=IN&ceid=IN:en" }
 ];
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -86,7 +87,7 @@ Rules:
 2. For English (en): Rewrite in a professional, clear journalistic style (similar to standard international news portals).
 3. Keep all names, dates, numbers, salaries, vacancies, and technical details 100% accurate. Do not alter facts. In the Kannada translation, write all numbers, dates, percentages, and statistical figures in standard English numerals (e.g., 1, 2, 3, 2026, 50%) rather than Kannada numerals (೧, ೨, ೩) or spelling them out as Kannada words.
 4. Organize the body text cleanly into distinct paragraphs.
-5. Categorize it appropriately (e.g. 'KPSC', 'Jobs', 'Current Affairs', 'Karnataka', 'National', or 'International').
+5. Categorize it appropriately (e.g. 'KPSC', 'Jobs', 'Current Affairs', 'Karnataka', 'National', 'International', or 'Agriculture').
 6. Respond ONLY with a valid JSON object matching the requested schema. Do not add markdown wrapping or text before/after.`;
 
   const userPrompt = `English Title: ${title}
@@ -124,7 +125,7 @@ English Summary/Description: ${summary}`;
             },
             required: ["title", "excerpt", "body"]
           },
-          category: { type: "STRING", description: "Category name e.g. KPSC, Jobs, Current Affairs, Karnataka, National, International." }
+          category: { type: "STRING", description: "Category name e.g. KPSC, Jobs, Current Affairs, Karnataka, National, International, Agriculture." }
         },
         required: ["kn", "en", "category"]
       }
