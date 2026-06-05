@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { type Locale } from "@/lib/locales";
 import { HeaderAuth } from "@/components/HeaderAuth";
+import { Logo } from "@/components/Logo";
 
 export function Header({ locale }: { locale: Locale }) {
   return (
     <header className="border-b border-[var(--border)] bg-white">
       <div className="kq-container flex min-h-16 items-center justify-between gap-6">
-        <Link href={`/${locale}`} className="font-serif text-2xl font-bold text-[var(--primary)]">
-          KannadaQuiz
+        <Link href={`/${locale}`} className="flex items-center">
+          <Logo />
         </Link>
         <nav className="hidden items-center gap-6 text-sm font-semibold text-[var(--muted)] md:flex">
           <Link href={`/${locale}/category/karnataka`}>
