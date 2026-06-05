@@ -37,6 +37,27 @@ export function Header({ locale }: { locale: Locale }) {
           <HeaderAuth locale={locale} />
         </div>
       </div>
+      
+      {/* Mobile Category Scrollbar */}
+      <div className="border-t border-[var(--border)] bg-[var(--surface-soft)] md:hidden py-2.5 overflow-x-auto whitespace-nowrap">
+        <div className="kq-container flex gap-5 text-xs font-bold uppercase tracking-wider text-[var(--muted)]">
+          <Link href={`/${locale}`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಮುಖಪುಟ" : "Home"}
+          </Link>
+          <Link href={`/${locale}/category/karnataka`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಕರ್ನಾಟಕ ಸುದ್ದಿ" : "Karnataka"}
+          </Link>
+          <Link href={`/${locale}/category/national`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ" : "National"}
+          </Link>
+          <Link href={`/${locale}/category/international`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಅಂತರರಾಷ್ಟ್ರೀಯ" : "International"}
+          </Link>
+          <Link href={`/${locale}/category/jobs`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಉದ್ಯೋಗಗಳು" : "Jobs"}
+          </Link>
+        </div>
+      </div>
     </header>
   );
 }
