@@ -71,6 +71,18 @@ export default async function PostPage({
             {paragraph}
           </p>
         ))}
+        {post.sourceUrl ? (
+          <div className="mt-6 border-t border-[var(--border)] pt-4 text-right">
+            <a
+              href={post.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--secondary)] hover:underline"
+            >
+              {locale === "kn" ? "ಮೂಲ ಲೇಖನ ಓದಿ ➔" : "Read Original Article ➔"}
+            </a>
+          </div>
+        ) : null}
       </div>
     </article>
   );

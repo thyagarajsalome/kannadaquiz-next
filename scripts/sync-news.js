@@ -39,15 +39,21 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
-const parser = new Parser();
+const parser = new Parser({
+  headers: {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+  }
+});
 
 // 2. Default feeds (Karnataka, National, and International News)
 const FEEDS = [
-  { name: "Deccan Herald Karnataka", url: "https://www.deccanherald.com/state/karnataka/rss" },
-  { name: "The Hindu Karnataka", url: "https://www.thehindu.com/news/national/karnataka/feeder/default.rss" },
   { name: "BBC News World", url: "http://feeds.bbci.co.uk/news/world/rss.xml" },
+  { name: "Reuters World News", url: "https://www.reutersagency.com/feed/?best-topics=world-news" },
+  { name: "Al Jazeera World", url: "https://www.aljazeera.com/xml/rss/all.xml" },
+  { name: "Times of India International", url: "https://timesofindia.indiatimes.com/rssfeeds/296589292.xml" },
   { name: "NDTV India National", url: "https://feeds.feedburner.com/ndtvnews-top-stories" },
-  { name: "Times of India International", url: "https://timesofindia.indiatimes.com/rssfeeds/296589292.xml" }
+  { name: "The Hindu Karnataka", url: "https://www.thehindu.com/news/national/karnataka/feeder/default.rss" },
+  { name: "Deccan Herald Karnataka", url: "https://www.deccanherald.com/state/karnataka/rss" }
 ];
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -73,7 +79,7 @@ function generateSlug(text) {
 
 // 4. Gemini Translation integration
 async function translateAndRewriteWithGemini(title, summary) {
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
   
   const systemPrompt = `You are a professional educational news writer for Kannada competitive exam preparation portals.
 Translate and rewrite the following English news article info into high-quality, professional Kannada.
@@ -135,8 +141,8 @@ async function runSync() {
       const feedData = await parser.parseURL(feed.url);
       console.log(`Found ${feedData.items.length} items in feed.`);
 
-      // Take the top 5 newest articles per feed execution to avoid hitting Gemini free rate limits
-      const itemsToProcess = feedData.items.slice(0, 5);
+      // Take the top 10 newest articles per feed execution
+      const itemsToProcess = feedData.items.slice(0, 10);
 
       for (const item of itemsToProcess) {
         const originalTitle = item.title;

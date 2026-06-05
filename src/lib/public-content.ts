@@ -37,6 +37,7 @@ export type PublicPost = {
   category: string;
   date: string;
   featuredImageUrl?: string;
+  sourceUrl?: string;
 };
 
 export type PublicJob = {
@@ -215,6 +216,7 @@ function toPublicPost(doc: FirestoreDocument): PublicPost | null {
     category: stringOrDefault(data.category, "General"),
     date: dateOnly(data.publishedAt ?? data.updatedAt ?? doc.updateTime),
     featuredImageUrl: typeof data.featuredImageUrl === "string" ? data.featuredImageUrl : undefined,
+    sourceUrl: typeof data.sourceUrl === "string" ? data.sourceUrl : undefined,
   };
 }
 
