@@ -48,8 +48,8 @@ export default async function QuizzesPage({ params }: { params: Promise<{ locale
               {quiz.title}
             </h2>
             <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{quiz.description}</p>
-            <span className="mt-4 inline-flex rounded-md bg-[var(--primary)] px-4 py-2 text-sm font-bold text-white">
-              {text.quizStart}
+            <span className="mt-4 inline-flex items-center gap-1 rounded-md bg-[var(--secondary)] px-4 py-2 text-xs font-black uppercase tracking-wider text-white hover:bg-[var(--secondary)]/90 transition-colors shadow-sm select-none">
+              {text.quizStart} ➔
             </span>
           </Link>
         ))}

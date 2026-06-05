@@ -20,16 +20,22 @@ export function Header({ locale }: { locale: Locale }) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"></path>
             </svg>
           </Link>
-          <Link href={`/${locale}/category/karnataka`}>
+          <Link
+            href={`/${locale}/quizzes`}
+            className="rounded bg-[var(--secondary)] px-3 py-1.5 text-xs font-extrabold uppercase text-white hover:bg-[var(--secondary)]/90 transition-colors shadow-sm select-none"
+          >
+            {locale === "kn" ? "ಅಭ್ಯಾಸ ಕ್ವಿಜ್‌ಗಳು" : "Practice Quizzes"}
+          </Link>
+          <Link href={`/${locale}/category/karnataka`} className="hover:text-[var(--secondary)] transition-colors">
             {locale === "kn" ? "ಕರ್ನಾಟಕ ಸುದ್ದಿ" : "Karnataka News"}
           </Link>
-          <Link href={`/${locale}/category/national`}>
+          <Link href={`/${locale}/category/national`} className="hover:text-[var(--secondary)] transition-colors">
             {locale === "kn" ? "ರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ" : "National News"}
           </Link>
-          <Link href={`/${locale}/category/international`}>
+          <Link href={`/${locale}/category/international`} className="hover:text-[var(--secondary)] transition-colors">
             {locale === "kn" ? "ಅಂತರರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ" : "International News"}
           </Link>
-          <Link href={`/${locale}/category/jobs`}>
+          <Link href={`/${locale}/category/jobs`} className="hover:text-[var(--secondary)] transition-colors">
             {locale === "kn" ? "ಉದ್ಯೋಗ ಮಾಹಿತಿ" : "Jobs & Careers"}
           </Link>
         </nav>
@@ -40,15 +46,21 @@ export function Header({ locale }: { locale: Locale }) {
       
       {/* Mobile Category Scrollbar */}
       <div className="border-t border-[var(--border)] bg-[var(--surface-soft)] md:hidden py-2.5 overflow-x-auto whitespace-nowrap">
-        <div className="kq-container flex gap-5 text-xs font-bold uppercase tracking-wider text-[var(--muted)]">
+        <div className="kq-container flex gap-5 text-xs font-bold uppercase tracking-wider text-[var(--muted)] items-center">
           <Link href={`/${locale}`} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಮುಖಪುಟ" : "Home"}
           </Link>
+          <Link
+            href={`/${locale}/quizzes`}
+            className="bg-[var(--secondary)] text-white px-2 py-0.5 rounded text-[10px] font-extrabold select-none"
+          >
+            {locale === "kn" ? "ಕ್ವಿಜ್‌ಗಳು" : "Quizzes"}
+          </Link>
           <Link href={`/${locale}/category/karnataka`} className="hover:text-[var(--secondary)]">
-            {locale === "kn" ? "ಕರ್ನಾಟಕ ಸುದ್ದಿ" : "Karnataka"}
+            {locale === "kn" ? "ಕರ್ನಾಟಕ" : "Karnataka"}
           </Link>
           <Link href={`/${locale}/category/national`} className="hover:text-[var(--secondary)]">
-            {locale === "kn" ? "ರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ" : "National"}
+            {locale === "kn" ? "ರಾಷ್ಟ್ರೀಯ" : "National"}
           </Link>
           <Link href={`/${locale}/category/international`} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಅಂತರರಾಷ್ಟ್ರೀಯ" : "International"}

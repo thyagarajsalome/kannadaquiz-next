@@ -187,6 +187,52 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </div>
 
+      {/* 1c. Welcome Hero & Quiz CTA Banner */}
+      <div className="py-6 bg-[var(--surface-soft)] border-b border-[var(--border)]">
+        <div className="kq-container">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#1e293b] via-[#131b2e] to-[#0f172a] text-white p-6 md:p-10 shadow-md">
+            {/* Background design accents */}
+            <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -mr-20 -mt-20 pointer-events-none blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-[var(--secondary)]/10 rounded-full -ml-16 -mb-16 pointer-events-none blur-2xl"></div>
+
+            <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+              <div className="max-w-2xl">
+                <span className="inline-block bg-[var(--secondary)] text-white text-[10px] md:text-xs font-black uppercase px-3 py-1 rounded-full tracking-widest select-none shadow-sm mb-4">
+                  {locale === "kn" ? "ಉಚಿತ ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳ ತಯಾರಿ" : "FREE STATE EXAM PREPARATION"}
+                </span>
+                <h2 className="font-serif text-2xl md:text-4xl font-extrabold leading-tight text-white tracking-tight">
+                  {text.heroTitle}
+                </h2>
+                <p className="mt-3 text-white/80 text-sm md:text-base leading-relaxed font-normal">
+                  {text.heroLead}
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 shrink-0 w-full lg:w-auto">
+                <Link
+                  href={`/${locale}/quizzes`}
+                  className="bg-[var(--secondary)] hover:bg-[var(--secondary)]/90 text-white text-center font-bold px-8 py-4 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 text-base whitespace-nowrap select-none flex items-center justify-center gap-2"
+                >
+                  <svg className="w-5 h-5 shrink-0 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 21l8.904-4.473L21 9l-3.487-3.49-8.7 8.394zM16.5 7.5L18 9"></path>
+                  </svg>
+                  {text.primaryCta}
+                </Link>
+                <Link
+                  href={`/${locale}/category/jobs`}
+                  className="bg-white/10 hover:bg-white/20 text-white text-center font-bold px-8 py-4 rounded-xl border border-white/20 transition-all duration-300 text-base whitespace-nowrap select-none flex items-center justify-center gap-2"
+                >
+                  <svg className="w-5 h-5 shrink-0 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 14.15v4.25c0 .966-.784 1.75-1.75 1.75H5.5a1.75 1.75 0 0 1-1.75-1.75v-4.25m16.5 0a1.75 1.75 0 0 0-1.75-1.75H5.5a1.75 1.75 0 0 0-1.75 1.75m16.5 0V9a1.75 1.75 0 0 0-1.75-1.75H5.5A1.75 1.75 0 0 0 3.75 9v5.15M12 3v9m0 0l-3-3m3 3l3-3"></path>
+                  </svg>
+                  {locale === "kn" ? "ಉದ್ಯೋಗಾವಕಾಶಗಳು" : "Job Alerts"}
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* 2. Main Headline Hero Section */}
       <section className="py-8 bg-[var(--surface)] border-b border-[var(--border)]">
         <div className="kq-container">
@@ -297,12 +343,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                           {quiz.description}
                         </p>
                       </div>
-                      <div className="mt-4 pt-3 border-t border-[var(--border)] flex justify-end">
+                      <div className="mt-4 pt-3 border-t border-[var(--border)]">
                         <Link
                           href={`/${locale}/quizzes/${quiz.slug}`}
-                          className="bg-[var(--primary)] hover:bg-[var(--secondary)] text-white text-xs font-bold px-3 py-1.5 rounded transition-colors"
+                          className="w-full block text-center bg-[var(--secondary)] hover:bg-[var(--secondary)]/90 text-white text-xs font-black uppercase py-2.5 rounded-md transition-colors select-none tracking-wider shadow-sm"
                         >
-                          {text.quizStart}
+                          {text.quizStart} ➔
                         </Link>
                       </div>
                     </div>
