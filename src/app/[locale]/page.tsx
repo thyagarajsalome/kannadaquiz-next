@@ -78,6 +78,7 @@ const categoryTranslations: Record<string, Record<string, string>> = {
   kpsc: { kn: "ಪರೀಕ್ಷಾ ವಿವರಗಳು", en: "Exams & Education" },
   current_affairs: { kn: "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", en: "Current Affairs" },
   agriculture: { kn: "ಕೃಷಿ ಮಾಹಿತಿ", en: "Agriculture Info" },
+  education: { kn: "ಶಿಕ್ಷಣ ಮತ್ತು ಕಾಲೇಜು ಮಾರ್ಗದರ್ಶಿ", en: "Education & College Guide" },
   general: { kn: "ಸಾಮಾನ್ಯ ಸುದ್ದಿ", en: "General News" }
 };
 
@@ -95,6 +96,9 @@ function getLocalizedCategory(category: string, locale: string): string {
   if (norm.includes("agriculture") || norm.includes("krishi") || norm.includes("farm")) {
     return categoryTranslations.agriculture[locale] || category;
   }
+  if (norm.includes("college") || norm.includes("guide") || norm.includes("education")) {
+    return categoryTranslations.education[locale] || category;
+  }
   return categoryTranslations.general[locale] || category;
 }
 
@@ -109,6 +113,7 @@ const sectionTitles: Record<string, Record<Locale, string>> = {
   readMore: { kn: "ಹೆಚ್ಚಿನ ಮಾಹಿತಿ ➔", en: "Read More ➔" },
   latestAffairs: { kn: "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", en: "Current Affairs" },
   agriculture: { kn: "ಕೃಷಿ ಮತ್ತು ಕೃಷಿ ಪರೀಕ್ಷೆಗಳ ಮಾಹಿತಿ", en: "Agriculture & Krishi News" },
+  education: { kn: "ಶಿಕ್ಷಣ ಮತ್ತು ಕಾಲೇಜು ಮಾರ್ಗದರ್ಶಿಗಳು", en: "College & Education Guides" },
 };
 
 function getSourceName(post: { sourceUrl?: string; sourceName?: string }) {
@@ -144,6 +149,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     if (c.includes("national") || c.includes("affair") || c.includes("current") || c.includes("general")) return "national";
     if (c.includes("job") || c.includes("kpsc") || c.includes("exam") || c.includes("career")) return "jobs";
     if (c.includes("agriculture") || c.includes("krishi") || c.includes("farm")) return "agriculture";
+    if (c.includes("college") || c.includes("guide") || c.includes("education")) return "education";
     return "general";
   };
 
@@ -152,6 +158,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const internationalPosts = posts.filter(p => getCategoryKey(p.category) === "international").slice(0, 3);
   const jobPosts = posts.filter(p => getCategoryKey(p.category) === "jobs").slice(0, 3);
   const agriculturePosts = posts.filter(p => getCategoryKey(p.category) === "agriculture").slice(0, 3);
+  const educationPosts = posts.filter(p => getCategoryKey(p.category) === "education").slice(0, 3);
 
   return (
     <>
@@ -525,6 +532,44 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </div>
               <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                 {agriculturePosts.map((post) => (
+                  <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
+                    <div>
+                      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
+                        <span>{getSourceName(post)}</span>
+                        <span>•</span>
+                        <time>{post.date}</time>
+                      </div>
+                      <Link href={`/${locale}/posts/${post.slug}`} className="group">
+                        <h4 className="mt-2 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2">
+                          {post.title}
+                        </h4>
+                      </Link>
+                      <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
+                        {post.excerpt}
+                      </p>
+                    </div>
+                    <div className="mt-4 pt-3 border-t border-[var(--border)]">
+                      <Link href={`/${locale}/posts/${post.slug}`} className="text-xs font-bold text-[var(--secondary)] hover:underline">
+                        {sectionTitles.readMore[locale]}
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* College & Education Guides Section */}
+          {educationPosts.length > 0 && (
+            <div>
+              <div className="flex items-center justify-between border-b-2 border-[var(--secondary)] pb-2 mb-5">
+                <h3 className="font-serif text-2xl font-bold text-[var(--primary)] flex items-center gap-2">
+                  <span className="w-3 h-6 bg-[var(--secondary)] inline-block"></span>
+                  {sectionTitles.education[locale]}
+                </h3>
+              </div>
+              <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+                {educationPosts.map((post) => (
                   <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
                     <div>
                       <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">

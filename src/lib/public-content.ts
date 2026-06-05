@@ -84,13 +84,12 @@ export type PublicQuiz = {
 };
 
 export async function getPublicQuizzes(locale: Locale, count = 20): Promise<PublicQuiz[]> {
-  const remote = await queryPublished("quizzes", count);
+  const remote = await queryPublishedByLocale("quizzes", locale, count);
   const mapped = remote
     .map(toPublicQuiz)
     .filter((quiz): quiz is Omit<PublicQuiz, "questions"> => Boolean(quiz));
-  const localized = mapped.filter((quiz) => quiz.locale === locale);
 
-  return localized.map((quiz) => ({
+  return mapped.map((quiz) => ({
     ...quiz,
     questions: [], // Optimize: List views do not require questions. Saves N extra database reads.
   }));
@@ -116,32 +115,29 @@ export async function getPublicQuizBySlug(locale: Locale, slug: string): Promise
 }
 
 export async function getPublicPosts(locale: Locale, count = 20): Promise<PublicPost[]> {
-  const remote = await queryPublished("posts", count);
+  const remote = await queryPublishedByLocale("posts", locale, count);
   const mapped = remote.map(toPublicPost).filter((post): post is PublicPost => Boolean(post));
-  const localized = mapped.filter((post) => post.locale === locale);
 
-  return localized;
+  return mapped;
 }
 
 export async function getPublicJobs(locale: Locale, count = 20): Promise<PublicJob[]> {
-  const remote = await queryPublished("jobs", count);
+  const remote = await queryPublishedByLocale("jobs", locale, count);
   const mapped = remote.map(toPublicJob).filter((job): job is PublicJob => Boolean(job));
-  const localized = mapped.filter((job) => job.locale === locale);
 
-  return localized;
+  return mapped;
 }
 
 export async function getPublicCurrentAffairs(
   locale: Locale,
   count = 10,
 ): Promise<PublicCurrentAffair[]> {
-  const remote = await queryPublished("currentAffairs", count);
+  const remote = await queryPublishedByLocale("currentAffairs", locale, count);
   const mapped = remote
     .map(toPublicCurrentAffair)
     .filter((item): item is PublicCurrentAffair => Boolean(item));
-  const localized = mapped.filter((item) => item.locale === locale);
 
-  return localized;
+  return mapped;
 }
 
 export async function getPublicPostBySlug(locale: Locale, slug: string) {
@@ -240,6 +236,63 @@ async function queryPublished(collectionId: string, limitCount: number) {
                 field: { fieldPath: "status" },
                 op: "EQUAL",
                 value: { stringValue: "published" },
+              },
+            },
+            limit: limitCount,
+          },
+        }),
+        next: { revalidate: revalidateSeconds },
+      },
+    );
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const rows = (await response.json()) as RunQueryRow[];
+    return rows
+      .map((row) => row.document)
+      .filter((doc): doc is FirestoreDocument => Boolean(doc?.fields));
+  } catch {
+    return [];
+  }
+}
+
+async function queryPublishedByLocale(collectionId: string, locale: Locale, limitCount: number) {
+  if (!firestoreProjectId || !firestoreApiKey) {
+    return [];
+  }
+
+  try {
+    const response = await fetch(
+      `https://firestore.googleapis.com/v1/projects/${firestoreProjectId}/databases/(default)/documents:runQuery?key=${firestoreApiKey}`,
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          structuredQuery: {
+            from: [{ collectionId }],
+            where: {
+              compositeFilter: {
+                op: "AND",
+                filters: [
+                  {
+                    fieldFilter: {
+                      field: { fieldPath: "status" },
+                      op: "EQUAL",
+                      value: { stringValue: "published" },
+                    },
+                  },
+                  {
+                    fieldFilter: {
+                      field: { fieldPath: "locale" },
+                      op: "EQUAL",
+                      value: { stringValue: locale },
+                    },
+                  },
+                ],
               },
             },
             limit: limitCount,
