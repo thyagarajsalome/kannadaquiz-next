@@ -11,6 +11,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     `/${locale}/quizzes`,
     `/${locale}/posts`,
     `/${locale}/jobs`,
+    `/${locale}/category/karnataka`,
+    `/${locale}/category/national`,
+    `/${locale}/category/international`,
+    `/${locale}/category/jobs`,
   ]);
 
   const quizRoutes = locales.flatMap((locale) =>
@@ -20,8 +24,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const contentByLocale = await Promise.all(
     locales.map(async (locale) => ({
       locale,
-      posts: await getPublicPosts(locale, 50),
-      jobs: await getPublicJobs(locale, 50),
+      posts: await getPublicPosts(locale, 500),
+      jobs: await getPublicJobs(locale, 500),
     })),
   );
 
