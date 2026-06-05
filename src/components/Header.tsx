@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { oppositeLocale, type Locale } from "@/lib/locales";
 import { siteText } from "@/data/content";
+import { HeaderAuth } from "@/components/HeaderAuth";
 
 export function Header({ locale }: { locale: Locale }) {
   const text = siteText[locale];
@@ -17,12 +18,15 @@ export function Header({ locale }: { locale: Locale }) {
           <Link href={`/${locale}/posts`}>{text.nav[1]}</Link>
           <Link href={`/${locale}/jobs`}>{text.nav[2]}</Link>
         </nav>
-        <Link
-          href={`/${other}`}
-          className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--primary)]"
-        >
-          {text.language}
-        </Link>
+        <div className="flex items-center gap-4">
+          <HeaderAuth locale={locale} />
+          <Link
+            href={`/${other}`}
+            className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--primary)]"
+          >
+            {text.language}
+          </Link>
+        </div>
       </div>
     </header>
   );

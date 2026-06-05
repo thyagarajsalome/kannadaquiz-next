@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 import { QuizPlayer } from "@/components/QuizPlayer";
 import { quizzes } from "@/data/content";
 import { isLocale, locales, type Locale } from "@/lib/locales";
+import { getPublicQuizBySlug } from "@/lib/public-content";
 
 export function generateStaticParams() {
-  return locales.flatMap((locale) => quizzes.map((quiz) => ({ locale, slug: quiz.slug })));
+  return [];
 }
 
 export async function generateMetadata({
@@ -15,15 +16,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: rawLocale, slug } = await params;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
-  const quiz = quizzes.find((item) => item.slug === slug);
+  const quiz = await getPublicQuizBySlug(locale, slug);
 
   if (!quiz) {
     return {};
   }
 
   return {
-    title: quiz.title[locale],
-    description: quiz.description[locale],
+    title: quiz.title,
+    description: quiz.description,
     alternates: {
       canonical: `/${locale}/quizzes/${quiz.slug}`,
       languages: {
@@ -32,8 +33,8 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: quiz.title[locale],
-      description: quiz.description[locale],
+      title: quiz.title,
+      description: quiz.description,
       type: "article",
     },
   };
@@ -46,7 +47,7 @@ export default async function QuizDetailPage({
 }) {
   const { locale: rawLocale, slug } = await params;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
-  const quiz = quizzes.find((item) => item.slug === slug);
+  const quiz = await getPublicQuizBySlug(locale, slug);
 
   if (!quiz) {
     notFound();
@@ -59,9 +60,9 @@ export default async function QuizDetailPage({
           {quiz.exam} • {quiz.subject} • {quiz.difficulty}
         </p>
         <h1 className="mt-3 font-serif text-4xl font-bold leading-tight text-[var(--primary)]">
-          {quiz.title[locale]}
+          {quiz.title}
         </h1>
-        <p className="mt-4 text-lg leading-8 text-[var(--muted)]">{quiz.description[locale]}</p>
+        <p className="mt-4 text-lg leading-8 text-[var(--muted)]">{quiz.description}</p>
         <dl className="mt-6 grid grid-cols-2 gap-3">
           <div className="kq-card p-4">
             <dt className="text-xs font-bold text-[var(--secondary)]">
@@ -84,8 +85,8 @@ export default async function QuizDetailPage({
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Quiz",
-            name: quiz.title[locale],
-            description: quiz.description[locale],
+            name: quiz.title,
+            description: quiz.description,
             educationalLevel: "Competitive exam preparation",
             inLanguage: locale === "kn" ? "kn-IN" : "en-IN",
           }),

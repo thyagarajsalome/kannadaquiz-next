@@ -1,21 +1,56 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import type { Quiz } from "@/data/content";
+import { useEffect, useMemo, useState } from "react";
+import type { PublicQuiz } from "@/lib/public-content";
 import type { Locale } from "@/lib/locales";
+import { onAuthStateChanged, type User } from "firebase/auth";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { firebaseAuth, firestore } from "@/lib/firebase";
 
-export function QuizPlayer({ quiz, locale }: { quiz: Quiz; locale: Locale }) {
+export function QuizPlayer({ quiz, locale }: { quiz: PublicQuiz; locale: Locale }) {
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [attemptSaved, setAttemptSaved] = useState(false);
 
   const score = useMemo(
     () =>
       quiz.questions.reduce(
-        (total, question) => total + (answers[question.id] === question.answerIndex ? 1 : 0),
+        (total, question) => total + (answers[question.id] === question.correctOptionIndex ? 1 : 0),
         0,
       ),
     [answers, quiz.questions],
   );
+
+  useEffect(() => {
+    if (!firebaseAuth) return;
+    return onAuthStateChanged(firebaseAuth, (user) => {
+      setCurrentUser(user);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (submitted && currentUser && firestore && !attemptSaved) {
+      setAttemptSaved(true);
+      void saveQuizAttempt();
+    }
+  }, [submitted, currentUser, attemptSaved]);
+
+  async function saveQuizAttempt() {
+    if (!firestore || !currentUser) return;
+    try {
+      await addDoc(collection(firestore, "quizAttempts"), {
+        userId: currentUser.uid,
+        quizId: quiz.id,
+        quizTitle: quiz.title,
+        score: score,
+        totalQuestions: quiz.questions.length,
+        completedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Error logging quiz attempt:", error);
+    }
+  }
 
   return (
     <section className="kq-card p-5 md:p-6">
@@ -32,17 +67,17 @@ export function QuizPlayer({ quiz, locale }: { quiz: Quiz; locale: Locale }) {
         {quiz.questions.map((question, index) => (
           <article key={question.id} className="rounded-md border border-[var(--border)] p-4">
             <p className="font-semibold text-[var(--primary)]">
-              {index + 1}. {question.question[locale]}
+              {index + 1}. {question.question}
             </p>
             <div className="mt-4 grid gap-2">
               {question.options.map((option, optionIndex) => {
                 const selected = answers[question.id] === optionIndex;
-                const correct = submitted && question.answerIndex === optionIndex;
+                const correct = submitted && question.correctOptionIndex === optionIndex;
                 const wrong = submitted && selected && !correct;
 
                 return (
                   <button
-                    key={option[locale]}
+                    key={option}
                     type="button"
                     onClick={() =>
                       setAnswers((current) => ({ ...current, [question.id]: optionIndex }))
@@ -58,27 +93,45 @@ export function QuizPlayer({ quiz, locale }: { quiz: Quiz; locale: Locale }) {
                             : "border-[var(--border)] bg-white hover:border-[var(--primary)]",
                     ].join(" ")}
                   >
-                    {option[locale]}
+                    {option}
                   </button>
                 );
               })}
             </div>
-            {submitted ? (
+            {submitted && question.explanation ? (
               <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-                {question.explanation[locale]}
+                {question.explanation}
               </p>
             ) : null}
           </article>
         ))}
       </div>
 
-      <button
-        type="button"
-        onClick={() => setSubmitted(true)}
-        className="mt-5 rounded-md bg-[var(--secondary)] px-5 py-3 text-sm font-bold text-white"
-      >
-        {locale === "kn" ? "ಫಲಿತಾಂಶ ನೋಡಿ" : "Check result"}
-      </button>
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
+        <button
+          type="button"
+          onClick={() => setSubmitted(true)}
+          className="cursor-pointer rounded-md bg-[var(--secondary)] px-5 py-3 text-sm font-bold text-white"
+        >
+          {locale === "kn" ? "ಫಲಿತಾಂಶ ನೋಡಿ" : "Check result"}
+        </button>
+
+        {submitted && !currentUser ? (
+          <p className="text-xs font-semibold text-[var(--secondary)]">
+            {locale === "kn"
+              ? "ಗಮನಿಸಿ: ನಿಮ್ಮ ಅಂಕಗಳನ್ನು ಪ್ರೊಫೈಲ್‌ನಲ್ಲಿ ಉಳಿಸಲು ದಯವಿಟ್ಟು ಲಾಗಿನ್ ಮಾಡಿ."
+              : "Note: Please sign in to save your results to your profile."}
+          </p>
+        ) : null}
+
+        {submitted && currentUser && attemptSaved ? (
+          <p className="text-xs font-semibold text-green-700">
+            {locale === "kn"
+              ? "ನಿಮ್ಮ ಅಂಕಗಳನ್ನು ಪ್ರೊಫೈಲ್‌ನಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ!"
+              : "Attempt saved to your profile!"}
+          </p>
+        ) : null}
+      </div>
     </section>
   );
 }

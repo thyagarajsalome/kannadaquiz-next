@@ -7,7 +7,7 @@ import { getPublicPostBySlug } from "@/lib/public-content";
 export const revalidate = 300;
 
 export function generateStaticParams() {
-  return locales.flatMap((locale) => posts.map((post) => ({ locale, slug: post.slug })));
+  return [];
 }
 
 export async function generateMetadata({
@@ -58,6 +58,13 @@ export default async function PostPage({
         {post.title}
       </h1>
       <p className="mt-5 text-lg leading-8 text-[var(--muted)]">{post.excerpt}</p>
+      {post.featuredImageUrl ? (
+        <img
+          src={post.featuredImageUrl}
+          alt={post.title}
+          className="mt-6 w-full max-h-[400px] object-cover rounded-lg shadow-sm border border-[var(--border)]"
+        />
+      ) : null}
       <div className="mt-8 kq-card p-5 text-base leading-8 text-[var(--foreground)]">
         {post.body.split("\n").map((paragraph) => (
           <p key={paragraph} className="mb-4 last:mb-0">

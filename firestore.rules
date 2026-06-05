@@ -8,7 +8,8 @@ service cloud.firestore {
 
     function isAdmin() {
       return signedIn() &&
-        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+        (request.auth.token.admin == true ||
+         exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
     }
 
     function publishedRead() {
@@ -31,7 +32,7 @@ service cloud.firestore {
     }
 
     match /quizQuestions/{docId} {
-      allow read: if isAdmin();
+      allow read: if true;
       allow write: if isAdmin();
     }
 
@@ -57,7 +58,8 @@ service cloud.firestore {
     match /quizAttempts/{docId} {
       allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
       allow read: if signedIn() && resource.data.userId == request.auth.uid;
-      allow update, delete: if false;
+      allow update: if false;
+      allow delete: if signedIn() && resource.data.userId == request.auth.uid;
     }
 
     match /leaderboard/{docId} {

@@ -1,4 +1,4 @@
-import { currentAffairs, jobs, posts } from "@/data/content";
+import { currentAffairs, jobs, posts, quizzes } from "@/data/content";
 import type { Locale } from "@/lib/locales";
 
 const firestoreProjectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
@@ -36,6 +36,7 @@ export type PublicPost = {
   body: string;
   category: string;
   date: string;
+  featuredImageUrl?: string;
 };
 
 export type PublicJob = {
@@ -57,12 +58,67 @@ export type PublicCurrentAffair = {
   date: string;
 };
 
+export type PublicQuizQuestion = {
+  id: string;
+  question: string;
+  options: string[];
+  correctOptionIndex: number;
+  explanation?: string;
+  sortOrder: number;
+};
+
+export type PublicQuiz = {
+  id: string;
+  slug: string;
+  locale: Locale;
+  title: string;
+  description: string;
+  exam: string;
+  subject: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+  timeLimitMinutes: number;
+  questions: PublicQuizQuestion[];
+  featuredImageUrl?: string;
+};
+
+export async function getPublicQuizzes(locale: Locale, count = 20): Promise<PublicQuiz[]> {
+  const remote = await queryPublished("quizzes", count);
+  const mapped = remote
+    .map(toPublicQuiz)
+    .filter((quiz): quiz is Omit<PublicQuiz, "questions"> => Boolean(quiz));
+  const localized = mapped.filter((quiz) => quiz.locale === locale);
+
+  if (!localized.length) {
+    return [];
+  }
+
+  const fullQuizzes = await Promise.all(
+    localized.map(async (quiz) => {
+      const qDocs = await queryQuestionsForQuiz(quiz.id);
+      const questions = qDocs
+        .map(toPublicQuizQuestion)
+        .filter((q): q is PublicQuizQuestion => Boolean(q));
+      return {
+        ...quiz,
+        questions,
+      };
+    })
+  );
+
+  return fullQuizzes;
+}
+
+export async function getPublicQuizBySlug(locale: Locale, slug: string): Promise<PublicQuiz | null> {
+  const allQuizzes = await getPublicQuizzes(locale, 50);
+  return allQuizzes.find((quiz) => quiz.slug === slug) ?? null;
+}
+
 export async function getPublicPosts(locale: Locale, count = 20): Promise<PublicPost[]> {
   const remote = await queryPublished("posts", count);
   const mapped = remote.map(toPublicPost).filter((post): post is PublicPost => Boolean(post));
   const localized = mapped.filter((post) => post.locale === locale);
 
-  return localized.length ? localized : fallbackPosts(locale);
+  return localized;
 }
 
 export async function getPublicJobs(locale: Locale, count = 20): Promise<PublicJob[]> {
@@ -70,7 +126,7 @@ export async function getPublicJobs(locale: Locale, count = 20): Promise<PublicJ
   const mapped = remote.map(toPublicJob).filter((job): job is PublicJob => Boolean(job));
   const localized = mapped.filter((job) => job.locale === locale);
 
-  return localized.length ? localized : fallbackJobs(locale);
+  return localized;
 }
 
 export async function getPublicCurrentAffairs(
@@ -83,7 +139,7 @@ export async function getPublicCurrentAffairs(
     .filter((item): item is PublicCurrentAffair => Boolean(item));
   const localized = mapped.filter((item) => item.locale === locale);
 
-  return localized.length ? localized : fallbackCurrentAffairs(locale);
+  return localized;
 }
 
 export async function getPublicPostBySlug(locale: Locale, slug: string) {
@@ -158,6 +214,7 @@ function toPublicPost(doc: FirestoreDocument): PublicPost | null {
     body: stringOrEmpty(data.body),
     category: stringOrDefault(data.category, "General"),
     date: dateOnly(data.publishedAt ?? data.updatedAt ?? doc.updateTime),
+    featuredImageUrl: typeof data.featuredImageUrl === "string" ? data.featuredImageUrl : undefined,
   };
 }
 
@@ -280,5 +337,125 @@ function fallbackCurrentAffairs(locale: Locale): PublicCurrentAffair[] {
     locale,
     headline: item.headline[locale],
     date: item.date,
+  }));
+}
+
+async function queryQuestionsForQuiz(quizId: string) {
+  if (!firestoreProjectId || !firestoreApiKey) {
+    return [];
+  }
+
+  try {
+    const response = await fetch(
+      `https://firestore.googleapis.com/v1/projects/${firestoreProjectId}/databases/(default)/documents:runQuery?key=${firestoreApiKey}`,
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          structuredQuery: {
+            from: [{ collectionId: "quizQuestions" }],
+            where: {
+              fieldFilter: {
+                field: { fieldPath: "quizId" },
+                op: "EQUAL",
+                value: { stringValue: quizId },
+              },
+            },
+            orderBy: [
+              {
+                field: { fieldPath: "sortOrder" },
+                direction: "ASCENDING",
+              },
+            ],
+          },
+        }),
+        next: { revalidate: revalidateSeconds },
+      },
+    );
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const rows = (await response.json()) as RunQueryRow[];
+    return rows
+      .map((row) => row.document)
+      .filter((doc): doc is FirestoreDocument => Boolean(doc?.fields));
+  } catch {
+    return [];
+  }
+}
+
+function toPublicQuizQuestion(doc: FirestoreDocument): PublicQuizQuestion | null {
+  const data = parseFields(doc.fields);
+  const question = stringOrEmpty(data.question);
+
+  const rawOptions = Array.isArray(data.options) ? data.options : [];
+  const options = rawOptions.map((val) => String(val ?? ""));
+
+  if (!question || options.length === 0) {
+    return null;
+  }
+
+  return {
+    id: docId(doc),
+    question,
+    options,
+    correctOptionIndex: typeof data.correctOptionIndex === "number" ? data.correctOptionIndex : 0,
+    explanation: typeof data.explanation === "string" ? data.explanation : undefined,
+    sortOrder: typeof data.sortOrder === "number" ? data.sortOrder : 1,
+  };
+}
+
+function toPublicQuiz(doc: FirestoreDocument): Omit<PublicQuiz, "questions"> | null {
+  const data = parseFields(doc.fields);
+  const locale = parseLocale(data.locale);
+  const slug = stringOrEmpty(data.slug);
+  const title = stringOrEmpty(data.title);
+
+  if (!locale || !slug || !title) {
+    return null;
+  }
+
+  const timeLimitSeconds = typeof data.timeLimitSeconds === "number" ? data.timeLimitSeconds : 300;
+  const timeLimitMinutes = Math.ceil(timeLimitSeconds / 60);
+
+  return {
+    id: docId(doc),
+    slug,
+    locale,
+    title,
+    description: stringOrEmpty(data.description),
+    exam: stringOrDefault(data.exam, "KPSC"),
+    subject: stringOrDefault(data.subject, "General"),
+    difficulty: (data.difficulty === "Easy" || data.difficulty === "Medium" || data.difficulty === "Hard")
+      ? data.difficulty
+      : "Easy",
+    timeLimitMinutes,
+    featuredImageUrl: typeof data.featuredImageUrl === "string" ? data.featuredImageUrl : undefined,
+  };
+}
+
+function fallbackQuizzes(locale: Locale): PublicQuiz[] {
+  return quizzes.map((quiz) => ({
+    id: quiz.slug,
+    slug: quiz.slug,
+    locale,
+    title: quiz.title[locale],
+    description: quiz.description[locale],
+    exam: quiz.exam,
+    subject: quiz.subject,
+    difficulty: quiz.difficulty,
+    timeLimitMinutes: quiz.timeLimitMinutes,
+    questions: quiz.questions.map((q) => ({
+      id: q.id,
+      question: q.question[locale],
+      options: q.options.map((opt) => opt[locale]),
+      correctOptionIndex: q.answerIndex,
+      explanation: q.explanation[locale],
+      sortOrder: 1,
+    })),
   }));
 }
