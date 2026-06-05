@@ -6,7 +6,7 @@ import { getPublicPosts } from "@/lib/public-content";
 export const revalidate = 300;
 
 export function generateStaticParams() {
-  const categories = ["karnataka", "national", "international", "jobs", "agriculture", "education", "schemes", "tourism", "sports", "home-design"];
+  const categories = ["karnataka", "national", "international", "jobs", "agriculture", "education", "schemes", "tourism", "sports"];
   const params: { locale: string; category: string }[] = [];
   
   // Create paths for both locales and all standard categories
@@ -29,7 +29,6 @@ const categoryTranslations: Record<string, Record<string, string>> = {
   schemes: { kn: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು", en: "Government Schemes" },
   tourism: { kn: "ಇತಿಹಾಸ ಮತ್ತು ಪ್ರವಾಸೋದ್ಯಮ", en: "Heritage & Tourism" },
   sports: { kn: "ಕ್ರೀಡಾ ಸುದ್ದಿ", en: "Sports News" },
-  "home-design": { kn: "ಮನೆ ವಿನ್ಯಾಸ ಮತ್ತು ಯೋಜನೆ", en: "Home Design & Planning" },
   general: { kn: "ಸಾಮಾನ್ಯ ಸುದ್ದಿ", en: "General News" }
 };
 
@@ -83,10 +82,6 @@ export async function generateMetadata({
       kn: ["ಕ್ರೀಡಾ ಸುದ್ದಿ", "ಕ್ರಿಕೆಟ್ ಅಪ್ಡೇಟ್ಸ್", "ಐಪಿಎಲ್ ಸುದ್ದಿ", "ಕ್ರೀಡೆ"],
       en: ["Sports News India", "Cricket Updates", "IPL Highlights", "Sports Events"]
     },
-    "home-design": {
-      kn: ["ಮನೆ ವಿನ್ಯಾಸ", "ಗೃಹ ವಿನ್ಯಾಸ ಸಲಹೆಗಳು", "HDE ಆಪ್", "ಮನೆಯ ನಕ್ಷೆ", "AI ಹೋಮ್ ಡೆಕೋರೇಟರ್"],
-      en: ["Home Design Tips", "House Planning Ideas", "HDE App", "AI Homedecorator", "Modern House Plans"]
-    },
     general: {
       kn: ["ಸಾಮಾನ್ಯ ಸುದ್ದಿ", "ಕನ್ನಡ ಕ್ವಿಜ್", "ಕನ್ನಡ ವಾರ್ತೆಗಳು", "ಸಾಮಾನ್ಯ ಜ್ಞಾನ"],
       en: ["General News", "Kannada Quiz Portal", "Kannada News Summaries", "GK and Quizzes"]
@@ -102,8 +97,7 @@ export async function generateMetadata({
                      (catKey.includes("college") || catKey.includes("guide") || catKey.includes("education")) ? "education" :
                      (catKey.includes("scheme") || catKey.includes("yojane")) ? "schemes" :
                      (catKey.includes("tourism") || catKey.includes("heritage") || catKey.includes("itihasa") || catKey.includes("culture")) ? "tourism" :
-                     (catKey.includes("sport") || catKey.includes("game") || catKey.includes("kriide")) ? "sports" :
-                     (catKey.includes("home") || catKey.includes("design") || catKey.includes("decor")) ? "home-design" : "general";
+                     (catKey.includes("sport") || catKey.includes("game") || catKey.includes("kriide")) ? "sports" : "general";
 
   return {
     title: locale === "kn" 
@@ -146,7 +140,6 @@ export default async function CategoryPage({
     if (c.includes("scheme") || c.includes("yojane")) return "schemes";
     if (c.includes("tourism") || c.includes("heritage") || c.includes("itihasa") || c.includes("culture")) return "tourism";
     if (c.includes("sport") || c.includes("game") || c.includes("kriide")) return "sports";
-    if (c.includes("home") || c.includes("design") || c.includes("decor")) return "home-design";
     return "general";
   };
 
