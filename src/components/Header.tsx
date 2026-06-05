@@ -38,6 +38,32 @@ export function Header({ locale }: { locale: Locale }) {
           <Link href={`/${locale}/category/jobs`} className="hover:text-[var(--secondary)] transition-colors">
             {locale === "kn" ? "ಉದ್ಯೋಗ ಮಾಹಿತಿ" : "Jobs & Careers"}
           </Link>
+          {/* Dropdown Menu for More Categories */}
+          <div className="relative group">
+            <button className="flex items-center gap-1 hover:text-[var(--secondary)] transition-colors font-semibold text-[var(--muted)] py-2 select-none cursor-pointer">
+              <span>{locale === "kn" ? "ಇನ್ನಷ್ಟು" : "More"}</span>
+              <svg className="w-4 h-4 transition-transform group-hover:rotate-180 text-[var(--muted)]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"></path>
+              </svg>
+            </button>
+            <div className="absolute left-0 mt-0 hidden group-hover:block bg-white border border-[var(--border)] rounded-lg shadow-lg py-2 min-w-[200px] z-50">
+              <Link href={`/${locale}/category/schemes`} className="block px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+                {locale === "kn" ? "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು" : "Government Schemes"}
+              </Link>
+              <Link href={`/${locale}/category/tourism`} className="block px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+                {locale === "kn" ? "ಇತಿಹಾಸ & ಪ್ರವಾಸೋದ್ಯಮ" : "Heritage & Tourism"}
+              </Link>
+              <Link href={`/${locale}/category/sports`} className="block px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+                {locale === "kn" ? "ಕ್ರೀಡಾ ಸುದ್ದಿ" : "Sports News"}
+              </Link>
+              <Link href={`/${locale}/category/agriculture`} className="block px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+                {locale === "kn" ? "ಕೃಷಿ ಮಾಹಿತಿ" : "Agriculture Info"}
+              </Link>
+              <Link href={`/${locale}/category/education`} className="block px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+                {locale === "kn" ? "ಶೈಕ್ಷಣಿಕ ಮಾರ್ಗದರ್ಶಿಗಳು" : "Education Guides"}
+              </Link>
+            </div>
+          </div>
         </nav>
         <div className="flex items-center gap-4">
           <HeaderAuth locale={locale} />
@@ -67,6 +93,21 @@ export function Header({ locale }: { locale: Locale }) {
           </Link>
           <Link href={`/${locale}/category/jobs`} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಉದ್ಯೋಗಗಳು" : "Jobs"}
+          </Link>
+          <Link href={`/${locale}/category/schemes`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಯೋಜನೆಗಳು" : "Schemes"}
+          </Link>
+          <Link href={`/${locale}/category/tourism`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಪ್ರವಾಸೋದ್ಯಮ" : "Tourism"}
+          </Link>
+          <Link href={`/${locale}/category/sports`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಕ್ರೀಡೆ" : "Sports"}
+          </Link>
+          <Link href={`/${locale}/category/agriculture`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಕೃಷಿ" : "Krishi"}
+          </Link>
+          <Link href={`/${locale}/category/education`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಶೈಕ್ಷಣಿಕ" : "Education"}
           </Link>
         </div>
       </div>
