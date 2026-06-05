@@ -99,7 +99,8 @@ export async function getPublicQuizzes(locale: Locale, count = 20): Promise<Publ
       const qDocs = await queryQuestionsForQuiz(quiz.id);
       const questions = qDocs
         .map(toPublicQuizQuestion)
-        .filter((q): q is PublicQuizQuestion => Boolean(q));
+        .filter((q): q is PublicQuizQuestion => Boolean(q))
+        .sort((a, b) => a.sortOrder - b.sortOrder);
       return {
         ...quiz,
         questions,
@@ -111,8 +112,22 @@ export async function getPublicQuizzes(locale: Locale, count = 20): Promise<Publ
 }
 
 export async function getPublicQuizBySlug(locale: Locale, slug: string): Promise<PublicQuiz | null> {
-  const allQuizzes = await getPublicQuizzes(locale, 50);
-  return allQuizzes.find((quiz) => quiz.slug === slug) ?? null;
+  const doc = await querySingleBySlug("quizzes", slug, locale);
+  if (!doc) return null;
+
+  const quiz = toPublicQuiz(doc);
+  if (!quiz) return null;
+
+  const qDocs = await queryQuestionsForQuiz(quiz.id);
+  const questions = qDocs
+    .map(toPublicQuizQuestion)
+    .filter((q): q is PublicQuizQuestion => Boolean(q))
+    .sort((a, b) => a.sortOrder - b.sortOrder);
+
+  return {
+    ...quiz,
+    questions,
+  };
 }
 
 export async function getPublicPosts(locale: Locale, count = 20): Promise<PublicPost[]> {
@@ -145,13 +160,78 @@ export async function getPublicCurrentAffairs(
 }
 
 export async function getPublicPostBySlug(locale: Locale, slug: string) {
-  const allPosts = await getPublicPosts(locale, 50);
-  return allPosts.find((post) => post.slug === slug);
+  const doc = await querySingleBySlug("posts", slug, locale);
+  if (!doc) return undefined;
+  return toPublicPost(doc) ?? undefined;
 }
 
 export async function getPublicJobBySlug(locale: Locale, slug: string) {
-  const allJobs = await getPublicJobs(locale, 50);
-  return allJobs.find((job) => job.slug === slug);
+  const doc = await querySingleBySlug("jobs", slug, locale);
+  if (!doc) return undefined;
+  return toPublicJob(doc) ?? undefined;
+}
+
+async function querySingleBySlug(collectionId: string, slug: string, locale: Locale) {
+  if (!firestoreProjectId || !firestoreApiKey) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(
+      `https://firestore.googleapis.com/v1/projects/${firestoreProjectId}/databases/(default)/documents:runQuery?key=${firestoreApiKey}`,
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          structuredQuery: {
+            from: [{ collectionId }],
+            where: {
+              compositeFilter: {
+                op: "AND",
+                filters: [
+                  {
+                    fieldFilter: {
+                      field: { fieldPath: "status" },
+                      op: "EQUAL",
+                      value: { stringValue: "published" },
+                    },
+                  },
+                  {
+                    fieldFilter: {
+                      field: { fieldPath: "slug" },
+                      op: "EQUAL",
+                      value: { stringValue: slug },
+                    },
+                  },
+                  {
+                    fieldFilter: {
+                      field: { fieldPath: "locale" },
+                      op: "EQUAL",
+                      value: { stringValue: locale },
+                    },
+                  },
+                ],
+              },
+            },
+            limit: 1,
+          },
+        }),
+        next: { revalidate: revalidateSeconds },
+      },
+    );
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const rows = (await response.json()) as RunQueryRow[];
+    const doc = rows[0]?.document;
+    return doc?.fields ? doc : null;
+  } catch {
+    return null;
+  }
 }
 
 async function queryPublished(collectionId: string, limitCount: number) {
@@ -367,12 +447,6 @@ async function queryQuestionsForQuiz(quizId: string) {
                 value: { stringValue: quizId },
               },
             },
-            orderBy: [
-              {
-                field: { fieldPath: "sortOrder" },
-                direction: "ASCENDING",
-              },
-            ],
           },
         }),
         next: { revalidate: revalidateSeconds },

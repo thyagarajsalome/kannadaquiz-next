@@ -5,6 +5,8 @@ import { quizzes } from "@/data/content";
 import { isLocale, locales, type Locale } from "@/lib/locales";
 import { getPublicQuizBySlug } from "@/lib/public-content";
 
+export const revalidate = 300;
+
 export function generateStaticParams() {
   return [];
 }

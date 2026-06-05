@@ -4,6 +4,8 @@ import { siteText } from "@/data/content";
 import { isLocale, locales, type Locale } from "@/lib/locales";
 import { getPublicQuizzes } from "@/lib/public-content";
 
+export const revalidate = 300;
+
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
