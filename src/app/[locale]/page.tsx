@@ -210,15 +210,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   <p className="mt-4 text-base leading-7 text-[var(--muted)]">
                     {heroPost.excerpt}
                   </p>
-                  {heroPost.featuredImageUrl && (
-                    <div className="mt-5 overflow-hidden rounded-lg border border-[var(--border)]">
-                      <img
-                        src={heroPost.featuredImageUrl}
-                        alt={heroPost.title}
-                        className="w-full max-h-[350px] object-cover hover:scale-[1.02] transition-transform duration-300"
-                      />
-                    </div>
-                  )}
                 </div>
                 <div className="mt-6">
                   <Link
@@ -366,15 +357,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 {karnatakaPosts.map((post) => (
                   <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
                     <div>
-                      {post.featuredImageUrl && (
-                        <div className="mb-3 overflow-hidden rounded border border-[var(--border)]">
-                          <img
-                            src={post.featuredImageUrl}
-                            alt={post.title}
-                            className="w-full h-40 object-cover"
-                          />
-                        </div>
-                      )}
+                      
                       <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
                         <span>{getSourceName(post)}</span>
                         <span>•</span>
@@ -413,15 +396,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 {nationalPosts.map((post) => (
                   <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
                     <div>
-                      {post.featuredImageUrl && (
-                        <div className="mb-3 overflow-hidden rounded border border-[var(--border)]">
-                          <img
-                            src={post.featuredImageUrl}
-                            alt={post.title}
-                            className="w-full h-40 object-cover"
-                          />
-                        </div>
-                      )}
+                      
                       <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
                         <span>{getSourceName(post)}</span>
                         <span>•</span>
@@ -460,15 +435,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 {internationalPosts.map((post) => (
                   <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
                     <div>
-                      {post.featuredImageUrl && (
-                        <div className="mb-3 overflow-hidden rounded border border-[var(--border)]">
-                          <img
-                            src={post.featuredImageUrl}
-                            alt={post.title}
-                            className="w-full h-40 object-cover"
-                          />
-                        </div>
-                      )}
+                      
                       <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
                         <span>{getSourceName(post)}</span>
                         <span>•</span>

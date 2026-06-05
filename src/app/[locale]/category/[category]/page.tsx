@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { isLocale, type Locale } from "@/lib/locales";
 import { getPublicPosts } from "@/lib/public-content";
 
@@ -134,15 +133,7 @@ export default async function CategoryPage({
           {posts.map((post) => (
             <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-md transition-shadow">
               <div>
-                {post.featuredImageUrl && (
-                  <div className="mb-3 overflow-hidden rounded border border-[var(--border)]">
-                    <img
-                      src={post.featuredImageUrl}
-                      alt={post.title}
-                      className="w-full h-40 object-cover"
-                    />
-                  </div>
-                )}
+                
                 <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
                   <span>{getSourceName(post)}</span>
                   <span>•</span>
