@@ -10,13 +10,13 @@ import {
 } from "firebase/auth";
 import { firebaseAuth } from "@/lib/firebase";
 import { useRouter, useParams } from "next/navigation";
+import { Logo } from "@/components/Logo";
 
 export default function LoginPage() {
   const router = useRouter();
   const params = useParams();
 
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!firebaseAuth);
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,12 +26,8 @@ export default function LoginPage() {
   const [language, setLanguage] = useState<"en" | "kn">("en");
 
   useEffect(() => {
-    if (!firebaseAuth) {
-      setLoading(false);
-      return;
-    }
+    if (!firebaseAuth) return;
     const unsubscribe = onAuthStateChanged(firebaseAuth, (currentUser) => {
-      setUser(currentUser);
       setLoading(false);
       if (currentUser) {
         const locale = params?.locale === "en" ? "en" : "kn";
@@ -59,13 +55,14 @@ export default function LoginPage() {
         await signInWithEmailAndPassword(firebaseAuth, email, password);
         setMessage(language === "kn" ? "ಲಾಗಿನ್ ಯಶಸ್ವಿಯಾಗಿದೆ!" : "Logged in successfully!");
       }
-    } catch (error: any) {
-      let errorMsg = error?.message || "An unexpected error occurred.";
-      if (error?.code === "auth/email-already-in-use") {
+    } catch (error: unknown) {
+      const authError = error as { code?: string; message?: string };
+      let errorMsg = authError.message || "An unexpected error occurred.";
+      if (authError.code === "auth/email-already-in-use") {
         errorMsg = language === "kn" ? "ಈ ಇಮೇಲ್ ಈಗಾಗಲೇ ಬಳಕೆಯಲ್ಲಿದೆ." : "Email already in use.";
-      } else if (error?.code === "auth/weak-password") {
+      } else if (authError.code === "auth/weak-password") {
         errorMsg = language === "kn" ? "ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 6 ಅಕ್ಷರಗಳಿರಬೇಕು." : "Password should be at least 6 characters.";
-      } else if (error?.code === "auth/invalid-credential") {
+      } else if (authError.code === "auth/invalid-credential") {
         errorMsg = language === "kn" ? "ತಪ್ಪಾದ ಇಮೇಲ್ ಅಥವಾ ಪಾಸ್‌ವರ್ಡ್." : "Incorrect email or password.";
       }
       setMessage(errorMsg);
@@ -85,8 +82,9 @@ export default function LoginPage() {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(firebaseAuth, provider);
       setMessage(language === "kn" ? "ಗೂಗಲ್ ಲಾಗಿನ್ ಯಶಸ್ವಿಯಾಗಿದೆ!" : "Google login successful!");
-    } catch (error: any) {
-      setMessage(error?.message || "Google Authentication failed.");
+    } catch (error: unknown) {
+      const authError = error as { message?: string };
+      setMessage(authError.message || "Google Authentication failed.");
     } finally {
       setSigning(false);
     }
@@ -117,11 +115,9 @@ export default function LoginPage() {
           </button>
         </div>
 
-        <div className="text-center">
-          <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
-            KannadaQuiz
-          </p>
-          <h1 className="mt-2 font-serif text-3xl font-bold text-[var(--primary)]">
+        <div className="flex flex-col items-center text-center">
+          <Logo className="justify-center" />
+          <h1 className="mt-4 font-serif text-3xl font-bold text-[var(--primary)]">
             {isSignUp
               ? language === "kn"
                 ? "ಹೊಸ ಖಾತೆ ರಚಿಸಿ"
