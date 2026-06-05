@@ -55,8 +55,31 @@ export default async function QuizDetailPage({
     notFound();
   }
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Quiz",
+    "name": quiz.title,
+    "description": quiz.description,
+    "educationalLevel": quiz.difficulty,
+    "assesses": `${quiz.exam} - ${quiz.subject}`,
+    "hasPart": quiz.questions.map((q, idx) => ({
+      "@type": "Question",
+      "name": q.question,
+      "position": idx + 1,
+      "suggestedAnswer": q.options.map((opt, oIdx) => ({
+        "@type": "Answer",
+        "text": opt,
+        "isCorrect": oIdx === q.correctOptionIndex
+      }))
+    }))
+  };
+
   return (
     <article className="kq-container grid gap-8 py-10 lg:grid-cols-[0.8fr_1.2fr]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <header>
         <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
           {quiz.exam} • {quiz.subject} • {quiz.difficulty}

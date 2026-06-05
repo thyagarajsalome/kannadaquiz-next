@@ -96,8 +96,38 @@ export default async function PostPage({
     notFound();
   }
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "headline": post.title,
+    "description": post.excerpt,
+    "datePublished": post.date,
+    "dateModified": post.date,
+    "author": {
+      "@type": "Organization",
+      "name": "KannadaQuiz",
+      "url": "https://kannadaquiz.in"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "KannadaQuiz",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://kannadaquiz.in/icon.svg"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://kannadaquiz.in/${locale}/posts/${post.slug}`
+    }
+  };
+
   return (
     <article className="kq-container max-w-3xl py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Back Link at the Top */}
       <div className="mb-6">
         <Link
