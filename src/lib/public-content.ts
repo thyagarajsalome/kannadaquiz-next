@@ -90,25 +90,10 @@ export async function getPublicQuizzes(locale: Locale, count = 20): Promise<Publ
     .filter((quiz): quiz is Omit<PublicQuiz, "questions"> => Boolean(quiz));
   const localized = mapped.filter((quiz) => quiz.locale === locale);
 
-  if (!localized.length) {
-    return [];
-  }
-
-  const fullQuizzes = await Promise.all(
-    localized.map(async (quiz) => {
-      const qDocs = await queryQuestionsForQuiz(quiz.id);
-      const questions = qDocs
-        .map(toPublicQuizQuestion)
-        .filter((q): q is PublicQuizQuestion => Boolean(q))
-        .sort((a, b) => a.sortOrder - b.sortOrder);
-      return {
-        ...quiz,
-        questions,
-      };
-    })
-  );
-
-  return fullQuizzes;
+  return localized.map((quiz) => ({
+    ...quiz,
+    questions: [], // Optimize: List views do not require questions. Saves N extra database reads.
+  }));
 }
 
 export async function getPublicQuizBySlug(locale: Locale, slug: string): Promise<PublicQuiz | null> {
