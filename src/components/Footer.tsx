@@ -12,6 +12,12 @@ export function Footer({ locale }: { locale: Locale }) {
               ? "ಕನ್ನಡ ಓದುಗರಿಗೆ ಸಹಾಯ ಮಾಡಲು ಪ್ರಮುಖ ಜಾಗತಿಕ ಮತ್ತು ಕರ್ನಾಟಕ ಸುದ್ದಿಗಳ ಮುಖ್ಯಾಂಶಗಳು ಹಾಗೂ ನಿಖರ ಸಾರಾಂಶಗಳನ್ನು ಒದಗಿಸುವ ವೇದಿಕೆ."
               : "Providing summaries and key updates of domestic and international news to help Kannada readers."}
           </p>
+          <p className="mt-2.5 text-xs text-white/50">
+            {locale === "kn" ? "ಸಂಪರ್ಕ ಮತ್ತು ಬೆಂಬಲ: " : "Contact & Support: "}
+            <a href="mailto:kannadaquiz.support@gmail.com" className="hover:underline text-white/50">
+              kannadaquiz.support@gmail.com
+            </a>
+          </p>
         </div>
         <div className="flex flex-col md:items-end gap-2 shrink-0">
           <div className="flex flex-wrap gap-4 text-xs text-white/80">
