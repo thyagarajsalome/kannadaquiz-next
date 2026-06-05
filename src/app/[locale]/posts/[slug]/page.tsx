@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { posts } from "@/data/content";
 import { isLocale, locales, type Locale } from "@/lib/locales";
@@ -98,6 +99,19 @@ export default async function PostPage({
 
   return (
     <article className="kq-container max-w-3xl py-10">
+      {/* Back Link at the Top */}
+      <div className="mb-6">
+        <Link
+          href={`/${locale}`}
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--muted)] hover:text-[var(--secondary)] transition-colors select-none"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          {locale === "kn" ? "ಮುಖಪುಟಕ್ಕೆ ಮರಳಿ" : "Back to Home"}
+        </Link>
+      </div>
+
       <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
         {getLocalizedCategory(post.category, locale)} • {post.date}
       </p>
@@ -140,6 +154,19 @@ export default async function PostPage({
             </a>
           </div>
         ) : null}
+      </div>
+
+      {/* Back to Home Button at the Bottom */}
+      <div className="mt-8 flex justify-center border-t border-[var(--border)] pt-8">
+        <Link
+          href={`/${locale}`}
+          className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--primary)] text-white font-bold rounded-md shadow hover:bg-[var(--primary)]/90 transition-all text-sm cursor-pointer select-none"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+          </svg>
+          {locale === "kn" ? "ಮುಖಪುಟಕ್ಕೆ ಮರಳಿ" : "Back to Home"}
+        </Link>
       </div>
     </article>
   );
