@@ -36,6 +36,30 @@ export async function generateMetadata({
   };
 }
 
+const categoryTranslations: Record<string, Record<string, string>> = {
+  karnataka: { kn: "ಕರ್ನಾಟಕ ಸುದ್ದಿ", en: "Karnataka News" },
+  national: { kn: "ರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ", en: "National News" },
+  international: { kn: "ಅಂತರರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ", en: "International News" },
+  jobs: { kn: "ಉದ್ಯೋಗ ಮಾಹಿತಿ", en: "Jobs & Careers" },
+  kpsc: { kn: "ಪರೀಕ್ಷಾ ವಿವರಗಳು", en: "Exams & Education" },
+  current_affairs: { kn: "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", en: "Current Affairs" },
+  general: { kn: "ಸಾಮಾನ್ಯ", en: "General" }
+};
+
+function getLocalizedCategory(category: string, locale: string): string {
+  const norm = category.toLowerCase();
+  if (norm.includes("karnataka")) return categoryTranslations.karnataka[locale] || category;
+  if (norm.includes("national")) return categoryTranslations.national[locale] || category;
+  if (norm.includes("international")) return categoryTranslations.international[locale] || category;
+  if (norm.includes("job") || norm.includes("kpsc") || norm.includes("exam") || norm.includes("career")) {
+    return categoryTranslations.jobs[locale] || category;
+  }
+  if (norm.includes("affair") || norm.includes("current")) {
+    return categoryTranslations.current_affairs[locale] || category;
+  }
+  return categoryTranslations.general[locale] || category;
+}
+
 function getSourceName(post: { sourceUrl?: string; sourceName?: string }) {
   if (post.sourceName) return post.sourceName;
   if (!post.sourceUrl) return "";
@@ -63,7 +87,7 @@ export default async function PostPage({
   return (
     <article className="kq-container max-w-3xl py-10">
       <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
-        {post.category} • {post.date}
+        {getLocalizedCategory(post.category, locale)} • {post.date}
       </p>
       <h1 className="mt-3 font-serif text-4xl font-bold leading-tight text-[var(--primary)]">
         {post.title}

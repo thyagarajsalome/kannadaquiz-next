@@ -21,12 +21,12 @@ export async function generateMetadata({
   return {
     title:
       lang === "kn"
-        ? "KannadaQuiz - ಕರ್ನಾಟಕ ಮತ್ತು ಅಂತರರಾಷ್ಟ್ರೀಯ ಪ್ರಮುಖ ಸುದ್ದಿಗಳು"
-        : "KannadaQuiz - Karnataka & International Latest News",
+        ? "KannadaQuiz - ಪ್ರಮುಖ ಜಾಗತಿಕ ಮತ್ತು ಕರ್ನಾಟಕ ಸುದ್ದಿ ಸಾರಾಂಶಗಳು"
+        : "KannadaQuiz - Latest Global & Karnataka News Summaries",
     description:
       lang === "kn"
-        ? "ದಿನನಿತ್ಯದ ಕರ್ನಾಟಕ, ರಾಷ್ಟ್ರೀಯ ಮತ್ತು ಅಂತರರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿಗಳು, ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು ಮತ್ತು ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷಾ ತಯಾರಿ."
-        : "Daily Karnataka, national and international news, current affairs, and competitive exam preparation quizzes.",
+        ? "ಕನ್ನಡ ಓದುಗರಿಗೆ ಸಹಾಯ ಮಾಡಲು ಪ್ರಮುಖ ಅಂತರರಾಷ್ಟ್ರೀಯ, ರಾಷ್ಟ್ರೀಯ ಮತ್ತು ಕರ್ನಾಟಕ ಸುದ್ದಿಗಳ ಮುಖ್ಯಾಂಶಗಳು ಹಾಗೂ ನಿಖರ ಸಾರಾಂಶ ಮಾಹಿತಿ."
+        : "Daily summaries and updates of international, national, and Karnataka news to help Kannada readers.",
     alternates: {
       canonical: `/${lang}`,
       languages: {
@@ -37,14 +37,38 @@ export async function generateMetadata({
   };
 }
 
+const categoryTranslations: Record<string, Record<string, string>> = {
+  karnataka: { kn: "ಕರ್ನಾಟಕ ಸುದ್ದಿ", en: "Karnataka News" },
+  national: { kn: "ರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ", en: "National News" },
+  international: { kn: "ಅಂತರರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ", en: "International News" },
+  jobs: { kn: "ಉದ್ಯೋಗ ಮಾಹಿತಿ", en: "Jobs & Careers" },
+  kpsc: { kn: "ಪರೀಕ್ಷಾ ವಿವರಗಳು", en: "Exams & Education" },
+  current_affairs: { kn: "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", en: "Current Affairs" },
+  general: { kn: "ಸಾಮಾನ್ಯ ಸುದ್ದಿ", en: "General News" }
+};
+
+function getLocalizedCategory(category: string, locale: string): string {
+  const norm = category.toLowerCase();
+  if (norm.includes("karnataka")) return categoryTranslations.karnataka[locale] || category;
+  if (norm.includes("national")) return categoryTranslations.national[locale] || category;
+  if (norm.includes("international")) return categoryTranslations.international[locale] || category;
+  if (norm.includes("job") || norm.includes("kpsc") || norm.includes("exam") || norm.includes("career")) {
+    return categoryTranslations.jobs[locale] || category;
+  }
+  if (norm.includes("affair") || norm.includes("current")) {
+    return categoryTranslations.current_affairs[locale] || category;
+  }
+  return categoryTranslations.general[locale] || category;
+}
+
 const sectionTitles: Record<string, Record<Locale, string>> = {
   breaking: { kn: "ಮುಖ್ಯಾಂಶಗಳು", en: "Breaking News" },
   recent: { kn: "ಇತ್ತೀಚಿನ ಸುದ್ದಿಗಳು", en: "Recent News" },
   karnataka: { kn: "ಕರ್ನಾಟಕ ಸುದ್ದಿ", en: "Karnataka News" },
   national: { kn: "ರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ", en: "National News" },
   international: { kn: "ಅಂತರರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ", en: "International News" },
-  jobs: { kn: "ಉದ್ಯೋಗ ಮತ್ತು ಪರೀಕ್ಷಾ ಸುದ್ದಿ", en: "Jobs & Exam News" },
-  quizzes: { kn: "ಪ್ರಮುಖ ಅಭ್ಯಾಸ ರಸಪ್ರಶ್ನೆಗಳು", en: "Featured Quizzes" },
+  jobs: { kn: "ಉದ್ಯೋಗ ಮತ್ತು ಶೈಕ್ಷಣಿಕ ಮಾಹಿತಿ", en: "Jobs & Career Info" },
+  quizzes: { kn: "ದಿನನಿತ್ಯದ ಸಾಮಾನ್ಯ ಜ್ಞಾನ ಮತ್ತು ರಸಪ್ರಶ್ನೆಗಳು", en: "General Knowledge & Quizzes" },
   readMore: { kn: "ಹೆಚ್ಚಿನ ಮಾಹಿತಿ ➔", en: "Read More ➔" },
   latestAffairs: { kn: "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", en: "Current Affairs" },
 };
@@ -116,7 +140,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <div className="flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-[var(--border)] pb-8 lg:pb-0 lg:pr-8">
                 <div>
                   <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--secondary)]">
-                    <span>{heroPost.category}</span>
+                    <span>{getLocalizedCategory(heroPost.category, locale)}</span>
                     <span>•</span>
                     <span>{getSourceName(heroPost)}</span>
                     <span>•</span>
@@ -169,7 +193,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   recentHeadlines.map((post) => (
                     <article key={post.slug} className="border-b border-[var(--border)] pb-4 last:border-0 last:pb-0">
                       <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
-                        <span>{post.category}</span>
+                        <span>{getLocalizedCategory(post.category, locale)}</span>
                         <span>•</span>
                         <span>{getSourceName(post)}</span>
                       </div>

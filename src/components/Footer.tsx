@@ -9,8 +9,8 @@ export function Footer({ locale }: { locale: Locale }) {
           <p className="font-serif text-xl font-bold">KannadaQuiz</p>
           <p className="mt-1 max-w-2xl text-sm text-white/75">
             {locale === "kn"
-              ? "ಕರ್ನಾಟಕ ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳಿಗಾಗಿ ವೇಗವಾದ, ಓದಲು ಸುಲಭವಾದ ಅಭ್ಯಾಸ ವೇದಿಕೆ."
-              : "Fast, readable preparation for Karnataka competitive exams."}
+              ? "ಕನ್ನಡ ಓದುಗರಿಗೆ ಸಹಾಯ ಮಾಡಲು ಪ್ರಮುಖ ಜಾಗತಿಕ ಮತ್ತು ಕರ್ನಾಟಕ ಸುದ್ದಿಗಳ ಮುಖ್ಯಾಂಶಗಳು ಹಾಗೂ ನಿಖರ ಸಾರಾಂಶಗಳನ್ನು ಒದಗಿಸುವ ವೇದಿಕೆ."
+              : "Providing summaries and key updates of domestic and international news to help Kannada readers."}
           </p>
         </div>
         <div className="flex flex-col md:items-end gap-2 shrink-0">

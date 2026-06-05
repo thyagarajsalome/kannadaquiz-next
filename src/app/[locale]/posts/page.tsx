@@ -15,6 +15,30 @@ export const metadata: Metadata = {
   description: "Exam-focused study articles for Karnataka competitive exams.",
 };
 
+const categoryTranslations: Record<string, Record<string, string>> = {
+  karnataka: { kn: "ಕರ್ನಾಟಕ ಸುದ್ದಿ", en: "Karnataka News" },
+  national: { kn: "ರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ", en: "National News" },
+  international: { kn: "ಅಂತರರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ", en: "International News" },
+  jobs: { kn: "ಉದ್ಯೋಗ ಮಾಹಿತಿ", en: "Jobs & Careers" },
+  kpsc: { kn: "ಪರೀಕ್ಷಾ ವಿವರಗಳು", en: "Exams & Education" },
+  current_affairs: { kn: "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", en: "Current Affairs" },
+  general: { kn: "ಸಾಮಾನ್ಯ", en: "General" }
+};
+
+function getLocalizedCategory(category: string, locale: string): string {
+  const norm = category.toLowerCase();
+  if (norm.includes("karnataka")) return categoryTranslations.karnataka[locale] || category;
+  if (norm.includes("national")) return categoryTranslations.national[locale] || category;
+  if (norm.includes("international")) return categoryTranslations.international[locale] || category;
+  if (norm.includes("job") || norm.includes("kpsc") || norm.includes("exam") || norm.includes("career")) {
+    return categoryTranslations.jobs[locale] || category;
+  }
+  if (norm.includes("affair") || norm.includes("current")) {
+    return categoryTranslations.current_affairs[locale] || category;
+  }
+  return categoryTranslations.general[locale] || category;
+}
+
 export default async function PostsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: rawLocale } = await params;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
@@ -29,7 +53,7 @@ export default async function PostsPage({ params }: { params: Promise<{ locale: 
         {posts.map((post) => (
           <Link key={post.slug} href={`/${locale}/posts/${post.slug}`} className="kq-card p-5">
             <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
-              {post.category} • {post.date} {post.sourceName ? `• ${post.sourceName}` : ""}
+              {getLocalizedCategory(post.category, locale)} • {post.date} {post.sourceName ? `• ${post.sourceName}` : ""}
             </p>
             <h2 className="mt-3 font-serif text-2xl font-bold text-[var(--primary)]">
               {post.title}
