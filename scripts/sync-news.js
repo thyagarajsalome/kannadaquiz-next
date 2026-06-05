@@ -234,6 +234,30 @@ async function runSync() {
           const docRefEn = await db.collection("posts").add(newPostEn);
           console.log(`[Success] Published English! (ID: ${docRefEn.id}) -> ${translated.en.title}`);
 
+          // If the post is categorized as "Current Affairs" or belongs to the GK feed, save it to the currentAffairs collection too
+          const isCA = translated.category === "Current Affairs" || feed.name === "Current Affairs & GK";
+          if (isCA) {
+            const newCaKn = {
+              locale: "kn",
+              headline: translated.kn.title.trim(),
+              status: "published",
+              publishedAt: admin.firestore.FieldValue.serverTimestamp(),
+              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            };
+            const caRefKn = await db.collection("currentAffairs").add(newCaKn);
+            console.log(`[Success] Published Current Affair Kannada! (ID: ${caRefKn.id})`);
+
+            const newCaEn = {
+              locale: "en",
+              headline: translated.en.title.trim(),
+              status: "published",
+              publishedAt: admin.firestore.FieldValue.serverTimestamp(),
+              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            };
+            const caRefEn = await db.collection("currentAffairs").add(newCaEn);
+            console.log(`[Success] Published Current Affair English! (ID: ${caRefEn.id})`);
+          }
+
           // Wait 5 seconds between translations to respect Gemini Free Tier RPM limits
           await sleep(5000);
         } catch (err) {
