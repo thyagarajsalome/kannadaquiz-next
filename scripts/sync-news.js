@@ -79,14 +79,15 @@ function generateSlug(text) {
 async function translateAndRewriteWithGemini(title, summary) {
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
   
-  const systemPrompt = `You are a professional educational news writer for Kannada competitive exam preparation portals.
-Translate and rewrite the following English news article info into high-quality, professional Kannada.
+  const systemPrompt = `You are a professional educational news writer for competitive exam portals.
+Translate and rewrite the following English news article info into BOTH high-quality, professional Kannada and clean, engaging English.
 Rules:
-1. Translate contextually and write in a natural Kannada journalistic tone (similar to Prajavani or Vijay Karnataka).
-2. Keep all names, dates, numbers, salaries, vacancies, and technical exam details 100% accurate. Do not alter facts.
-3. Organize the body text cleanly into distinct paragraphs.
-4. Categorize it appropriately (e.g. 'KPSC', 'Jobs', 'Current Affairs', 'Karnataka', 'National', or 'International').
-5. Respond ONLY with a valid JSON object matching the requested schema. Do not add markdown wrapping or text before/after.`;
+1. For Kannada (kn): Translate contextually and write in a natural Kannada journalistic tone (similar to Prajavani or Vijay Karnataka).
+2. For English (en): Rewrite in a professional, clear journalistic style (similar to standard international news portals).
+3. Keep all names, dates, numbers, salaries, vacancies, and technical details 100% accurate. Do not alter facts.
+4. Organize the body text cleanly into distinct paragraphs.
+5. Categorize it appropriately (e.g. 'KPSC', 'Jobs', 'Current Affairs', 'Karnataka', 'National', or 'International').
+6. Respond ONLY with a valid JSON object matching the requested schema. Do not add markdown wrapping or text before/after.`;
 
   const userPrompt = `English Title: ${title}
 English Summary/Description: ${summary}`;
@@ -103,12 +104,29 @@ English Summary/Description: ${summary}`;
       responseSchema: {
         type: "OBJECT",
         properties: {
-          title: { type: "STRING", description: "The translated and rewritten title in Kannada." },
-          excerpt: { type: "STRING", description: "A clean 1-2 sentence summary of the news in Kannada." },
-          body: { type: "STRING", description: "The full news article body rewritten in Kannada, formatted with newline breaks between paragraphs." },
+          kn: {
+            type: "OBJECT",
+            description: "Kannada version details.",
+            properties: {
+              title: { type: "STRING", description: "The translated and rewritten title in Kannada." },
+              excerpt: { type: "STRING", description: "A clean 1-2 sentence summary in Kannada." },
+              body: { type: "STRING", description: "The full news article body rewritten in Kannada, formatted with newline breaks between paragraphs." }
+            },
+            required: ["title", "excerpt", "body"]
+          },
+          en: {
+            type: "OBJECT",
+            description: "English version details.",
+            properties: {
+              title: { type: "STRING", description: "The rewritten, clean, professional title in English." },
+              excerpt: { type: "STRING", description: "A clean 1-2 sentence summary in English." },
+              body: { type: "STRING", description: "The full news article body rewritten in English, formatted with newline breaks between paragraphs." }
+            },
+            required: ["title", "excerpt", "body"]
+          },
           category: { type: "STRING", description: "Category name e.g. KPSC, Jobs, Current Affairs, Karnataka, National, International." }
         },
-        required: ["title", "excerpt", "body", "category"]
+        required: ["kn", "en", "category"]
       }
     }
   };
@@ -170,23 +188,39 @@ async function runSync() {
           // Translate using Gemini
           const translated = await translateAndRewriteWithGemini(originalTitle, originalDescription);
           
-          // Save to Firestore as PUBLISHED directly
-          const newPost = {
+          // Save Kannada version to Firestore
+          const newPostKn = {
             locale: "kn",
-            title: translated.title.trim(),
+            title: translated.kn.title.trim(),
             slug: slug,
-            excerpt: translated.excerpt.trim(),
-            body: translated.body.trim(),
+            excerpt: translated.kn.excerpt.trim(),
+            body: translated.kn.body.trim(),
             category: translated.category || "General",
-            status: "published", // Published directly for 100% automation
+            status: "published",
             publishedAt: admin.firestore.FieldValue.serverTimestamp(),
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
             sourceUrl: sourceUrl,
             sourceName: feed.name
           };
+          const docRefKn = await db.collection("posts").add(newPostKn);
+          console.log(`[Success] Published Kannada! (ID: ${docRefKn.id}) -> ${translated.kn.title}`);
 
-          const docRef = await db.collection("posts").add(newPost);
-          console.log(`[Success] Published live! (ID: ${docRef.id}) -> ${translated.title}`);
+          // Save English version to Firestore
+          const newPostEn = {
+            locale: "en",
+            title: translated.en.title.trim(),
+            slug: slug,
+            excerpt: translated.en.excerpt.trim(),
+            body: translated.en.body.trim(),
+            category: translated.category || "General",
+            status: "published",
+            publishedAt: admin.firestore.FieldValue.serverTimestamp(),
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            sourceUrl: sourceUrl,
+            sourceName: feed.name
+          };
+          const docRefEn = await db.collection("posts").add(newPostEn);
+          console.log(`[Success] Published English! (ID: ${docRefEn.id}) -> ${translated.en.title}`);
 
           // Wait 5 seconds between translations to respect Gemini Free Tier RPM limits
           await sleep(5000);
