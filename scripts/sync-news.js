@@ -153,8 +153,14 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 // 5. Main sync execution loop
 async function runSync() {
   console.log("Starting KannadaQuiz RSS Feed Sync...");
+  let geminiCalls = 0;
+  const MAX_GEMINI_CALLS_PER_RUN = 15; // Safeguard to prevent high billing / surprise costs
   
   for (const feed of FEEDS) {
+    if (geminiCalls >= MAX_GEMINI_CALLS_PER_RUN) {
+      console.log(`\n[Safeguard] Reached maximum Gemini API calls limit (${MAX_GEMINI_CALLS_PER_RUN}) for this run. Exiting to prevent high billing.`);
+      break;
+    }
     console.log(`\nFetching RSS Feed: ${feed.name} (${feed.url})...`);
     try {
       const feedData = await parser.parseURL(feed.url);
@@ -164,6 +170,10 @@ async function runSync() {
       const itemsToProcess = feedData.items.slice(0, 3);
 
       for (const item of itemsToProcess) {
+        if (geminiCalls >= MAX_GEMINI_CALLS_PER_RUN) {
+          console.log(`\n[Safeguard] Reached maximum Gemini API calls limit (${MAX_GEMINI_CALLS_PER_RUN}) during feed processing. Exiting to prevent high billing.`);
+          break;
+        }
         const originalTitle = item.title;
         const originalDescription = item.contentSnippet || item.content || item.description || "";
         const sourceUrl = item.link || "";
@@ -188,6 +198,7 @@ async function runSync() {
         try {
           // Translate using Gemini
           const translated = await translateAndRewriteWithGemini(originalTitle, originalDescription);
+          geminiCalls++;
           
           // Save Kannada version to Firestore
           const newPostKn = {
