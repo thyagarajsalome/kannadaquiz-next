@@ -52,7 +52,9 @@ const FEEDS = [
   { name: "Karnataka State News", url: "https://news.google.com/rss/search?q=karnataka+news+government&hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "India National News", url: "https://news.google.com/rss/search?q=india+national+news&hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "BBC News World", url: "http://feeds.bbci.co.uk/news/world/rss.xml" },
-  { name: "Agriculture & Krishi", url: "https://news.google.com/rss/search?q=karnataka+agriculture+OR+krishi+OR+farmers+OR+kpsc+agricultural+officer&hl=en-IN&gl=IN&ceid=IN:en" }
+  { name: "Agriculture & Krishi", url: "https://news.google.com/rss/search?q=karnataka+agriculture+OR+krishi+OR+farmers+OR+kpsc+agricultural+officer&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "Government Schemes", url: "https://news.google.com/rss/search?q=karnataka+government+schemes+OR+yojana&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "Sports News", url: "https://news.google.com/rss/search?q=sports+news+india+OR+cricket&hl=en-IN&gl=IN&ceid=IN:en" }
 ];
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;

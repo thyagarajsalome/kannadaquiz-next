@@ -6,7 +6,7 @@ import { getPublicPosts } from "@/lib/public-content";
 export const revalidate = 300;
 
 export function generateStaticParams() {
-  const categories = ["karnataka", "national", "international", "jobs"];
+  const categories = ["karnataka", "national", "international", "jobs", "agriculture", "education", "schemes", "tourism", "sports"];
   const params: { locale: string; category: string }[] = [];
   
   // Create paths for both locales and all standard categories
@@ -24,6 +24,11 @@ const categoryTranslations: Record<string, Record<string, string>> = {
   national: { kn: "ರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ", en: "National News" },
   international: { kn: "ಅಂತರರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ", en: "International News" },
   jobs: { kn: "ಉದ್ಯೋಗ ಮಾಹಿತಿ", en: "Jobs & Careers" },
+  agriculture: { kn: "ಕೃಷಿ ಮಾಹಿತಿ", en: "Agriculture Info" },
+  education: { kn: "ಶಿಕ್ಷಣ ಮತ್ತು ಕಾಲೇಜು ಮಾರ್ಗದರ್ಶಿಗಳು", en: "Education & College Guide" },
+  schemes: { kn: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು", en: "Government Schemes" },
+  tourism: { kn: "ಇತಿಹಾಸ ಮತ್ತು ಪ್ರವಾಸೋದ್ಯಮ", en: "Heritage & Tourism" },
+  sports: { kn: "ಕ್ರೀಡಾ ಸುದ್ದಿ", en: "Sports News" },
   general: { kn: "ಸಾಮಾನ್ಯ ಸುದ್ದಿ", en: "General News" }
 };
 
@@ -57,6 +62,26 @@ export async function generateMetadata({
       kn: ["ಉದ್ಯೋಗ ಮಾಹಿತಿ", "ಕರ್ನಾಟಕ ಸರ್ಕಾರಿ ಕೆಲಸಗಳು", "ಕೆಪಿಎಸ್‌ಸಿ ನೇಮಕಾತಿ", "ಕೆಇಎ ಫಲಿತಾಂಶ", "ನೇಮಕಾತಿ ಅಧಿಸೂಚನೆ", "ಉದ್ಯೋಗ ವಾರ್ತೆ"],
       en: ["Govt Jobs Karnataka", "KPSC Recruitment 2026", "KEA Exam Results", "Job Vacancies", "Recruitment Notification"]
     },
+    agriculture: {
+      kn: ["ಕೃಷಿ ಮಾಹಿತಿ", "ಕರ್ನಾಟಕ ಕೃಷಿ", "ರೈತರ ಸುದ್ದಿ", "ಕೃಷಿ ಇಲಾಖೆ"],
+      en: ["Agriculture Info", "Karnataka Farmers News", "Krishi News", "Agriculture Department"]
+    },
+    education: {
+      kn: ["ಶಿಕ್ಷಣ ಮಾಹಿತಿ", "ಕಾಲೇಜು ಮಾರ್ಗದರ್ಶಿ", "ಪ್ರವೇಶ ವಿವರಗಳು", "ಬೆಂಗಳೂರು ಕಾಲೇಜುಗಳು"],
+      en: ["Education Guide", "College Guide Bengaluru", "Admissions Guide 2026", "Top Colleges Karnataka"]
+    },
+    schemes: {
+      kn: ["ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು", "ಕರ್ನಾಟಕ ಸರ್ಕಾರಿ ಯೋಜನೆ", "ಉಚಿತ ಯೋಜನೆಗಳು", "ಅರ್ಜಿ ಸಲ್ಲಿಕೆ"],
+      en: ["Government Schemes", "Karnataka Govt Schemes", "Gruha Lakshmi Schemes", "Scheme Applications"]
+    },
+    tourism: {
+      kn: ["ಇತಿಹಾಸ", "ಕರ್ನಾಟಕ ಪ್ರವಾಸೋದ್ಯಮ", "ಹಂಪಿ ಇತಿಹಾಸ", "ಮೈಸೂರು ಅರಮನೆ", "ಕನ್ನಡ ಸಂಸ್ಕೃತಿ"],
+      en: ["Karnataka Tourism", "Historical Places Karnataka", "Hampi History", "Mysore Palace", "Karnataka Culture"]
+    },
+    sports: {
+      kn: ["ಕ್ರೀಡಾ ಸುದ್ದಿ", "ಕ್ರಿಕೆಟ್ ಅಪ್ಡೇಟ್ಸ್", "ಐಪಿಎಲ್ ಸುದ್ದಿ", "ಕ್ರೀಡೆ"],
+      en: ["Sports News India", "Cricket Updates", "IPL Highlights", "Sports Events"]
+    },
     general: {
       kn: ["ಸಾಮಾನ್ಯ ಸುದ್ದಿ", "ಕನ್ನಡ ಕ್ವಿಜ್", "ಕನ್ನಡ ವಾರ್ತೆಗಳು", "ಸಾಮಾನ್ಯ ಜ್ಞಾನ"],
       en: ["General News", "Kannada Quiz Portal", "Kannada News Summaries", "GK and Quizzes"]
@@ -65,9 +90,14 @@ export async function generateMetadata({
 
   const catKey = category.toLowerCase();
   const matchedKey = catKey.includes("karnataka") ? "karnataka" :
-                     catKey.includes("national") ? "national" :
                      catKey.includes("international") ? "international" :
-                     (catKey.includes("job") || catKey.includes("kpsc") || catKey.includes("exam") || catKey.includes("career")) ? "jobs" : "general";
+                     catKey.includes("national") ? "national" :
+                     (catKey.includes("job") || catKey.includes("kpsc") || catKey.includes("exam") || catKey.includes("career")) ? "jobs" :
+                     (catKey.includes("agriculture") || catKey.includes("krishi") || catKey.includes("farm")) ? "agriculture" :
+                     (catKey.includes("college") || catKey.includes("guide") || catKey.includes("education")) ? "education" :
+                     (catKey.includes("scheme") || catKey.includes("yojane")) ? "schemes" :
+                     (catKey.includes("tourism") || catKey.includes("heritage") || catKey.includes("itihasa") || catKey.includes("culture")) ? "tourism" :
+                     (catKey.includes("sport") || catKey.includes("game") || catKey.includes("kriide")) ? "sports" : "general";
 
   return {
     title: locale === "kn" 
@@ -105,6 +135,11 @@ export default async function CategoryPage({
     if (c.includes("international")) return "international";
     if (c.includes("national") || c.includes("affair") || c.includes("current") || c.includes("general")) return "national";
     if (c.includes("job") || c.includes("kpsc") || c.includes("exam") || c.includes("career")) return "jobs";
+    if (c.includes("agriculture") || c.includes("krishi") || c.includes("farm")) return "agriculture";
+    if (c.includes("college") || c.includes("guide") || c.includes("education")) return "education";
+    if (c.includes("scheme") || c.includes("yojane")) return "schemes";
+    if (c.includes("tourism") || c.includes("heritage") || c.includes("itihasa") || c.includes("culture")) return "tourism";
+    if (c.includes("sport") || c.includes("game") || c.includes("kriide")) return "sports";
     return "general";
   };
 
