@@ -71,8 +71,9 @@ Rules:
 3. Include specific names of top colleges (e.g., RVCE, BMSCE, BMCRI, St. John's, IIMB), entrance exam routes (KCET, COMEDK, NEET, PGCET), average fees, placement info, and counselling details. In the Kannada translation:
    * Write all numbers, rankings, fees, percentages, and dates in standard English digits/Arabic numerals (e.g., 1, 2, 3, 2026, 50%) rather than Kannada numerals (೧, ೨, ೩) or spelling them out as Kannada words.
    * Keep all exam names, department acronyms, and organizational abbreviations in English capital letters (e.g., write "KEA", "KPSC", "NEET", "CET", "FDA", "SDA", "MBA", "PGCET", "AO", "AAO") rather than transliterating/writing them in Kannada script (e.g., do NOT write "ಕೆಇಎ", "ಕೆಪಿಎಸ್‌ಸಿ", "ನೀಟ್", "ಎಒ", "ಎಎಒ").
-4. Organize the body text cleanly into multiple detailed paragraphs with bullet points. Provide lots of details and content (make the body long and informative, at least 4-5 paragraphs).
-5. Respond ONLY with a valid JSON object matching the requested schema. Do not add markdown wrapping or text before/after.`;
+4. Do NOT use raw HTML tags (like <ul>, <li>, <b>, <strong>) in the body. Instead, organize the text using clean paragraphs separated by double newlines (\\n\\n), and use simple plain text bullet points (starting with '• ') for list items. Make each paragraph a comfortable, medium length (3-4 sentences maximum).
+5. Organize the body text cleanly into multiple detailed paragraphs with bullet points. Provide lots of details and content (make the body long and informative, at least 4-5 paragraphs).
+6. Respond ONLY with a valid JSON object matching the requested schema. Do not add markdown wrapping or text before/after.`;
 
   const payload = {
     contents: [
@@ -135,11 +136,13 @@ async function run() {
   for (const topic of TOPICS) {
     const slug = generateSlug(topic.split(":")[0]); // Use first part for clean slug
     
-    // Check if slug already exists
-    const existing = await db.collection("posts").where("slug", "==", slug).limit(1).get();
+    // Delete existing posts with this slug to overwrite them with clean data
+    const existing = await db.collection("posts").where("slug", "==", slug).get();
     if (!existing.empty) {
-      console.log(`[Skip] Guide already exists for slug: "${slug}"`);
-      continue;
+      console.log(`[Delete] Deleting existing guide for slug: "${slug}" to overwrite...`);
+      for (const doc of existing.docs) {
+        await db.collection("posts").doc(doc.id).delete();
+      }
     }
     
     console.log(`[Generating] Guide for: "${topic}"...`);
