@@ -52,7 +52,7 @@ const FEEDS = [
   { name: "NPR World News", url: "https://feeds.npr.org/1004/rss.xml" },
   { name: "Al Jazeera World", url: "https://www.aljazeera.com/xml/rss/all.xml" },
   { name: "Karnataka Jobs", url: "https://news.google.com/rss/search?q=karnataka+jobs+recruitment&hl=en-IN&gl=IN&ceid=IN:en" },
-  { name: "Times of India International", url: "https://timesofindia.indiatimes.com/rssfeeds/296589292.xml" }
+  { name: "India National News", url: "https://news.google.com/rss/search?q=india+national+news&hl=en-IN&gl=IN&ceid=IN:en" }
 ];
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
