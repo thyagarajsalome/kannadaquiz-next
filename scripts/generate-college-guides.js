@@ -68,7 +68,9 @@ Write a comprehensive, detailed, high-quality college admission guide for the gi
 Rules:
 1. For Kannada (kn): Write in a natural Kannada journalistic/educational tone (similar to Prajavani or Vijay Karnataka).
 2. For English (en): Write in a professional, clear educational blog style.
-3. Include specific names of top colleges (e.g., RVCE, BMSCE, BMCRI, St. John's, IIMB), entrance exam routes (KCET, COMEDK, NEET, PGCET), average fees, placement info, and counselling details. In the Kannada translation, write all numbers, rankings, fees, and dates in standard English numerals (e.g., 1, 2, 3, 2026, 50%) rather than Kannada numerals (೧, ೨, ೩) or spelling them out.
+3. Include specific names of top colleges (e.g., RVCE, BMSCE, BMCRI, St. John's, IIMB), entrance exam routes (KCET, COMEDK, NEET, PGCET), average fees, placement info, and counselling details. In the Kannada translation:
+   * Write all numbers, rankings, fees, percentages, and dates in standard English digits/Arabic numerals (e.g., 1, 2, 3, 2026, 50%) rather than Kannada numerals (೧, ೨, ೩) or spelling them out as Kannada words.
+   * Keep all exam names, department acronyms, and organizational abbreviations in English capital letters (e.g., write "KEA", "KPSC", "NEET", "CET", "FDA", "SDA", "MBA", "PGCET", "AO", "AAO") rather than transliterating/writing them in Kannada script (e.g., do NOT write "ಕೆಇಎ", "ಕೆಪಿಎಸ್‌ಸಿ", "ನೀಟ್", "ಎಒ", "ಎಎಒ").
 4. Organize the body text cleanly into multiple detailed paragraphs with bullet points. Provide lots of details and content (make the body long and informative, at least 4-5 paragraphs).
 5. Respond ONLY with a valid JSON object matching the requested schema. Do not add markdown wrapping or text before/after.`;
 

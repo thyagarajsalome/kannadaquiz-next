@@ -67,7 +67,8 @@ Rules:
 2. For each question, provide 4 options, the 0-indexed correct option, and a clear educational explanation of the answer.
 3. For the Kannada (kn) version:
    * Write questions, options, and explanations in standard, clear, academic Kannada suitable for state competitive exams.
-   * Write all numbers, percentages, and dates in standard English numerals (e.g., 1947, 50%, 12) rather than Kannada numerals.
+   * Write all numbers, percentages, and dates in standard English digits/Arabic numerals (e.g., 1947, 50%, 12) rather than Kannada numerals or spelling them out as Kannada words.
+   * Keep all exam names, department acronyms, and organizational abbreviations in English capital letters (e.g., write "KEA", "KPSC", "NEET", "CET", "FDA", "SDA", "MBA", "PGCET", "AO", "AAO") rather than transliterating/writing them in Kannada script (e.g., do NOT write "ಕೆಇಎ", "ಕೆಪಿಎಸ್‌ಸಿ", "ನೀಟ್", "ಎಒ", "ಎಎಒ").
 4. For the English (en) version:
    * Write clear, professional academic English.
 5. Make sure the English and Kannada questions correspond exactly to the same indices (e.g., question 1 in Kannada is the translation of question 1 in English).
