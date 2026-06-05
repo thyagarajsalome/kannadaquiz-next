@@ -50,8 +50,8 @@ const categoryTranslations: Record<string, Record<string, string>> = {
 function getLocalizedCategory(category: string, locale: string): string {
   const norm = category.toLowerCase();
   if (norm.includes("karnataka")) return categoryTranslations.karnataka[locale] || category;
-  if (norm.includes("national")) return categoryTranslations.national[locale] || category;
   if (norm.includes("international")) return categoryTranslations.international[locale] || category;
+  if (norm.includes("national")) return categoryTranslations.national[locale] || category;
   if (norm.includes("job") || norm.includes("kpsc") || norm.includes("exam") || norm.includes("career")) {
     return categoryTranslations.jobs[locale] || category;
   }
@@ -102,8 +102,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const getCategoryKey = (cat: string) => {
     const c = cat.toLowerCase();
     if (c.includes("karnataka")) return "karnataka";
-    if (c.includes("national")) return "national";
     if (c.includes("international")) return "international";
+    if (c.includes("national")) return "national";
     if (c.includes("job") || c.includes("kpsc") || c.includes("exam") || c.includes("career")) return "jobs";
     return "general";
   };

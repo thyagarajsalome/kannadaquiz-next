@@ -73,11 +73,15 @@ export default async function JobPage({
       </dl>
       {job.body ? (
         <div className="mt-8 kq-card p-5 text-base leading-8 text-[var(--foreground)]">
-          {job.body.split("\n").map((paragraph) => (
-            <p key={paragraph} className="mb-4 last:mb-0">
-              {paragraph}
-            </p>
-          ))}
+          {job.body
+            .split("\n")
+            .map((p) => p.trim())
+            .filter(Boolean)
+            .map((paragraph, index) => (
+              <p key={index} className="mb-4 last:mb-0">
+                {paragraph}
+              </p>
+            ))}
         </div>
       ) : null}
       <script

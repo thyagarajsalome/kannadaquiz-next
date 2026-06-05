@@ -49,8 +49,8 @@ const categoryTranslations: Record<string, Record<string, string>> = {
 function getLocalizedCategory(category: string, locale: string): string {
   const norm = category.toLowerCase();
   if (norm.includes("karnataka")) return categoryTranslations.karnataka[locale] || category;
-  if (norm.includes("national")) return categoryTranslations.national[locale] || category;
   if (norm.includes("international")) return categoryTranslations.international[locale] || category;
+  if (norm.includes("national")) return categoryTranslations.national[locale] || category;
   if (norm.includes("job") || norm.includes("kpsc") || norm.includes("exam") || norm.includes("career")) {
     return categoryTranslations.jobs[locale] || category;
   }
@@ -101,11 +101,15 @@ export default async function PostPage({
         />
       ) : null}
       <div className="mt-8 kq-card p-5 text-base leading-8 text-[var(--foreground)]">
-        {post.body.split("\n").map((paragraph) => (
-          <p key={paragraph} className="mb-4 last:mb-0">
-            {paragraph}
-          </p>
-        ))}
+        {post.body
+          .split("\n")
+          .map((p) => p.trim())
+          .filter(Boolean)
+          .map((paragraph, index) => (
+            <p key={index} className="mb-4 last:mb-0">
+              {paragraph}
+            </p>
+          ))}
         {post.sourceUrl ? (
           <div className="mt-6 border-t border-[var(--border)] pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-[var(--muted)]">
             <span>

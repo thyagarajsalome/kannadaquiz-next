@@ -69,8 +69,8 @@ export default async function CategoryPage({
   const getCategoryKey = (cat: string) => {
     const c = cat.toLowerCase();
     if (c.includes("karnataka")) return "karnataka";
-    if (c.includes("national")) return "national";
     if (c.includes("international")) return "international";
+    if (c.includes("national")) return "national";
     if (c.includes("job") || c.includes("kpsc") || c.includes("exam") || c.includes("career")) return "jobs";
     return "general";
   };
