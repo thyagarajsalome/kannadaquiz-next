@@ -29,7 +29,7 @@ export function Logo({ className = "" }: { className?: string }) {
         <span className="font-serif text-[21px] font-black leading-none tracking-tight text-[var(--primary)]">
           ಕನ್ನಡ<span className="text-[var(--secondary)]">ಕ್ವಿಜ್‌</span>
         </span>
-        <span className="text-[9px] font-black uppercase tracking-widest text-[var(--muted)] border-t border-[var(--border)] pt-[2px] mt-[2px] leading-none">
+        <span className="text-[9px] font-black uppercase tracking-widest text-[var(--muted)] leading-none mt-1">
           Kannada<span className="text-[var(--secondary)]">Quiz</span>
         </span>
       </div>
