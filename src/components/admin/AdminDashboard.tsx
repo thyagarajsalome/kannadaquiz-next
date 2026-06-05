@@ -89,6 +89,12 @@ export function AdminDashboard() {
   const [items, setItems] = useState<PublishedItem[]>([]);
   const [saving, setSaving] = useState(false);
 
+  // Telemetry & Stats states
+  const [activeTab, setActiveTab] = useState<"content" | "telemetry">("content");
+  const [syncLogs, setSyncLogs] = useState<any[]>([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
+  const [stats, setStats] = useState({ posts: 0, jobs: 0, currentAffairs: 0, quizzes: 0 });
+
   const canUseFirebase = hasFirebaseConfig && firebaseAuth && firestore;
 
   useEffect(() => {
@@ -203,6 +209,73 @@ export function AdminDashboard() {
       setMessage(readFirebaseError(error));
     }
   }
+
+  async function loadSyncLogs() {
+    if (!firestore) return;
+    setLoadingLogs(true);
+    try {
+      const q = query(collection(firestore, firestoreCollections.syncLogs), limit(25));
+      const snapshot = await getDocs(q);
+      const logs = snapshot.docs.map((docSnap) => {
+        const data = docSnap.data();
+        let formattedDate = "";
+        try {
+          const t = data.timestamp;
+          if (t && typeof t.toDate === "function") {
+            formattedDate = t.toDate().toLocaleString();
+          } else if (t && t.seconds) {
+            formattedDate = new Date(t.seconds * 1000).toLocaleString();
+          }
+        } catch {
+          formattedDate = "Unknown";
+        }
+        return {
+          id: docSnap.id,
+          timestamp: formattedDate,
+          status: data.status || "success",
+          durationSeconds: Number(data.durationSeconds || 0),
+          geminiCalls: Number(data.geminiCalls || 0),
+          feedItemsChecked: Number(data.feedItemsChecked || 0),
+          postsCreated: Number(data.postsCreated || 0),
+          errorMessage: data.errorMessage || "",
+        };
+      });
+      // Sort client-side by timestamp descending
+      logs.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+      setSyncLogs(logs);
+    } catch (error) {
+      console.error("Failed to load sync logs:", error);
+    } finally {
+      setLoadingLogs(false);
+    }
+  }
+
+  async function loadStats() {
+    if (!firestore) return;
+    try {
+      const [postsSnap, jobsSnap, caSnap, quizzesSnap] = await Promise.all([
+        getDocs(query(collection(firestore, firestoreCollections.posts), limit(1000))),
+        getDocs(query(collection(firestore, firestoreCollections.jobs), limit(1000))),
+        getDocs(query(collection(firestore, firestoreCollections.currentAffairs), limit(1000))),
+        getDocs(query(collection(firestore, firestoreCollections.quizzes), limit(1000))),
+      ]);
+      setStats({
+        posts: postsSnap.size,
+        jobs: jobsSnap.size,
+        currentAffairs: caSnap.size,
+        quizzes: quizzesSnap.size,
+      });
+    } catch (error) {
+      console.error("Failed to load stats:", error);
+    }
+  }
+
+  useEffect(() => {
+    if (activeTab === "telemetry" && user) {
+      void loadSyncLogs();
+      void loadStats();
+    }
+  }, [activeTab, user]);
 
   async function uploadImage(file: File, fileSlug: string): Promise<string> {
     if (!firebaseStorage) return "";
@@ -621,7 +694,34 @@ export function AdminDashboard() {
         </button>
       </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_0.8fr]">
+      {/* Tabs */}
+      <div className="mt-6 flex border-b border-[var(--border)] gap-4 select-none">
+        <button
+          type="button"
+          onClick={() => setActiveTab("content")}
+          className={`pb-2 text-sm font-bold px-1 transition-colors relative cursor-pointer ${
+            activeTab === "content"
+              ? "text-[var(--primary)] border-b-2 border-[var(--primary)] font-black"
+              : "text-[var(--muted)] hover:text-[var(--foreground)]"
+          }`}
+        >
+          Content Manager
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("telemetry")}
+          className={`pb-2 text-sm font-bold px-1 transition-colors relative cursor-pointer ${
+            activeTab === "telemetry"
+              ? "text-[var(--primary)] border-b-2 border-[var(--primary)] font-black"
+              : "text-[var(--muted)] hover:text-[var(--foreground)]"
+          }`}
+        >
+          Telemetry & Performance
+        </button>
+      </div>
+
+      {activeTab === "content" ? (
+        <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_0.8fr]">
         <form onSubmit={handleCreate} className="kq-card p-5">
           <div className="grid gap-4 md:grid-cols-3">
             <label className="block text-sm font-bold">
@@ -955,6 +1055,108 @@ export function AdminDashboard() {
           </div>
         </aside>
       </div>
+      ) : (
+        <div className="mt-8 grid gap-6">
+          {/* Stats Cards Grid */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="kq-card p-5 flex flex-col justify-between hover:shadow-sm transition-all border border-[var(--border)]">
+              <div>
+                <p className="text-xs font-bold text-[var(--secondary)] uppercase tracking-wider">Total Articles</p>
+                <h3 className="mt-2 text-3xl font-serif font-bold text-[var(--primary)]">{stats.posts}</h3>
+              </div>
+              <p className="mt-2 text-xs text-[var(--muted)]">Synced news, study material</p>
+            </div>
+            <div className="kq-card p-5 flex flex-col justify-between hover:shadow-sm transition-all border border-[var(--border)]">
+              <div>
+                <p className="text-xs font-bold text-[var(--secondary)] uppercase tracking-wider">Total Quizzes</p>
+                <h3 className="mt-2 text-3xl font-serif font-bold text-[var(--primary)]">{stats.quizzes}</h3>
+              </div>
+              <p className="mt-2 text-xs text-[var(--muted)]">Practice exam question sets</p>
+            </div>
+            <div className="kq-card p-5 flex flex-col justify-between hover:shadow-sm transition-all border border-[var(--border)]">
+              <div>
+                <p className="text-xs font-bold text-[var(--secondary)] uppercase tracking-wider">Job Alerts</p>
+                <h3 className="mt-2 text-3xl font-serif font-bold text-[var(--primary)]">{stats.jobs}</h3>
+              </div>
+              <p className="mt-2 text-xs text-[var(--muted)]">KPSC, KEA, state career alerts</p>
+            </div>
+            <div className="kq-card p-5 flex flex-col justify-between hover:shadow-sm transition-all border border-[var(--border)]">
+              <div>
+                <p className="text-xs font-bold text-[var(--secondary)] uppercase tracking-wider">Current Affairs</p>
+                <h3 className="mt-2 text-3xl font-serif font-bold text-[var(--primary)]">{stats.currentAffairs}</h3>
+              </div>
+              <p className="mt-2 text-xs text-[var(--muted)]">Bilingual GK daily highlights</p>
+            </div>
+          </div>
+
+          {/* Sync History Logs Table */}
+          <div className="kq-card p-5 border border-[var(--border)]">
+            <div className="flex items-center justify-between border-b border-[var(--border)] pb-3 mb-4">
+              <div>
+                <h3 className="font-serif text-xl font-bold text-[var(--primary)]">API Sync Telemetry</h3>
+                <p className="text-xs text-[var(--muted)]">RSS feeds parser, Gemini translation & database write execution logs</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  void loadSyncLogs();
+                  void loadStats();
+                }}
+                className="rounded-md border border-[var(--border)] px-3 py-1.5 text-xs font-bold bg-white hover:bg-[var(--surface-soft)] cursor-pointer select-none transition-colors"
+              >
+                Refresh Data
+              </button>
+            </div>
+
+            {loadingLogs ? (
+              <div className="py-8 text-center text-sm text-[var(--muted)]">Loading telemetry data...</div>
+            ) : syncLogs.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-sm">
+                  <thead>
+                    <tr className="border-b border-[var(--border)] text-[var(--muted)] font-semibold text-xs uppercase tracking-wider">
+                      <th className="pb-3 pr-4">Timestamp</th>
+                      <th className="pb-3 px-4">Status</th>
+                      <th className="pb-3 px-4">Duration</th>
+                      <th className="pb-3 px-4 text-center">Gemini Calls</th>
+                      <th className="pb-3 px-4 text-center">Feeds Scanned</th>
+                      <th className="pb-3 px-4 text-center">Docs Published</th>
+                      <th className="pb-3 pl-4">Details / Errors</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--border)]">
+                    {syncLogs.map((log) => (
+                      <tr key={log.id} className="hover:bg-[var(--surface-soft)] transition-colors">
+                        <td className="py-3 pr-4 font-mono text-xs whitespace-nowrap">{log.timestamp}</td>
+                        <td className="py-3 px-4">
+                          <span
+                            className={`inline-block rounded px-2 py-0.5 text-xs font-black uppercase tracking-wider ${
+                              log.status === "success"
+                                ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                                : "bg-rose-100 text-rose-800 border border-rose-200"
+                            }`}
+                          >
+                            {log.status}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 whitespace-nowrap">{log.durationSeconds}s</td>
+                        <td className="py-3 px-4 text-center font-semibold text-[var(--primary)]">{log.geminiCalls}</td>
+                        <td className="py-3 px-4 text-center">{log.feedItemsChecked}</td>
+                        <td className="py-3 px-4 text-center font-bold text-[var(--secondary)]">{log.postsCreated}</td>
+                        <td className="py-3 pl-4 text-xs text-[var(--muted)] max-w-xs truncate" title={log.errorMessage}>
+                          {log.errorMessage || <span className="italic opacity-50">None</span>}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="py-8 text-center text-sm text-[var(--muted)]">No execution telemetry logs found. Run the synchronization script to log stats.</div>
+            )}
+          </div>
+        </div>
+      )}
     </AdminFrame>
   );
 }

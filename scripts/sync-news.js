@@ -150,10 +150,14 @@ English Summary/Description: ${summary}`;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// 5. Main sync execution loop
+// 5. Main sync execution
 async function runSync() {
   console.log("Starting KannadaQuiz RSS Feed Sync...");
+  const startTime = Date.now();
   let geminiCalls = 0;
+  let feedItemsChecked = 0;
+  let postsCreated = 0;
+  const errors = [];
   const MAX_GEMINI_CALLS_PER_RUN = 15; // Safeguard to prevent high billing / surprise costs
   
   for (const feed of FEEDS) {
@@ -165,10 +169,11 @@ async function runSync() {
     try {
       const feedData = await parser.parseURL(feed.url);
       console.log(`Found ${feedData.items.length} items in feed.`);
-
+      feedItemsChecked += feedData.items.length;
+ 
       // Take the top 3 newest articles per feed execution to conserve API quota
       const itemsToProcess = feedData.items.slice(0, 3);
-
+ 
       for (const item of itemsToProcess) {
         if (geminiCalls >= MAX_GEMINI_CALLS_PER_RUN) {
           console.log(`\n[Safeguard] Reached maximum Gemini API calls limit (${MAX_GEMINI_CALLS_PER_RUN}) during feed processing. Exiting to prevent high billing.`);
@@ -177,23 +182,23 @@ async function runSync() {
         const originalTitle = item.title;
         const originalDescription = item.contentSnippet || item.content || item.description || "";
         const sourceUrl = item.link || "";
-
+ 
         if (!originalTitle) continue;
-
+ 
         const slug = generateSlug(originalTitle);
         if (!slug) continue;
-
+ 
         // Check if slug already exists in firestore 'posts' collection
         const existingDocs = await db.collection("posts")
           .where("slug", "==", slug)
           .limit(1)
           .get();
-
+ 
         if (!existingDocs.empty) {
           console.log(`[Skip] Already imported: "${originalTitle}"`);
           continue;
         }
-
+ 
         console.log(`[Processing] "${originalTitle}"...`);
         try {
           // Translate using Gemini
@@ -215,6 +220,7 @@ async function runSync() {
             sourceName: feed.name
           };
           const docRefKn = await db.collection("posts").add(newPostKn);
+          postsCreated++;
           console.log(`[Success] Published Kannada! (ID: ${docRefKn.id}) -> ${translated.kn.title}`);
 
           // Save English version to Firestore
@@ -232,6 +238,7 @@ async function runSync() {
             sourceName: feed.name
           };
           const docRefEn = await db.collection("posts").add(newPostEn);
+          postsCreated++;
           console.log(`[Success] Published English! (ID: ${docRefEn.id}) -> ${translated.en.title}`);
 
           // If the post is categorized as "Current Affairs" or belongs to the GK feed, save it to the currentAffairs collection too
@@ -262,19 +269,39 @@ async function runSync() {
           await sleep(5000);
         } catch (err) {
           console.error(`[Error] Failed to process item: ${err.message}`);
+          errors.push(`${feed.name} - ${originalTitle}: ${err.message}`);
           if (err.message.includes("429") || err.message.includes("RESOURCE_EXHAUSTED")) {
             console.warn("\n[Quota Warning] Gemini API quota limit reached (Rate limit or Daily limit).");
             console.warn("Stopping execution now to avoid spamming. Execution will resume in the next cron run.");
-            process.exit(0);
+            break;
           }
         }
       }
     } catch (err) {
       console.error(`[Error] Failed to fetch feed ${feed.name}: ${err.message}`);
+      errors.push(`Feed ${feed.name}: ${err.message}`);
     }
   }
 
-  console.log("\nSync process completed successfully!");
+  console.log("\nSync process completed!");
+
+  // Save telemetry logs to Firestore
+  const durationSeconds = Math.ceil((Date.now() - startTime) / 1000);
+  try {
+    const logDoc = {
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      status: errors.length === 0 ? "success" : "error",
+      durationSeconds,
+      geminiCalls,
+      feedItemsChecked,
+      postsCreated,
+      errorMessage: errors.length > 0 ? errors.join(" | ").slice(0, 800) : null
+    };
+    const logRef = await db.collection("syncLogs").add(logDoc);
+    console.log(`Telemetry logged successfully (Log ID: ${logRef.id})`);
+  } catch (logErr) {
+    console.error("Failed to write telemetry log to Firestore:", logErr.message);
+  }
 }
 
 runSync();

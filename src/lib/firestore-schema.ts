@@ -8,6 +8,7 @@ export const firestoreCollections = {
   profiles: "profiles",
   quizAttempts: "quizAttempts",
   leaderboard: "leaderboard",
+  syncLogs: "syncLogs",
 } as const;
 
 export type ContentStatus = "draft" | "published" | "archived";
