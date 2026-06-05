@@ -84,7 +84,7 @@ Translate and rewrite the following English news article info into BOTH high-qua
 Rules:
 1. For Kannada (kn): Translate contextually and write in a natural Kannada journalistic tone (similar to Prajavani or Vijay Karnataka).
 2. For English (en): Rewrite in a professional, clear journalistic style (similar to standard international news portals).
-3. Keep all names, dates, numbers, salaries, vacancies, and technical details 100% accurate. Do not alter facts.
+3. Keep all names, dates, numbers, salaries, vacancies, and technical details 100% accurate. Do not alter facts. In the Kannada translation, write all numbers, dates, percentages, and statistical figures in standard English numerals (e.g., 1, 2, 3, 2026, 50%) rather than Kannada numerals (೧, ೨, ೩) or spelling them out as Kannada words.
 4. Organize the body text cleanly into distinct paragraphs.
 5. Categorize it appropriately (e.g. 'KPSC', 'Jobs', 'Current Affairs', 'Karnataka', 'National', or 'International').
 6. Respond ONLY with a valid JSON object matching the requested schema. Do not add markdown wrapping or text before/after.`;
