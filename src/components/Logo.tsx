@@ -25,9 +25,14 @@ export function Logo({ className = "" }: { className?: string }) {
         </text>
       </svg>
       {/* Brand Name Text */}
-      <span className="font-serif text-2xl font-bold tracking-tight text-[var(--primary)] select-none">
-        Kannada<span className="text-[var(--secondary)]">Quiz</span>
-      </span>
+      <div className="flex flex-col justify-center select-none">
+        <span className="font-serif text-[21px] font-black leading-none tracking-tight text-[var(--primary)]">
+          ಕನ್ನಡ<span className="text-[var(--secondary)]">ಕ್ವಿಜ್‌</span>
+        </span>
+        <span className="text-[9px] font-black uppercase tracking-widest text-[var(--muted)] border-t border-[var(--border)] pt-[2px] mt-[2px] leading-none">
+          Kannada<span className="text-[var(--secondary)]">Quiz</span>
+        </span>
+      </div>
     </div>
   );
 }

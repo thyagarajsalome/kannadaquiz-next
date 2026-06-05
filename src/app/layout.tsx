@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   },
   description:
     "Kannada and English quiz practice, current affairs, job alerts, and study material for Karnataka competitive exams.",
+  verification: {
+    google: "of_pRvg6YQBwtKsdlZhbUOEOOn24aY4eUfvzr0AtpRo",
+  },
   alternates: {
     canonical: "/kn",
     languages: {
