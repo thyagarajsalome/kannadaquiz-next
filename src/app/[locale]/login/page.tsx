@@ -14,7 +14,6 @@ import { useRouter, useParams } from "next/navigation";
 export default function LoginPage() {
   const router = useRouter();
   const params = useParams();
-  const locale = params?.locale === "en" ? "en" : "kn";
 
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -23,6 +22,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [signing, setSigning] = useState(false);
+  // Default login page language to English only
+  const [language, setLanguage] = useState<"en" | "kn">("en");
 
   useEffect(() => {
     if (!firebaseAuth) {
@@ -33,11 +34,12 @@ export default function LoginPage() {
       setUser(currentUser);
       setLoading(false);
       if (currentUser) {
+        const locale = params?.locale === "en" ? "en" : "kn";
         router.push(`/${locale}/profile`);
       }
     });
     return () => unsubscribe();
-  }, [router, locale]);
+  }, [router, params]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -52,19 +54,19 @@ export default function LoginPage() {
     try {
       if (isSignUp) {
         await createUserWithEmailAndPassword(firebaseAuth, email, password);
-        setMessage(locale === "kn" ? "ಖಾತೆ ಯಶಸ್ವಿಯಾಗಿ ರಚನೆಯಾಗಿದೆ!" : "Account created successfully!");
+        setMessage(language === "kn" ? "ಖಾತೆ ಯಶಸ್ವಿಯಾಗಿ ರಚನೆಯಾಗಿದೆ!" : "Account created successfully!");
       } else {
         await signInWithEmailAndPassword(firebaseAuth, email, password);
-        setMessage(locale === "kn" ? "ಲಾಗಿನ್ ಯಶಸ್ವಿಯಾಗಿದೆ!" : "Logged in successfully!");
+        setMessage(language === "kn" ? "ಲಾಗಿನ್ ಯಶಸ್ವಿಯಾಗಿದೆ!" : "Logged in successfully!");
       }
     } catch (error: any) {
       let errorMsg = error?.message || "An unexpected error occurred.";
       if (error?.code === "auth/email-already-in-use") {
-        errorMsg = locale === "kn" ? "ಈ ಇಮೇಲ್ ಈಗಾಗಲೇ ಬಳಕೆಯಲ್ಲಿದೆ." : "Email already in use.";
+        errorMsg = language === "kn" ? "ಈ ಇಮೇಲ್ ಈಗಾಗಲೇ ಬಳಕೆಯಲ್ಲಿದೆ." : "Email already in use.";
       } else if (error?.code === "auth/weak-password") {
-        errorMsg = locale === "kn" ? "ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 6 ಅಕ್ಷರಗಳಿರಬೇಕು." : "Password should be at least 6 characters.";
+        errorMsg = language === "kn" ? "ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 6 ಅಕ್ಷರಗಳಿರಬೇಕು." : "Password should be at least 6 characters.";
       } else if (error?.code === "auth/invalid-credential") {
-        errorMsg = locale === "kn" ? "ತಪ್ಪಾದ ಇಮೇಲ್ ಅಥವಾ ಪಾಸ್‌ವರ್ಡ್." : "Incorrect email or password.";
+        errorMsg = language === "kn" ? "ತಪ್ಪಾದ ಇಮೇಲ್ ಅಥವಾ ಪಾಸ್‌ವರ್ಡ್." : "Incorrect email or password.";
       }
       setMessage(errorMsg);
     } finally {
@@ -82,7 +84,7 @@ export default function LoginPage() {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(firebaseAuth, provider);
-      setMessage(locale === "kn" ? "ಗೂಗಲ್ ಲಾಗಿನ್ ಯಶಸ್ವಿಯಾಗಿದೆ!" : "Google login successful!");
+      setMessage(language === "kn" ? "ಗೂಗಲ್ ಲಾಗಿನ್ ಯಶಸ್ವಿಯಾಗಿದೆ!" : "Google login successful!");
     } catch (error: any) {
       setMessage(error?.message || "Google Authentication failed.");
     } finally {
@@ -94,7 +96,7 @@ export default function LoginPage() {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <p className="text-sm font-semibold text-[var(--muted)]">
-          {locale === "kn" ? "ಲೋಡ್ ಆಗುತ್ತಿದೆ..." : "Loading..."}
+          {language === "kn" ? "ಲೋಡ್ ಆಗುತ್ತಿದೆ..." : "Loading..."}
         </p>
       </div>
     );
@@ -103,33 +105,45 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-[80vh] items-center justify-center bg-[var(--background)] px-4 py-12">
       <div className="kq-card w-full max-w-md p-6 md:p-8 bg-white shadow-sm">
+        
+        {/* Language Toggler specific to Login Page */}
+        <div className="flex justify-end mb-2">
+          <button
+            onClick={() => setLanguage(language === "en" ? "kn" : "en")}
+            type="button"
+            className="text-xs font-semibold text-[var(--secondary)] hover:underline flex items-center gap-1 border border-[var(--border)] rounded px-2.5 py-1 bg-[var(--surface-soft)] transition-colors cursor-pointer"
+          >
+            {language === "en" ? "ಕನ್ನಡದಲ್ಲಿ ಲಾಗಿನ್ ಮಾಡಿ ➔" : "English Login ➔"}
+          </button>
+        </div>
+
         <div className="text-center">
           <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
             KannadaQuiz
           </p>
           <h1 className="mt-2 font-serif text-3xl font-bold text-[var(--primary)]">
             {isSignUp
-              ? locale === "kn"
+              ? language === "kn"
                 ? "ಹೊಸ ಖಾತೆ ರಚಿಸಿ"
                 : "Create Account"
-              : locale === "kn"
+              : language === "kn"
                 ? "ಲಾಗಿನ್ ಮಾಡಿ"
                 : "Sign In"}
           </h1>
           <p className="mt-2 text-sm text-[var(--muted)]">
             {isSignUp
-              ? locale === "kn"
+              ? language === "kn"
                 ? "ನಿಮ್ಮ ಪರೀಕ್ಷಾ ಪ್ರಗತಿಯನ್ನು ಉಳಿಸಲು ಖಾತೆಯನ್ನು ರಚಿಸಿ"
-                : "Sign up to save your quiz progress and attempts history"
-              : locale === "kn"
+                : "Sign up to save your progress and reading history"
+              : language === "kn"
                 ? "ಅಭ್ಯಾಸ ಮುಂದುವರಿಸಲು ಲಾಗಿನ್ ಮಾಡಿ"
-                : "Sign in to resume your competitive exam practice"}
+                : "Sign in to resume reading news and summaries"}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <label className="block text-sm font-bold text-[var(--primary)]">
-            {locale === "kn" ? "ಇಮೇಲ್ ವಿಳಾಸ" : "Email Address"}
+            {language === "kn" ? "ಇಮೇಲ್ ವಿಳಾಸ" : "Email Address"}
             <input
               type="email"
               value={email}
@@ -141,7 +155,7 @@ export default function LoginPage() {
           </label>
 
           <label className="block text-sm font-bold text-[var(--primary)]">
-            {locale === "kn" ? "ಪಾಸ್‌ವರ್ಡ್" : "Password"}
+            {language === "kn" ? "ಪಾಸ್‌ವರ್ಡ್" : "Password"}
             <input
               type="password"
               value={password}
@@ -158,14 +172,14 @@ export default function LoginPage() {
             className="w-full cursor-pointer rounded-md bg-[var(--primary)] px-5 py-3 text-sm font-bold text-white transition hover:bg-[var(--primary)]/90 disabled:opacity-50"
           >
             {signing
-              ? locale === "kn"
+              ? language === "kn"
                 ? "ದಯವಿಟ್ಟು ನಿರೀಕ್ಷಿಸಿ..."
                 : "Please wait..."
               : isSignUp
-                ? locale === "kn"
+                ? language === "kn"
                   ? "ಖಾತೆ ರಚಿಸಿ"
                   : "Sign Up"
-                : locale === "kn"
+                : language === "kn"
                   ? "ಲಾಗಿನ್"
                   : "Sign In"}
           </button>
@@ -174,7 +188,7 @@ export default function LoginPage() {
         <div className="mt-4 flex items-center justify-between">
           <span className="w-1/5 border-b border-[var(--border)] lg:w-1/4"></span>
           <span className="text-xs text-center text-[var(--muted)] uppercase">
-            {locale === "kn" ? "ಅಥವಾ" : "or"}
+            {language === "kn" ? "ಅಥವಾ" : "or"}
           </span>
           <span className="w-1/5 border-b border-[var(--border)] lg:w-1/4"></span>
         </div>
@@ -204,7 +218,7 @@ export default function LoginPage() {
             />
           </svg>
           <span>
-            {locale === "kn" ? "ಗೂಗಲ್ ಲಾಗಿನ್" : "Sign in with Google"}
+            {language === "kn" ? "ಗೂಗಲ್‌ನೊಂದಿಗೆ ಲಾಗಿನ್" : "Sign in with Google"}
           </span>
         </button>
 
@@ -217,10 +231,10 @@ export default function LoginPage() {
         <div className="mt-6 text-center text-sm">
           <p className="text-[var(--muted)]">
             {isSignUp
-              ? locale === "kn"
+              ? language === "kn"
                 ? "ಈಗಾಗಲೇ ಖಾತೆ ಇದೆಯೇ?"
                 : "Already have an account?"
-              : locale === "kn"
+              : language === "kn"
                 ? "ಖಾತೆ ಇಲ್ಲವೇ?"
                 : "Don't have an account?"}{" "}
             <button
@@ -231,10 +245,10 @@ export default function LoginPage() {
               className="cursor-pointer font-bold text-[var(--secondary)] hover:underline"
             >
               {isSignUp
-                ? locale === "kn"
+                ? language === "kn"
                   ? "ಲಾಗಿನ್ ಮಾಡಿ"
                   : "Sign In"
-                : locale === "kn"
+                : language === "kn"
                   ? "ಖಾತೆ ತೆರೆಯಿರಿ"
                   : "Create Account"}
             </button>
