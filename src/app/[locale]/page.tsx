@@ -116,7 +116,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               ) : (
                 posts.map((post) => (
                   <Link key={post.slug} href={`/${locale}/posts/${post.slug}`} className="kq-card p-5 hover:border-[var(--secondary)] transition-all">
-                    <p className="text-xs font-bold text-[var(--secondary)]">{post.category}</p>
+                    <p className="text-xs font-bold text-[var(--secondary)]">
+                      {post.category} {post.sourceName ? `• ${post.sourceName}` : ""}
+                    </p>
                     <h3 className="mt-2 text-xl font-bold text-[var(--primary)]">{post.title}</h3>
                     <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{post.excerpt}</p>
                   </Link>

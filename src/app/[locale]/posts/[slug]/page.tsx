@@ -36,6 +36,17 @@ export async function generateMetadata({
   };
 }
 
+function getSourceName(post: { sourceUrl?: string; sourceName?: string }) {
+  if (post.sourceName) return post.sourceName;
+  if (!post.sourceUrl) return "";
+  try {
+    const url = new URL(post.sourceUrl);
+    return url.hostname.replace(/^(www\.|feeds\.|rss\.)/, "");
+  } catch {
+    return "News Source";
+  }
+}
+
 export default async function PostPage({
   params,
 }: {
@@ -72,12 +83,18 @@ export default async function PostPage({
           </p>
         ))}
         {post.sourceUrl ? (
-          <div className="mt-6 border-t border-[var(--border)] pt-4 text-right">
+          <div className="mt-6 border-t border-[var(--border)] pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-[var(--muted)]">
+            <span>
+              {locale === "kn" ? "ಮೂಲ ಮಾಹಿತಿ: " : "Source: "}
+              <span className="font-semibold text-[var(--foreground)]">
+                {getSourceName(post)}
+              </span>
+            </span>
             <a
               href={post.sourceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--secondary)] hover:underline"
+              className="inline-flex items-center gap-1 font-semibold text-[var(--secondary)] hover:underline"
             >
               {locale === "kn" ? "ಮೂಲ ಲೇಖನ ಓದಿ ➔" : "Read Original Article ➔"}
             </a>

@@ -45,15 +45,13 @@ const parser = new Parser({
   }
 });
 
-// 2. Default feeds (Karnataka, National, and International News)
 const FEEDS = [
   { name: "BBC News World", url: "http://feeds.bbci.co.uk/news/world/rss.xml" },
-  { name: "Reuters World News", url: "https://www.reutersagency.com/feed/?best-topics=world-news" },
+  { name: "CNN World News", url: "http://rss.cnn.com/rss/edition_world.rss" },
+  { name: "Deutsche Welle (DW)", url: "https://rss.dw.com/rdf/rss-en-top" },
+  { name: "NPR World News", url: "https://feeds.npr.org/1004/rss.xml" },
   { name: "Al Jazeera World", url: "https://www.aljazeera.com/xml/rss/all.xml" },
-  { name: "Times of India International", url: "https://timesofindia.indiatimes.com/rssfeeds/296589292.xml" },
-  { name: "NDTV India National", url: "https://feeds.feedburner.com/ndtvnews-top-stories" },
-  { name: "The Hindu Karnataka", url: "https://www.thehindu.com/news/national/karnataka/feeder/default.rss" },
-  { name: "Deccan Herald Karnataka", url: "https://www.deccanherald.com/state/karnataka/rss" }
+  { name: "Times of India International", url: "https://timesofindia.indiatimes.com/rssfeeds/296589292.xml" }
 ];
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -131,6 +129,8 @@ English Summary/Description: ${summary}`;
   return JSON.parse(textResponse);
 }
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 // 5. Main sync execution loop
 async function runSync() {
   console.log("Starting KannadaQuiz RSS Feed Sync...");
@@ -141,8 +141,8 @@ async function runSync() {
       const feedData = await parser.parseURL(feed.url);
       console.log(`Found ${feedData.items.length} items in feed.`);
 
-      // Take the top 10 newest articles per feed execution
-      const itemsToProcess = feedData.items.slice(0, 10);
+      // Take the top 3 newest articles per feed execution to conserve API quota
+      const itemsToProcess = feedData.items.slice(0, 3);
 
       for (const item of itemsToProcess) {
         const originalTitle = item.title;
@@ -181,13 +181,22 @@ async function runSync() {
             status: "published", // Published directly for 100% automation
             publishedAt: admin.firestore.FieldValue.serverTimestamp(),
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-            sourceUrl: sourceUrl
+            sourceUrl: sourceUrl,
+            sourceName: feed.name
           };
 
           const docRef = await db.collection("posts").add(newPost);
           console.log(`[Success] Published live! (ID: ${docRef.id}) -> ${translated.title}`);
+
+          // Wait 5 seconds between translations to respect Gemini Free Tier RPM limits
+          await sleep(5000);
         } catch (err) {
           console.error(`[Error] Failed to process item: ${err.message}`);
+          if (err.message.includes("429") || err.message.includes("RESOURCE_EXHAUSTED")) {
+            console.warn("\n[Quota Warning] Gemini API quota limit reached (Rate limit or Daily limit).");
+            console.warn("Stopping execution now to avoid spamming. Execution will resume in the next cron run.");
+            process.exit(0);
+          }
         }
       }
     } catch (err) {

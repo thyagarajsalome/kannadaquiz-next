@@ -29,7 +29,7 @@ export default async function PostsPage({ params }: { params: Promise<{ locale: 
         {posts.map((post) => (
           <Link key={post.slug} href={`/${locale}/posts/${post.slug}`} className="kq-card p-5">
             <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
-              {post.category} • {post.date}
+              {post.category} • {post.date} {post.sourceName ? `• ${post.sourceName}` : ""}
             </p>
             <h2 className="mt-3 font-serif text-2xl font-bold text-[var(--primary)]">
               {post.title}
