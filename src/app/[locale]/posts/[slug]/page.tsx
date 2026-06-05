@@ -23,9 +23,21 @@ export async function generateMetadata({
     return {};
   }
 
+  // Generate dynamic keywords from the title
+  const titleWords = post.title
+    .split(/\s+/)
+    .map(w => w.replace(/[^a-zA-Z0-9\u0C80-\u0CFF]/g, "")) // Clean special chars
+    .filter(w => w.length > 3)
+    .slice(0, 8);
+
+  const baseKeywords = locale === "kn"
+    ? ["ಕನ್ನಡ ಸುದ್ದಿ", "ಸುದ್ದಿ ಸಾರಾಂಶ", "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", post.category]
+    : ["Kannada News", "News Summary", "Current Affairs", post.category];
+
   return {
-    title: post.title,
+    title: `${post.title} | KannadaQuiz`,
     description: post.excerpt,
+    keywords: [...baseKeywords, ...titleWords],
     alternates: {
       canonical: `/${locale}/posts/${post.slug}`,
       languages: {

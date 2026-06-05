@@ -10,10 +10,26 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export const metadata: Metadata = {
-  title: "Study Articles",
-  description: "Exam-focused study articles for Karnataka competitive exams.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale: rawLocale } = await params;
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
+
+  return {
+    title: locale === "kn" 
+      ? "ಖಾತೆ ಲೇಖನಗಳು ಮತ್ತು ದಿನನಿತ್ಯದ ಸುದ್ದಿಗಳು | KannadaQuiz" 
+      : "Study Articles & Daily News | KannadaQuiz",
+    description: locale === "kn"
+      ? "ಕರ್ನಾಟಕ ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳಿಗೆ ಉಪಯುಕ್ತವಾದ ಇತ್ತೀಚಿನ ಸುದ್ದಿಗಳು, ವಿವರವಾದ ವಿಶ್ಲೇಷಣೆ ಮತ್ತು ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳ ಲೇಖನಗಳು."
+      : "Latest study articles, news analysis, and current affairs updates for Karnataka competitive exams.",
+    keywords: locale === "kn"
+      ? ["ಕನ್ನಡ ಲೇಖನಗಳು", "ಕೆಪಿಎಸ್‌ಸಿ ಅಧ್ಯಯನ ಸಾಮಗ್ರಿ", "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", "ಎಫ್‌ಡಿಎ ಎಸ್‌ಡಿಎ ಲೇಖನ"]
+      : ["Kannada Articles", "KPSC Study Materials", "Current Affairs Articles", "Exams Preparation"],
+  };
+}
 
 const categoryTranslations: Record<string, Record<string, string>> = {
   karnataka: { kn: "ಕರ್ನಾಟಕ ಸುದ್ದಿ", en: "Karnataka News" },

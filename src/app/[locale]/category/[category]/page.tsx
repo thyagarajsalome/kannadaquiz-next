@@ -41,9 +41,43 @@ export async function generateMetadata({
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
   const catTitle = getLocalizedCategory(category, locale);
 
+  const keywordsMap: Record<string, Record<Locale, string[]>> = {
+    karnataka: {
+      kn: ["ಕರ್ನಾಟಕ ಸುದ್ದಿ", "ಬೆಂಗಳೂರು ಸುದ್ದಿ", "ಹವಾಮಾನ ವರದಿ", "ಗೃಹಲಕ್ಷ್ಮಿ ಯೋಜನೆ", "ಕರ್ನಾಟಕ ರಾಜಕೀಯ", "ಕನ್ನಡ ವಾರ್ತೆ"],
+      en: ["Karnataka News", "Bengaluru News", "Karnataka Rains", "Govt Schemes", "Karnataka Politics"]
+    },
+    national: {
+      kn: ["ರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ", "ಭಾರತದ ಪ್ರಧಾನಿ", "ದೆಹಲಿ ಅಪ್ಡೇಟ್ಸ್", "ಭಾರತ ಸರ್ಕಾರ", "ದೇಶ ವಿದೇಶ", "ಲೋಕಸಭೆ"],
+      en: ["National News India", "Indian Politics", "New Delhi Updates", "Govt of India", "National Events"]
+    },
+    international: {
+      kn: ["ಅಂತರರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ", "ಜಾಗತಿಕ ವಿದ್ಯಮಾನಗಳು", "ಅಮೆರಿಕ ಚುನಾವಣೆ", "ವಿಶ್ವ ಸಂಸ್ಥೆ", "ಜಾಗತಿಕ ಯುದ್ಧ", "ರಷ್ಯಾ ಉಕ್ರೇನ್"],
+      en: ["International News", "World News Summaries", "Global Affairs", "US Politics", "World Conflicts"]
+    },
+    jobs: {
+      kn: ["ಉದ್ಯೋಗ ಮಾಹಿತಿ", "ಕರ್ನಾಟಕ ಸರ್ಕಾರಿ ಕೆಲಸಗಳು", "ಕೆಪಿಎಸ್‌ಸಿ ನೇಮಕಾತಿ", "ಕೆಇಎ ಫಲಿತಾಂಶ", "ನೇಮಕಾತಿ ಅಧಿಸೂಚನೆ", "ಉದ್ಯೋಗ ವಾರ್ತೆ"],
+      en: ["Govt Jobs Karnataka", "KPSC Recruitment 2026", "KEA Exam Results", "Job Vacancies", "Recruitment Notification"]
+    },
+    general: {
+      kn: ["ಸಾಮಾನ್ಯ ಸುದ್ದಿ", "ಕನ್ನಡ ಕ್ವಿಜ್", "ಕನ್ನಡ ವಾರ್ತೆಗಳು", "ಸಾಮಾನ್ಯ ಜ್ಞಾನ"],
+      en: ["General News", "Kannada Quiz Portal", "Kannada News Summaries", "GK and Quizzes"]
+    }
+  };
+
+  const catKey = category.toLowerCase();
+  const matchedKey = catKey.includes("karnataka") ? "karnataka" :
+                     catKey.includes("national") ? "national" :
+                     catKey.includes("international") ? "international" :
+                     (catKey.includes("job") || catKey.includes("kpsc") || catKey.includes("exam") || catKey.includes("career")) ? "jobs" : "general";
+
   return {
-    title: `KannadaQuiz - ${catTitle}`,
-    description: `Browse latest news and updates related to ${catTitle} on KannadaQuiz.`,
+    title: locale === "kn" 
+      ? `KannadaQuiz - ${catTitle} | ಇತ್ತೀಚಿನ ಮುಖ್ಯಾಂಶಗಳು ಮತ್ತು ಸರಳ ಸಾರಾಂಶ`
+      : `KannadaQuiz - ${catTitle} | Latest Headlines & News Summaries`,
+    description: locale === "kn"
+      ? `ಕನ್ನಡದಲ್ಲೇ ಓದಿ: ${catTitle} ಕುರಿತಾದ ಪ್ರಮುಖ ವಿಶ್ಲೇಷಣೆಗಳು, ಮುಖ್ಯಾಂಶಗಳು ಮತ್ತು ಸರಳ ಸುದ್ದಿ ಸಾರಾಂಶಗಳು.`
+      : `Read in English & Kannada: Latest news summaries, exam-focused updates, and analysis on ${catTitle}.`,
+    keywords: keywordsMap[matchedKey]?.[locale] || [],
   };
 }
 

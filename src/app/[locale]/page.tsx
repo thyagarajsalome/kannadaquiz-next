@@ -10,6 +10,29 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
+const trendingTopics: Record<string, { name: string; url: string }[]> = {
+  kn: [
+    { name: "KPSC ನೇಮಕಾತಿ 2026", url: "/kn/category/jobs" },
+    { name: "ಕರ್ನಾಟಕ ಸರ್ಕಾರಿ ಕೆಲಸಗಳು", url: "/kn/category/jobs" },
+    { name: "KEA ಫಲಿತಾಂಶಗಳು", url: "/kn/category/jobs" },
+    { name: "ಗೃಹಲಕ್ಷ್ಮಿ ಯೋಜನೆ ಅಪ್ಡೇಟ್ಸ್", url: "/kn/category/karnataka" },
+    { name: "ಹವಾಮಾನ ವರದಿ", url: "/kn/category/karnataka" },
+    { name: "ದಿನನಿತ್ಯದ ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", url: "/kn/category/national" },
+    { name: "ಬ್ಯಾಂಕ್ ಉದ್ಯೋಗಾವಕಾಶಗಳು", url: "/kn/category/jobs" },
+    { name: "ಪಿಎಸ್‌ಐ ಪರೀಕ್ಷೆ ವಿವರಗಳು", url: "/kn/category/jobs" }
+  ],
+  en: [
+    { name: "KPSC Recruitment 2026", url: "/en/category/jobs" },
+    { name: "Karnataka Govt Jobs", url: "/en/category/jobs" },
+    { name: "KEA Exam Results", url: "/en/category/jobs" },
+    { name: "Gruha Lakshmi Scheme Updates", url: "/en/category/karnataka" },
+    { name: "Weather Warnings", url: "/en/category/karnataka" },
+    { name: "Daily Kannada Current Affairs", url: "/en/category/national" },
+    { name: "Banking Job Vacancies", url: "/en/category/jobs" },
+    { name: "PSI Exam Updates", url: "/en/category/jobs" }
+  ]
+};
+
 export async function generateMetadata({
   params,
 }: {
@@ -27,6 +50,16 @@ export async function generateMetadata({
       lang === "kn"
         ? "ಕನ್ನಡ ಓದುಗರಿಗೆ ಸಹಾಯ ಮಾಡಲು ಪ್ರಮುಖ ಅಂತರರಾಷ್ಟ್ರೀಯ, ರಾಷ್ಟ್ರೀಯ ಮತ್ತು ಕರ್ನಾಟಕ ಸುದ್ದಿಗಳ ಮುಖ್ಯಾಂಶಗಳು ಹಾಗೂ ನಿಖರ ಸಾರಾಂಶ ಮಾಹಿತಿ."
         : "Daily summaries and updates of international, national, and Karnataka news to help Kannada readers.",
+    keywords:
+      lang === "kn"
+        ? [
+            "ಕನ್ನಡ ರಸಪ್ರಶ್ನೆ", "ಕರ್ನಾಟಕ ಸುದ್ದಿ", "ಸರ್ಕಾರಿ ಕೆಲಸಗಳು", "ಕೆಪಿಎಸ್‌ಸಿ ನೇಮಕಾತಿ",
+            "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", "ಎಫ್‌ಡಿಎ ಎಸ್‌ಡಿಎ", "ಉದ್ಯೋಗ ಮಾಹಿತಿ", "ಹವಾಮಾನ ವರದಿ", "ಕರ್ನಾಟಕ ಬಜೆಟ್"
+          ]
+        : [
+            "Kannada Quiz", "Karnataka News", "Government Jobs", "KPSC Recruitment",
+            "Current Affairs", "FDA SDA Exams", "Job Vacancies Karnataka", "Weather Updates", "KEA Results"
+          ],
     alternates: {
       canonical: `/${lang}`,
       languages: {
@@ -130,6 +163,29 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
         </div>
       )}
+
+      {/* 1b. Trending Topics Bar */}
+      <div className="bg-white border-b border-[var(--border)] py-3">
+        <div className="kq-container flex flex-wrap items-center gap-3 text-xs md:text-sm">
+          <span className="font-bold uppercase tracking-wider text-[var(--secondary)] flex items-center gap-1 shrink-0 select-none">
+            <svg className="w-4 h-4 text-[var(--secondary)] shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+            </svg>
+            {locale === "kn" ? "ಟ್ರೆಂಡಿಂಗ್:" : "Trending:"}
+          </span>
+          <div className="flex flex-wrap gap-2 items-center">
+            {trendingTopics[locale]?.map((topic) => (
+              <Link
+                key={topic.name}
+                href={topic.url}
+                className="bg-[var(--surface-soft)] hover:bg-[var(--secondary)] hover:text-white px-3 py-1 rounded-full font-semibold border border-[var(--border)] text-xs text-[var(--primary)] hover:border-transparent transition-all select-none"
+              >
+                #{topic.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* 2. Main Headline Hero Section */}
       <section className="py-8 bg-[var(--surface)] border-b border-[var(--border)]">
