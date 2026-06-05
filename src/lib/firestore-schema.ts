@@ -26,6 +26,9 @@ export type FirestorePost = LocalizedContent & {
   body: string;
   category: string;
   featuredImagePath?: string;
+  featuredImageUrl?: string;
+  sourceUrl?: string;
+  sourceName?: string;
 };
 
 export type FirestoreQuiz = LocalizedContent & {

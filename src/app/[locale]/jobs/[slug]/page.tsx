@@ -7,7 +7,7 @@ import { getPublicJobBySlug } from "@/lib/public-content";
 export const revalidate = 300;
 
 export function generateStaticParams() {
-  return locales.flatMap((locale) => jobs.map((job) => ({ locale, slug: job.slug })));
+  return [];
 }
 
 export async function generateMetadata({

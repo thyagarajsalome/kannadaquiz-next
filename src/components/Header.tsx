@@ -1,11 +1,8 @@
 import Link from "next/link";
-import { oppositeLocale, type Locale } from "@/lib/locales";
-import { siteText } from "@/data/content";
+import { type Locale } from "@/lib/locales";
+import { HeaderAuth } from "@/components/HeaderAuth";
 
 export function Header({ locale }: { locale: Locale }) {
-  const text = siteText[locale];
-  const other = oppositeLocale(locale);
-
   return (
     <header className="border-b border-[var(--border)] bg-white">
       <div className="kq-container flex min-h-16 items-center justify-between gap-6">
@@ -13,16 +10,22 @@ export function Header({ locale }: { locale: Locale }) {
           KannadaQuiz
         </Link>
         <nav className="hidden items-center gap-6 text-sm font-semibold text-[var(--muted)] md:flex">
-          <Link href={`/${locale}/quizzes`}>{text.nav[0]}</Link>
-          <Link href={`/${locale}/posts`}>{text.nav[1]}</Link>
-          <Link href={`/${locale}/jobs`}>{text.nav[2]}</Link>
+          <Link href={`/${locale}/category/karnataka`}>
+            {locale === "kn" ? "ಕರ್ನಾಟಕ ಸುದ್ದಿ" : "Karnataka News"}
+          </Link>
+          <Link href={`/${locale}/category/national`}>
+            {locale === "kn" ? "ರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ" : "National News"}
+          </Link>
+          <Link href={`/${locale}/category/international`}>
+            {locale === "kn" ? "ಅಂತರರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ" : "International News"}
+          </Link>
+          <Link href={`/${locale}/category/jobs`}>
+            {locale === "kn" ? "ಉದ್ಯೋಗ ಮಾಹಿತಿ" : "Jobs & Careers"}
+          </Link>
         </nav>
-        <Link
-          href={`/${other}`}
-          className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--primary)]"
-        >
-          {text.language}
-        </Link>
+        <div className="flex items-center gap-4">
+          <HeaderAuth locale={locale} />
+        </div>
       </div>
     </header>
   );

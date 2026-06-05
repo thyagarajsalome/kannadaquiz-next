@@ -1,4 +1,5 @@
 import type { Locale } from "@/lib/locales";
+import Link from "next/link";
 
 export function Footer({ locale }: { locale: Locale }) {
   return (
@@ -8,11 +9,24 @@ export function Footer({ locale }: { locale: Locale }) {
           <p className="font-serif text-xl font-bold">KannadaQuiz</p>
           <p className="mt-1 max-w-2xl text-sm text-white/75">
             {locale === "kn"
-              ? "ಕರ್ನಾಟಕ ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳಿಗಾಗಿ ವೇಗವಾದ, ಓದಲು ಸುಲಭವಾದ ಅಭ್ಯಾಸ ವೇದಿಕೆ."
-              : "Fast, readable preparation for Karnataka competitive exams."}
+              ? "ಕನ್ನಡ ಓದುಗರಿಗೆ ಸಹಾಯ ಮಾಡಲು ಪ್ರಮುಖ ಜಾಗತಿಕ ಮತ್ತು ಕರ್ನಾಟಕ ಸುದ್ದಿಗಳ ಮುಖ್ಯಾಂಶಗಳು ಹಾಗೂ ನಿಖರ ಸಾರಾಂಶಗಳನ್ನು ಒದಗಿಸುವ ವೇದಿಕೆ."
+              : "Providing summaries and key updates of domestic and international news to help Kannada readers."}
           </p>
         </div>
-        <p className="text-sm text-white/70">© 2026 KannadaQuiz</p>
+        <div className="flex flex-col md:items-end gap-2 shrink-0">
+          <div className="flex flex-wrap gap-4 text-xs text-white/80">
+            <Link href={`/${locale}/disclaimer`} className="hover:text-white hover:underline">
+              {locale === "kn" ? "ಹಕ್ಕುತ್ಯಾಗ (Disclaimer)" : "Disclaimer"}
+            </Link>
+            <Link href={`/${locale}/privacy`} className="hover:text-white hover:underline">
+              {locale === "kn" ? "ಗೌಪ್ಯತಾ ನೀತಿ (Privacy)" : "Privacy Policy"}
+            </Link>
+            <Link href={`/${locale}/terms`} className="hover:text-white hover:underline">
+              {locale === "kn" ? "ನಿಯಮಗಳು (Terms)" : "Terms & Conditions"}
+            </Link>
+          </div>
+          <p className="text-sm text-white/60">© 2026 KannadaQuiz</p>
+        </div>
       </div>
     </footer>
   );

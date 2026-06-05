@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { quizzes, siteText } from "@/data/content";
+import { siteText } from "@/data/content";
 import { isLocale, locales, type Locale } from "@/lib/locales";
+import { getPublicQuizzes } from "@/lib/public-content";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -30,6 +31,7 @@ export default async function QuizzesPage({ params }: { params: Promise<{ locale
   const { locale: rawLocale } = await params;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
   const text = siteText[locale];
+  const quizzes = await getPublicQuizzes(locale);
 
   return (
     <section className="kq-container py-10">
@@ -41,9 +43,9 @@ export default async function QuizzesPage({ params }: { params: Promise<{ locale
               {quiz.exam} • {quiz.subject} • {quiz.timeLimitMinutes} {text.minutes}
             </p>
             <h2 className="mt-3 font-serif text-2xl font-bold text-[var(--primary)]">
-              {quiz.title[locale]}
+              {quiz.title}
             </h2>
-            <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{quiz.description[locale]}</p>
+            <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{quiz.description}</p>
             <span className="mt-4 inline-flex rounded-md bg-[var(--primary)] px-4 py-2 text-sm font-bold text-white">
               {text.quizStart}
             </span>
