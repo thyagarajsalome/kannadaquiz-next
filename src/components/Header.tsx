@@ -62,6 +62,9 @@ export function Header({ locale }: { locale: Locale }) {
               <Link href={`/${locale}/category/education`} className="block px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ಶೈಕ್ಷಣಿಕ ಮಾರ್ಗದರ್ಶಿಗಳು" : "Education Guides"}
               </Link>
+              <Link href={`/${locale}/category/home-design`} className="block px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+                {locale === "kn" ? "ಮನೆ ವಿನ್ಯಾಸ" : "Home Design"}
+              </Link>
             </div>
           </div>
         </nav>
@@ -108,6 +111,9 @@ export function Header({ locale }: { locale: Locale }) {
           </Link>
           <Link href={`/${locale}/category/education`} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಶೈಕ್ಷಣಿಕ" : "Education"}
+          </Link>
+          <Link href={`/${locale}/category/home-design`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಮನೆ ವಿನ್ಯಾಸ" : "Home Design"}
           </Link>
         </div>
       </div>
