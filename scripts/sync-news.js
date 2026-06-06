@@ -28,15 +28,43 @@ loadEnvLocal();
 
 const serviceAccountPath = path.join(__dirname, "..", "service-account.json");
 if (!fs.existsSync(serviceAccountPath)) {
-  console.error("Error: Please download your Firebase Service Account private key JSON file,");
-  console.error("rename it to 'service-account.json', and place it in the project root directory.");
+  console.error("==========================================================================");
+  console.error("Error: service-account.json not found!");
+  console.error("Please download your Firebase Service Account private key JSON file,");
+  console.error("rename it to 'service-account.json', and place it in the project root.");
+  console.error("==========================================================================");
   process.exit(1);
 }
 
-const serviceAccount = require(serviceAccountPath);
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+let serviceAccount;
+try {
+  const fileContent = fs.readFileSync(serviceAccountPath, "utf8").trim();
+  if (!fileContent) {
+    throw new Error("The service-account.json file is empty.");
+  }
+  serviceAccount = JSON.parse(fileContent);
+} catch (err) {
+  console.error("==========================================================================");
+  console.error("Error: Failed to parse service-account.json!");
+  console.error(err.message);
+  console.error("Please ensure the FIREBASE_SERVICE_ACCOUNT secret is set correctly in GitHub");
+  console.error("and that it contains valid, unmodified JSON contents.");
+  console.error("==========================================================================");
+  process.exit(1);
+}
+
+try {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+} catch (err) {
+  console.error("==========================================================================");
+  console.error("Error: Failed to initialize Firebase Admin SDK!");
+  console.error(err.message);
+  console.error("Please verify that your service account credentials are valid.");
+  console.error("==========================================================================");
+  process.exit(1);
+}
 
 const db = admin.firestore();
 const parser = new Parser({
