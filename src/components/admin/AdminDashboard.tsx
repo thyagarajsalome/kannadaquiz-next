@@ -66,6 +66,7 @@ export function AdminDashboard() {
   const [slug, setSlug] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [body, setBody] = useState("");
+  const [category, setCategory] = useState("General");
   const [organization, setOrganization] = useState("");
   const [deadline, setDeadline] = useState("");
   
@@ -93,9 +94,22 @@ export function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<"content" | "telemetry">("content");
   const [syncLogs, setSyncLogs] = useState<any[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
-  const [stats, setStats] = useState({ posts: 0, jobs: 0, currentAffairs: 0, quizzes: 0 });
+  const [stats, setStats] = useState({
+    posts: 0,
+    manualPosts: 0,
+    jobs: 0,
+    manualJobs: 0,
+    currentAffairs: 0,
+    quizzes: 0,
+  });
 
   const canUseFirebase = hasFirebaseConfig && firebaseAuth && firestore;
+
+  const totalPosts = stats.posts;
+  const manualPosts = stats.manualPosts;
+  const autoPosts = Math.max(0, totalPosts - manualPosts);
+  const manualPct = totalPosts > 0 ? Math.round((manualPosts / totalPosts) * 100) : 0;
+  const autoPct = totalPosts > 0 ? 100 - manualPct : 0;
 
   useEffect(() => {
     if (!firebaseAuth) {
@@ -259,9 +273,15 @@ export function AdminDashboard() {
         getDocs(query(collection(firestore, firestoreCollections.currentAffairs), limit(1000))),
         getDocs(query(collection(firestore, firestoreCollections.quizzes), limit(1000))),
       ]);
+
+      const manualPosts = postsSnap.docs.filter((d) => d.data().isManual === true).length;
+      const manualJobs = jobsSnap.docs.filter((d) => d.data().isManual === true).length;
+
       setStats({
         posts: postsSnap.size,
+        manualPosts,
         jobs: jobsSnap.size,
+        manualJobs,
         currentAffairs: caSnap.size,
         quizzes: quizzesSnap.size,
       });
@@ -320,6 +340,7 @@ export function AdminDashboard() {
       setSlug(String(data.slug ?? ""));
       setExcerpt(String(data.excerpt ?? data.description ?? ""));
       setBody(String(data.body ?? ""));
+      setCategory(String(data.category ?? "General"));
       setOrganization(String(data.organization ?? ""));
       setDeadline(String(data.deadline ?? ""));
       setImageUrl(String(data.featuredImageUrl ?? ""));
@@ -369,6 +390,7 @@ export function AdminDashboard() {
     setSlug("");
     setExcerpt("");
     setBody("");
+    setCategory("General");
     setOrganization("");
     setDeadline("");
 
@@ -487,8 +509,9 @@ export function AdminDashboard() {
             ...base,
             excerpt: excerpt.trim(),
             body: body.trim(),
-            category: "General",
+            category: category.trim(),
             featuredImageUrl: finalImageUrl || "",
+            isManual: true,
           }, { merge: true });
         }
 
@@ -498,6 +521,7 @@ export function AdminDashboard() {
             organization: organization.trim(),
             deadline: deadline.trim(),
             body: body.trim(),
+            isManual: true,
           }, { merge: true });
         }
 
@@ -507,6 +531,7 @@ export function AdminDashboard() {
             headline: title.trim(),
             status: "published",
             updatedAt: serverTimestamp(),
+            isManual: true,
           }, { merge: true });
         }
 
@@ -556,7 +581,8 @@ export function AdminDashboard() {
             ...createBase,
             excerpt: excerpt.trim(),
             body: body.trim(),
-            category: "General",
+            category: category.trim(),
+            isManual: true,
           });
         }
 
@@ -566,6 +592,7 @@ export function AdminDashboard() {
             organization: organization.trim(),
             deadline: deadline.trim(),
             body: body.trim(),
+            isManual: true,
           });
         }
 
@@ -576,6 +603,7 @@ export function AdminDashboard() {
             status: "published",
             publishedAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
+            isManual: true,
           });
         }
 
@@ -771,6 +799,29 @@ export function AdminDashboard() {
               required
             />
           </label>
+
+          {kind === "posts" ? (
+            <label className="mt-4 block text-sm font-bold">
+              Category
+              <select
+                value={category}
+                onChange={(event) => setCategory(event.target.value)}
+                className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2 bg-white"
+              >
+                <option value="General">General News</option>
+                <option value="Karnataka">Karnataka News</option>
+                <option value="National">National News</option>
+                <option value="International">International News</option>
+                <option value="Jobs">Jobs & Careers</option>
+                <option value="Current Affairs">Current Affairs</option>
+                <option value="Agriculture">Agriculture Info</option>
+                <option value="College Guide">College & Education Guide</option>
+                <option value="Government Schemes">Government Schemes</option>
+                <option value="Heritage & Tourism">Heritage & Tourism</option>
+                <option value="Sports News">Sports News</option>
+              </select>
+            </label>
+          ) : null}
 
           {kind === "posts" || kind === "quizzes" ? (
             <label className="mt-4 block text-sm font-bold">
@@ -1086,6 +1137,157 @@ export function AdminDashboard() {
                 <h3 className="mt-2 text-3xl font-serif font-bold text-[var(--primary)]">{stats.currentAffairs}</h3>
               </div>
               <p className="mt-2 text-xs text-[var(--muted)]">Bilingual GK daily highlights</p>
+            </div>
+          </div>
+
+          {/* Content Balance Visualization Dashboard */}
+          <div className="grid gap-6 md:grid-cols-[1.2fr_1.8fr]">
+            {/* Left: Interactive Ratio Donut Chart */}
+            <div className="kq-card p-6 border border-[var(--border)] bg-white flex flex-col items-center justify-between">
+              <div className="text-center w-full">
+                <h3 className="font-serif text-lg font-bold text-[var(--primary)]">Content Balance</h3>
+                <p className="text-xs text-[var(--muted)] mt-1">Manual vs. Automated Article Ratio</p>
+              </div>
+
+              <div className="relative my-6 flex items-center justify-center">
+                {/* SVG Donut Chart */}
+                <svg width="140" height="140" viewBox="0 0 140 140" className="transform -rotate-90">
+                  {/* Outer circle track (grey) if no content */}
+                  {totalPosts === 0 ? (
+                    <circle cx="70" cy="70" r="50" fill="transparent" stroke="#e2e8f0" strokeWidth="14" />
+                  ) : (
+                    <>
+                      {/* Automated content (Purple) */}
+                      <circle
+                        cx="70"
+                        cy="70"
+                        r="50"
+                        fill="transparent"
+                        stroke="#8b5cf6"
+                        strokeWidth="14"
+                      />
+                      {/* Manual content overlay (Orange) */}
+                      <circle
+                        cx="70"
+                        cy="70"
+                        r="50"
+                        fill="transparent"
+                        stroke="#f97316"
+                        strokeWidth="14"
+                        strokeDasharray="314.16"
+                        strokeDashoffset={314.16 - (314.16 * manualPct) / 100}
+                        className="transition-all duration-1000 ease-out"
+                      />
+                    </>
+                  )}
+                </svg>
+                {/* Center Percentage Display */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-3xl font-black text-[var(--primary)]">{manualPct}%</span>
+                  <span className="text-[10px] uppercase font-black tracking-wider text-[var(--muted)]">Manual</span>
+                </div>
+              </div>
+
+              {/* Color Code Labels */}
+              <div className="flex gap-4 justify-center text-xs font-semibold">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-3.5 h-3.5 rounded bg-orange-500 inline-block"></span>
+                  <span className="text-[var(--primary)]">Manual ({manualPosts})</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-3.5 h-3.5 rounded bg-violet-500 inline-block"></span>
+                  <span className="text-[var(--primary)]">Automated ({autoPosts})</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Balance Meter & Compliance Health Advice */}
+            <div className="kq-card p-6 border border-[var(--border)] bg-white flex flex-col justify-between">
+              <div>
+                <h3 className="font-serif text-lg font-bold text-[var(--primary)]">Google Policy & SEO Compliance</h3>
+                <p className="text-xs text-[var(--muted)] mt-1">Status of your platform's publisher quality and monetization index</p>
+                
+                {/* Status Badge */}
+                <div className="mt-4 flex items-center gap-3">
+                  <span className="text-xs font-bold text-[var(--primary)]">Status:</span>
+                  <span className={`inline-block rounded-full px-3 py-1 text-xs font-black uppercase tracking-wider border ${
+                    totalPosts === 0
+                      ? "bg-gray-50 border-gray-200 text-gray-800"
+                      : manualPct >= 45 && manualPct <= 55
+                        ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+                        : manualPct > 55
+                          ? "bg-sky-50 border-sky-200 text-sky-800"
+                          : "bg-amber-50 border-amber-200 text-amber-800 animate-pulse"
+                  }`}>
+                    {totalPosts === 0
+                      ? "No Data"
+                      : manualPct >= 45 && manualPct <= 55
+                        ? "Perfect 50/50 Balance"
+                        : manualPct > 55
+                          ? "High Manual Content (Safe)"
+                          : "High Automated Content (Warning)"}
+                  </span>
+                </div>
+
+                {/* Balance Meter Bar */}
+                <div className="mt-6">
+                  <div className="w-full bg-slate-100 rounded-full h-4 border border-[var(--border)] relative overflow-hidden">
+                    {/* Automated portion (violet base) */}
+                    <div className="bg-violet-500 h-full w-full absolute top-0 left-0"></div>
+                    {/* Manual portion overlay */}
+                    <div 
+                      className="bg-orange-500 h-full absolute top-0 left-0 transition-all duration-500" 
+                      style={{ width: `${manualPct}%` }}
+                    ></div>
+                    {/* Middle 50% target bar */}
+                    <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-white border-x border-slate-400 opacity-80" title="50% Balance Target"></div>
+                  </div>
+                  <div className="flex justify-between text-[10px] font-bold text-[var(--muted)] mt-1.5">
+                    <span>← Automated ({autoPct}%)</span>
+                    <span className="text-slate-500 font-extrabold uppercase">50% Balance Target</span>
+                    <span>Manual ({manualPct}%) →</span>
+                  </div>
+                </div>
+
+                {/* Health Advice Paragraph */}
+                <p className="mt-5 text-sm text-[var(--muted)] leading-relaxed">
+                  {totalPosts === 0
+                    ? "Upload some articles manually or run the RSS synchronization script to fetch news content to start calculating your dashboard balance."
+                    : manualPct >= 45 && manualPct <= 55
+                      ? "Excellent! Your site maintains a healthy 50% automated / 50% manual ratio. This satisfies Google's Helpful Content System and minimizes monetization compliance risks."
+                      : manualPct > 55
+                        ? `You have a robust manual content ratio of ${manualPct}%. Your site is in a very safe zone for SEO. You can safely run the automated RSS news syndication script to import new content.`
+                        : `Warning: Automated RSS/AI-generated content makes up ${autoPct}% of your articles. Google Search Console may flag your site as 'Low-value / Scraped Content'. Please manually upload some high-quality articles or guides (such as local college admission lists or study guides) to bring the manual ratio back above 45%.`}
+                </p>
+              </div>
+
+              {/* Quick Checklist */}
+              <div className="border-t border-[var(--border)] pt-4 mt-4 grid gap-2 sm:grid-cols-2 text-xs">
+                <div className="flex items-center gap-2 text-[var(--muted)]">
+                  <svg className={`w-4 h-4 shrink-0 ${totalPosts > 0 && manualPct >= 45 ? "text-emerald-500" : "text-amber-500"}`} fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
+                  </svg>
+                  <span>Min. 45% Manual Target</span>
+                </div>
+                <div className="flex items-center gap-2 text-[var(--muted)]">
+                  <svg className="w-4 h-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
+                  </svg>
+                  <span>Bilingual RSS Attribution</span>
+                </div>
+                <div className="flex items-center gap-2 text-[var(--muted)]">
+                  <svg className="w-4 h-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
+                  </svg>
+                  <span>Original Quizzes & Guides</span>
+                </div>
+                <div className="flex items-center gap-2 text-[var(--muted)]">
+                  <svg className="w-4 h-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
+                  </svg>
+                  <span>Safe Outbound Links</span>
+                </div>
+              </div>
             </div>
           </div>
 
