@@ -17,6 +17,7 @@ import {
   getDoc,
   getDocs,
   limit,
+  orderBy,
   query,
   serverTimestamp,
   setDoc,
@@ -124,6 +125,77 @@ export function AdminDashboard() {
   const autoPosts = Math.max(0, totalPosts - manualPosts);
   const manualPct = totalPosts > 0 ? Math.round((manualPosts / totalPosts) * 100) : 0;
   const autoPct = totalPosts > 0 ? 100 - manualPct : 0;
+
+  const syncStats = useMemo(() => {
+    const now = new Date();
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    let dayFeeds = 0, dayCalls = 0, dayPosts = 0;
+    let weekFeeds = 0, weekCalls = 0, weekPosts = 0;
+    let monthFeeds = 0, monthCalls = 0, monthPosts = 0;
+
+    syncLogs.forEach((log) => {
+      const d = log.dateObj;
+      if (!d) return;
+
+      if (d >= oneDayAgo) {
+        dayFeeds += log.feedItemsChecked;
+        dayCalls += log.geminiCalls;
+        dayPosts += log.postsCreated;
+      }
+      if (d >= sevenDaysAgo) {
+        weekFeeds += log.feedItemsChecked;
+        weekCalls += log.geminiCalls;
+        weekPosts += log.postsCreated;
+      }
+      if (d >= thirtyDaysAgo) {
+        monthFeeds += log.feedItemsChecked;
+        monthCalls += log.geminiCalls;
+        monthPosts += log.postsCreated;
+      }
+    });
+
+    return {
+      day: { feeds: dayFeeds, calls: dayCalls, posts: dayPosts },
+      week: { feeds: weekFeeds, calls: weekCalls, posts: weekPosts },
+      month: { feeds: monthFeeds, calls: monthCalls, posts: monthPosts },
+    };
+  }, [syncLogs]);
+
+  const failureAlert = useMemo(() => {
+    if (syncLogs.length === 0) return null;
+
+    const sortedLogs = [...syncLogs].sort((a, b) => b.dateObj.getTime() - a.dateObj.getTime());
+    const latestLog = sortedLogs[0];
+
+    const now = new Date();
+    const twelveHoursAgo = new Date(now.getTime() - 12 * 60 * 60 * 1000);
+
+    const isLatestFailed = latestLog.status === "error";
+    const isStale = latestLog.dateObj < twelveHoursAgo;
+
+    if (isLatestFailed) {
+      return {
+        type: "error",
+        title: "Latest Auto-Sync Failed!",
+        message: latestLog.errorMessage || "Unknown script execution crash during RSS parsing or database write.",
+        timestamp: latestLog.timestamp,
+      };
+    }
+
+    if (isStale) {
+      return {
+        type: "stale",
+        title: "Sync System Dormant / Stale!",
+        message: `The last successful sync occurred on ${latestLog.timestamp}. The system has not executed a sync script in the last 12 hours. Please check GitHub Actions scheduled cron logs.`,
+        timestamp: latestLog.timestamp,
+      };
+    }
+
+    return null;
+  }, [syncLogs]);
 
   useEffect(() => {
     if (!firebaseAuth) {
@@ -242,17 +314,24 @@ export function AdminDashboard() {
     if (!firestore) return;
     setLoadingLogs(true);
     try {
-      const q = query(collection(firestore, firestoreCollections.syncLogs), limit(25));
+      const q = query(
+        collection(firestore, firestoreCollections.syncLogs),
+        orderBy("timestamp", "desc"),
+        limit(150)
+      );
       const snapshot = await getDocs(q);
       const logs = snapshot.docs.map((docSnap) => {
         const data = docSnap.data();
         let formattedDate = "";
+        let dateObj = new Date();
         try {
           const t = data.timestamp;
           if (t && typeof t.toDate === "function") {
-            formattedDate = t.toDate().toLocaleString();
+            dateObj = t.toDate();
+            formattedDate = dateObj.toLocaleString();
           } else if (t && t.seconds) {
-            formattedDate = new Date(t.seconds * 1000).toLocaleString();
+            dateObj = new Date(t.seconds * 1000);
+            formattedDate = dateObj.toLocaleString();
           }
         } catch {
           formattedDate = "Unknown";
@@ -260,6 +339,7 @@ export function AdminDashboard() {
         return {
           id: docSnap.id,
           timestamp: formattedDate,
+          dateObj: dateObj,
           status: data.status || "success",
           durationSeconds: Number(data.durationSeconds || 0),
           geminiCalls: Number(data.geminiCalls || 0),
@@ -876,6 +956,42 @@ export function AdminDashboard() {
         </button>
       </div>
 
+      {/* Failure Alert Panel */}
+      {failureAlert && (
+        <div className={`mt-6 p-4 rounded-xl border flex gap-4 items-start ${
+          failureAlert.type === "error"
+            ? "bg-rose-50 border-rose-200 text-rose-800 shadow-sm"
+            : "bg-amber-50 border-amber-200 text-amber-800 shadow-sm"
+        }`}>
+          <div className="mt-0.5 shrink-0">
+            {failureAlert.type === "error" ? (
+              <svg className="w-6 h-6 text-rose-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+            )}
+          </div>
+          <div className="flex-1">
+            <h4 className="font-extrabold text-sm uppercase tracking-wide">{failureAlert.title}</h4>
+            <p className="text-xs mt-1.5 leading-relaxed font-medium">{failureAlert.message}</p>
+            <div className="mt-2.5 flex items-center gap-4 text-[10px] font-bold opacity-80">
+              <span>Failed At: {failureAlert.timestamp}</span>
+              <span>•</span>
+              <button 
+                type="button" 
+                className="underline cursor-pointer hover:opacity-100 bg-transparent border-0 p-0 text-[10px] font-bold text-inherit" 
+                onClick={() => { void loadSyncLogs(); void loadStats(); }}
+              >
+                Refresh System Logs
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Tabs */}
       <div className="mt-6 flex border-b border-[var(--border)] gap-4 select-none">
         <button
@@ -1294,9 +1410,9 @@ export function AdminDashboard() {
             </div>
           </div>
 
-          {/* Content Balance Visualization Dashboard */}
-          <div className="grid gap-6 md:grid-cols-[1.2fr_1.8fr]">
-            {/* Left: Interactive Ratio Donut Chart */}
+          {/* Content Balance & API Fetching Data Visualizations */}
+          <div className="grid gap-6 lg:grid-cols-3">
+            {/* Card 1: Content Balance Donut Chart */}
             <div className="kq-card p-6 border border-[var(--border)] bg-white flex flex-col items-center justify-between">
               <div className="text-center w-full">
                 <h3 className="font-serif text-lg font-bold text-[var(--primary)]">Content Balance</h3>
@@ -1355,10 +1471,69 @@ export function AdminDashboard() {
               </div>
             </div>
 
-            {/* Right: Balance Meter & Compliance Health Advice */}
+            {/* Card 2: API Data Fetching Stats */}
             <div className="kq-card p-6 border border-[var(--border)] bg-white flex flex-col justify-between">
               <div>
-                <h3 className="font-serif text-lg font-bold text-[var(--primary)]">Google Policy & SEO Compliance</h3>
+                <h3 className="font-serif text-lg font-bold text-[var(--primary)]">API Fetching Statistics</h3>
+                <p className="text-xs text-[var(--muted)] mt-1">Volume of data fetched & summarized via Gemini API</p>
+                
+                <div className="mt-4 space-y-4">
+                  {/* Daily Stats */}
+                  <div>
+                    <div className="flex justify-between text-xs font-bold text-[var(--primary)] mb-1">
+                      <span>Last 24 Hours</span>
+                      <span className="text-violet-600 font-extrabold">{syncStats.day.calls} Gemini calls</span>
+                    </div>
+                    <div className="w-full bg-slate-100 rounded-full h-2 border border-slate-200 overflow-hidden relative">
+                      <div className="bg-blue-500 h-full inline-block" style={{ width: `${Math.min(100, (syncStats.day.feeds / 1000) * 100)}%` }} title="Scanned feeds"></div>
+                    </div>
+                    <div className="flex justify-between text-[9px] text-[var(--muted)] font-bold mt-1">
+                      <span>{syncStats.day.feeds} Items Scanned</span>
+                      <span>{syncStats.day.posts} Articles Created</span>
+                    </div>
+                  </div>
+
+                  {/* Weekly Stats */}
+                  <div>
+                    <div className="flex justify-between text-xs font-bold text-[var(--primary)] mb-1">
+                      <span>Last 7 Days</span>
+                      <span className="text-violet-600 font-extrabold">{syncStats.week.calls} Gemini calls</span>
+                    </div>
+                    <div className="w-full bg-slate-100 rounded-full h-2 border border-slate-200 overflow-hidden relative">
+                      <div className="bg-blue-500 h-full inline-block" style={{ width: `${Math.min(100, (syncStats.week.feeds / 3000) * 100)}%` }} title="Scanned feeds"></div>
+                    </div>
+                    <div className="flex justify-between text-[9px] text-[var(--muted)] font-bold mt-1">
+                      <span>{syncStats.week.feeds} Items Scanned</span>
+                      <span>{syncStats.week.posts} Articles Created</span>
+                    </div>
+                  </div>
+
+                  {/* Monthly Stats */}
+                  <div>
+                    <div className="flex justify-between text-xs font-bold text-[var(--primary)] mb-1">
+                      <span>Last 30 Days</span>
+                      <span className="text-violet-600 font-extrabold">{syncStats.month.calls} Gemini calls</span>
+                    </div>
+                    <div className="w-full bg-slate-100 rounded-full h-2 border border-slate-200 overflow-hidden relative">
+                      <div className="bg-blue-500 h-full inline-block" style={{ width: `${Math.min(100, (syncStats.month.feeds / 12000) * 100)}%` }} title="Scanned feeds"></div>
+                    </div>
+                    <div className="flex justify-between text-[9px] text-[var(--muted)] font-bold mt-1">
+                      <span>{syncStats.month.feeds} Items Scanned</span>
+                      <span>{syncStats.month.posts} Articles Created</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-[10px] text-center text-[var(--muted)] font-bold border-t border-[var(--border)] pt-3 mt-3">
+                Calculated dynamically from {syncLogs.length} logged runs.
+              </div>
+            </div>
+
+            {/* Card 3: Google Policy & SEO Compliance Advice */}
+            <div className="kq-card p-6 border border-[var(--border)] bg-white flex flex-col justify-between">
+              <div>
+                <h3 className="font-serif text-lg font-bold text-[var(--primary)] font-bold">Google & SEO Compliance</h3>
                 <p className="text-xs text-[var(--muted)] mt-1">Status of your platform's publisher quality and monetization index</p>
                 
                 {/* Status Badge */}
@@ -1384,62 +1559,46 @@ export function AdminDashboard() {
                 </div>
 
                 {/* Balance Meter Bar */}
-                <div className="mt-6">
-                  <div className="w-full bg-slate-100 rounded-full h-4 border border-[var(--border)] relative overflow-hidden">
-                    {/* Automated portion (violet base) */}
+                <div className="mt-4">
+                  <div className="w-full bg-slate-100 rounded-full h-3 border border-[var(--border)] relative overflow-hidden">
                     <div className="bg-violet-500 h-full w-full absolute top-0 left-0"></div>
-                    {/* Manual portion overlay */}
                     <div 
                       className="bg-orange-500 h-full absolute top-0 left-0 transition-all duration-500" 
                       style={{ width: `${manualPct}%` }}
                     ></div>
-                    {/* Middle 50% target bar */}
-                    <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-white border-x border-slate-400 opacity-80" title="50% Balance Target"></div>
+                    <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-white opacity-80" title="50% Target"></div>
                   </div>
-                  <div className="flex justify-between text-[10px] font-bold text-[var(--muted)] mt-1.5">
-                    <span>← Automated ({autoPct}%)</span>
-                    <span className="text-slate-500 font-extrabold uppercase">50% Balance Target</span>
-                    <span>Manual ({manualPct}%) →</span>
+                  <div className="flex justify-between text-[9px] font-bold text-[var(--muted)] mt-1">
+                    <span>Automated ({autoPct}%)</span>
+                    <span>Manual ({manualPct}%)</span>
                   </div>
                 </div>
 
                 {/* Health Advice Paragraph */}
-                <p className="mt-5 text-sm text-[var(--muted)] leading-relaxed">
+                <p className="mt-3 text-xs text-[var(--muted)] leading-relaxed">
                   {totalPosts === 0
-                    ? "Upload some articles manually or run the RSS synchronization script to fetch news content to start calculating your dashboard balance."
+                    ? "Upload some articles manually or run the RSS synchronization script to calculate your compliance status."
                     : manualPct >= 45 && manualPct <= 55
-                      ? "Excellent! Your site maintains a healthy 50% automated / 50% manual ratio. This satisfies Google's Helpful Content System and minimizes monetization compliance risks."
+                      ? "Excellent! Your site maintains a healthy 50% automated / 50% manual ratio. This satisfies Google's Helpful Content guidelines."
                       : manualPct > 55
-                        ? `You have a robust manual content ratio of ${manualPct}%. Your site is in a very safe zone for SEO. You can safely run the automated RSS news syndication script to import new content.`
-                        : `Warning: Automated RSS/AI-generated content makes up ${autoPct}% of your articles. Google Search Console may flag your site as 'Low-value / Scraped Content'. Please manually upload some high-quality articles or guides (such as local college admission lists or study guides) to bring the manual ratio back above 45%.`}
+                        ? `Good! You have a robust manual ratio of ${manualPct}%. Your site is in a very safe zone for SEO.`
+                        : `Warning: Automated content makes up ${autoPct}% of your articles. Google may flag your site for 'Low-value' content. Please manually upload some high-quality articles or guides.`}
                 </p>
               </div>
 
               {/* Quick Checklist */}
-              <div className="border-t border-[var(--border)] pt-4 mt-4 grid gap-2 sm:grid-cols-2 text-xs">
-                <div className="flex items-center gap-2 text-[var(--muted)]">
-                  <svg className={`w-4 h-4 shrink-0 ${totalPosts > 0 && manualPct >= 45 ? "text-emerald-500" : "text-amber-500"}`} fill="currentColor" viewBox="0 0 20 20">
+              <div className="border-t border-[var(--border)] pt-3 mt-3 grid gap-1.5 grid-cols-2 text-[10px] font-bold text-[var(--muted)]">
+                <div className="flex items-center gap-1">
+                  <svg className={`w-3.5 h-3.5 shrink-0 ${totalPosts > 0 && manualPct >= 45 ? "text-emerald-500" : "text-amber-500"}`} fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
                   </svg>
-                  <span>Min. 45% Manual Target</span>
+                  <span>Min. 45% Manual</span>
                 </div>
-                <div className="flex items-center gap-2 text-[var(--muted)]">
-                  <svg className="w-4 h-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex items-center gap-1">
+                  <svg className="w-3.5 h-3.5 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
                   </svg>
-                  <span>Bilingual RSS Attribution</span>
-                </div>
-                <div className="flex items-center gap-2 text-[var(--muted)]">
-                  <svg className="w-4 h-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-                  </svg>
-                  <span>Original Quizzes & Guides</span>
-                </div>
-                <div className="flex items-center gap-2 text-[var(--muted)]">
-                  <svg className="w-4 h-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-                  </svg>
-                  <span>Safe Outbound Links</span>
+                  <span>Bilingual RSS Credit</span>
                 </div>
               </div>
             </div>
