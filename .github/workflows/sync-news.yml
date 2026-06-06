@@ -21,7 +21,14 @@ jobs:
         run: npm ci
 
       - name: Create Service Account File
-        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > service-account.json
+        run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "::error::FIREBASE_SERVICE_ACCOUNT secret is empty or not set in repository secrets!"
+            exit 1
+          fi
+          echo "$FIREBASE_SERVICE_ACCOUNT" > service-account.json
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
       - name: Run Sync Script
         env:
