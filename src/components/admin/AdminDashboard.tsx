@@ -103,6 +103,20 @@ export function AdminDashboard() {
     quizzes: 0,
   });
 
+  // Speed Performance Metrics
+  const [perfMetrics, setPerfMetrics] = useState({
+    loadTimeMs: 0,
+    ttfbMs: 0,
+    domReadyMs: 0,
+    renderTimeMs: 0,
+  });
+
+  // SEO Analyzer
+  const [seoSlug, setSeoSlug] = useState("/");
+  const [seoResult, setSeoResult] = useState<any | null>(null);
+  const [analyzingSeo, setAnalyzingSeo] = useState(false);
+  const [seoError, setSeoError] = useState("");
+
   const canUseFirebase = hasFirebaseConfig && firebaseAuth && firestore;
 
   const totalPosts = stats.posts;
@@ -296,6 +310,146 @@ export function AdminDashboard() {
       void loadStats();
     }
   }, [activeTab, user]);
+
+  useEffect(() => {
+    if (activeTab === "telemetry") {
+      const getMetrics = () => {
+        setTimeout(() => {
+          const navigationEntries = performance.getEntriesByType("navigation");
+          const [entry] = navigationEntries.length > 0 ? (navigationEntries as any[]) : [null];
+          if (entry) {
+            setPerfMetrics({
+              loadTimeMs: Math.round(entry.duration),
+              ttfbMs: Math.round(entry.responseStart - entry.requestStart),
+              domReadyMs: Math.round(entry.domContentLoadedEventEnd - entry.responseStart),
+              renderTimeMs: Math.round(entry.loadEventEnd - entry.domContentLoadedEventEnd),
+            });
+          } else {
+            const t = window.performance.timing;
+            if (t) {
+              setPerfMetrics({
+                loadTimeMs: t.loadEventEnd - t.navigationStart,
+                ttfbMs: t.responseStart - t.requestStart,
+                domReadyMs: t.domContentLoadedEventEnd - t.responseStart,
+                renderTimeMs: t.loadEventEnd - t.domContentLoadedEventEnd,
+              });
+            }
+          }
+        }, 300);
+      };
+
+      if (document.readyState === "complete") {
+        getMetrics();
+      } else {
+        window.addEventListener("load", getMetrics);
+        return () => window.removeEventListener("load", getMetrics);
+      }
+    }
+  }, [activeTab]);
+
+  async function analyzeSeoPage() {
+    setAnalyzingSeo(true);
+    setSeoError("");
+    setSeoResult(null);
+
+    let targetUrl = seoSlug.trim();
+    if (!targetUrl.startsWith("/")) {
+      targetUrl = "/" + targetUrl;
+    }
+
+    try {
+      const response = await fetch(targetUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch page: ${response.status} ${response.statusText}`);
+      }
+
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+
+      // Title audit
+      const title = doc.title || "";
+      const titleLength = title.length;
+      const titleScore = titleLength > 0 ? (titleLength >= 30 && titleLength <= 65 ? 25 : 18) : 0;
+
+      // Meta description audit
+      const metaDescEl = doc.querySelector('meta[name="description"]');
+      const metaDesc = metaDescEl ? metaDescEl.getAttribute("content") || "" : "";
+      const descLength = metaDesc.length;
+      const descScore = descLength > 0 ? (descLength >= 110 && descLength <= 160 ? 25 : 18) : 0;
+
+      // Headings audit (H1)
+      const h1s = doc.querySelectorAll("h1");
+      const h1Count = h1s.length;
+      let h1Score = 0;
+      if (h1Count === 1) h1Score = 20;
+      else if (h1Count > 1) h1Score = 10;
+
+      // Images alt audit
+      const imgs = doc.querySelectorAll("img");
+      const imgCount = imgs.length;
+      let missingAltCount = 0;
+      imgs.forEach((img) => {
+        if (!img.hasAttribute("alt") || !img.getAttribute("alt")?.trim()) {
+          missingAltCount++;
+        }
+      });
+      const altScore = imgCount > 0 ? Math.max(0, 15 - missingAltCount * 3) : 15;
+
+      // JSON-LD schemas
+      const schemas = doc.querySelectorAll('script[type="application/ld+json"]');
+      const schemaCount = schemas.length;
+      const schemaScore = schemaCount > 0 ? 15 : 0;
+
+      // Calculate total score
+      const totalScore = titleScore + descScore + h1Score + altScore + schemaScore;
+
+      // Generate suggestions list
+      const suggestions: string[] = [];
+      if (titleLength === 0) {
+        suggestions.push("Critical: Title tag is missing. Add a descriptive title to rank in search results.");
+      } else if (titleLength < 30 || titleLength > 65) {
+        suggestions.push(`Warning: Title tag is ${titleLength} characters. Keep it between 30 and 65 characters to avoid truncation in SERPs.`);
+      }
+
+      if (descLength === 0) {
+        suggestions.push("Critical: Meta description is missing. Add one to describe page summaries in search listings.");
+      } else if (descLength < 110 || descLength > 160) {
+        suggestions.push(`Warning: Meta description is ${descLength} characters. Keep it between 110 and 160 characters for optimal display.`);
+      }
+
+      if (h1Count === 0) {
+        suggestions.push("Critical: H1 tag is missing. Every page should have exactly one H1 tag defining the primary heading.");
+      } else if (h1Count > 1) {
+        suggestions.push(`Warning: Found ${h1Count} H1 tags. Keep exactly one H1 per page and use H2/H3 for sub-sections.`);
+      }
+
+      if (missingAltCount > 0) {
+        suggestions.push(`Warning: Found ${missingAltCount} image(s) missing 'alt' descriptions. Add 'alt' tags to all images to improve accessibility and image SEO.`);
+      }
+
+      if (schemaCount === 0) {
+        suggestions.push("Tip: JSON-LD structured data schema not found. Implement Article or FAQ schema markup to enable rich snippets in Google Search.");
+      }
+
+      setSeoResult({
+        score: totalScore,
+        title,
+        titleLength,
+        metaDesc,
+        descLength,
+        h1Count,
+        imgCount,
+        missingAltCount,
+        schemaCount,
+        suggestions,
+      });
+    } catch (err: any) {
+      setSeoError(err.message || "Failed to analyze page.");
+    } finally {
+      setAnalyzingSeo(false);
+    }
+  }
 
   async function uploadImage(file: File, fileSlug: string): Promise<string> {
     if (!firebaseStorage) return "";
@@ -1287,6 +1441,174 @@ export function AdminDashboard() {
                   </svg>
                   <span>Safe Outbound Links</span>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Speed Loading Performance & Live SEO Analyzer */}
+          <div className="grid gap-6 md:grid-cols-[1.2fr_1.8fr]">
+            {/* Speed loading dashboard */}
+            <div className="kq-card p-6 border border-[var(--border)] bg-white flex flex-col justify-between">
+              <div>
+                <h3 className="font-serif text-lg font-bold text-[var(--primary)]">Speed Performance (RUM)</h3>
+                <p className="text-xs text-[var(--muted)] mt-1">Real-User Monitoring from your current session</p>
+                
+                <div className="mt-5 grid gap-4 grid-cols-2">
+                  <div className="p-3 border border-[var(--border)] rounded bg-slate-50 text-center">
+                    <p className="text-[10px] font-bold text-[var(--muted)] uppercase">TTFB (Response)</p>
+                    <h4 className={`text-xl font-bold mt-1 ${perfMetrics.ttfbMs === 0 ? "text-slate-400" : perfMetrics.ttfbMs < 200 ? "text-emerald-600" : perfMetrics.ttfbMs < 500 ? "text-amber-600" : "text-rose-600"}`}>
+                      {perfMetrics.ttfbMs === 0 ? "Pending" : `${perfMetrics.ttfbMs} ms`}
+                    </h4>
+                    <span className="text-[9px] text-[var(--muted)] block mt-0.5">
+                      {perfMetrics.ttfbMs === 0 ? "Wait..." : perfMetrics.ttfbMs < 200 ? "Fast (Ideal)" : perfMetrics.ttfbMs < 500 ? "Moderate" : "Slow (Optimize)"}
+                    </span>
+                  </div>
+                  <div className="p-3 border border-[var(--border)] rounded bg-slate-50 text-center">
+                    <p className="text-[10px] font-bold text-[var(--muted)] uppercase">DOM Content Loaded</p>
+                    <h4 className={`text-xl font-bold mt-1 ${perfMetrics.domReadyMs === 0 ? "text-slate-400" : perfMetrics.domReadyMs < 1000 ? "text-emerald-600" : perfMetrics.domReadyMs < 2500 ? "text-amber-600" : "text-rose-600"}`}>
+                      {perfMetrics.domReadyMs === 0 ? "Pending" : `${(perfMetrics.domReadyMs / 1000).toFixed(2)} s`}
+                    </h4>
+                    <span className="text-[9px] text-[var(--muted)] block mt-0.5">
+                      {perfMetrics.domReadyMs === 0 ? "Wait..." : perfMetrics.domReadyMs < 1000 ? "Good" : perfMetrics.domReadyMs < 2500 ? "Needs Improvement" : "Poor"}
+                    </span>
+                  </div>
+                  <div className="p-3 border border-[var(--border)] rounded bg-slate-50 text-center">
+                    <p className="text-[10px] font-bold text-[var(--muted)] uppercase">Page Load Time</p>
+                    <h4 className={`text-xl font-bold mt-1 ${perfMetrics.loadTimeMs === 0 ? "text-slate-400" : perfMetrics.loadTimeMs < 1500 ? "text-emerald-600" : perfMetrics.loadTimeMs < 3500 ? "text-amber-600" : "text-rose-600"}`}>
+                      {perfMetrics.loadTimeMs === 0 ? "Pending" : `${(perfMetrics.loadTimeMs / 1000).toFixed(2)} s`}
+                    </h4>
+                    <span className="text-[9px] text-[var(--muted)] block mt-0.5">
+                      {perfMetrics.loadTimeMs === 0 ? "Wait..." : perfMetrics.loadTimeMs < 1500 ? "Fast" : perfMetrics.loadTimeMs < 3500 ? "Moderate" : "Slow"}
+                    </span>
+                  </div>
+                  <div className="p-3 border border-[var(--border)] rounded bg-slate-50 text-center">
+                    <p className="text-[10px] font-bold text-[var(--muted)] uppercase">UI Rendering Time</p>
+                    <h4 className="text-xl font-bold mt-1 text-[var(--primary)]">
+                      {perfMetrics.renderTimeMs === 0 ? "Pending" : `${perfMetrics.renderTimeMs} ms`}
+                    </h4>
+                    <span className="text-[9px] text-[var(--muted)] block mt-0.5">Hydration & Assets</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Best practices suggestions */}
+              <div className="mt-5 border-t border-[var(--border)] pt-4">
+                <h4 className="text-xs font-bold text-[var(--primary)] uppercase tracking-wider mb-2.5">Speed Best Practices</h4>
+                <ul className="text-xs space-y-2 text-[var(--muted)] list-disc list-inside">
+                  <li><strong>Edge Caching (ISR):</strong> Next.js statically renders pages with a 5-minute cache (`revalidate = 300`). Keep this active to maintain ultra-fast speeds and prevent database costs.</li>
+                  <li><strong>Image Optimization:</strong> Utilize Next.js `Image` element or configure responsive aspect ratios to prevent Layout Shifts (CLS).</li>
+                  <li><strong>Asset Compression:</strong> Compress all featured images before uploading in Admin panel. Keep sizes under 150 KB.</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Live SEO Page Analyzer */}
+            <div className="kq-card p-6 border border-[var(--border)] bg-white flex flex-col justify-between">
+              <div>
+                <h3 className="font-serif text-lg font-bold text-[var(--primary)]">On-Page SEO Analyzer</h3>
+                <p className="text-xs text-[var(--muted)] mt-1">Audit HTML meta tags, heading hierarchies, alt descriptions, and schemas</p>
+                
+                {/* Search / Analyzer Input */}
+                <div className="mt-4 flex gap-2">
+                  <input
+                    value={seoSlug}
+                    onChange={(e) => setSeoSlug(e.target.value)}
+                    placeholder="Enter site relative path (e.g. /kn, /en/category/jobs)"
+                    className="flex-1 rounded-md border border-[var(--border)] px-3 py-2 text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={analyzeSeoPage}
+                    disabled={analyzingSeo}
+                    className="rounded-md bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white text-xs font-bold px-4 py-2 cursor-pointer select-none transition-colors"
+                  >
+                    {analyzingSeo ? "Analyzing..." : "Analyze"}
+                  </button>
+                </div>
+
+                {seoError && (
+                  <p className="mt-3 text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-100 rounded p-2.5">
+                    {seoError}
+                  </p>
+                )}
+
+                {/* Audit Results Dashboard */}
+                {seoResult ? (
+                  <div className="mt-5 border-t border-[var(--border)] pt-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-bold text-[var(--primary)]">SEO Score:</span>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-2xl font-black ${seoResult.score >= 80 ? "text-emerald-600" : seoResult.score >= 50 ? "text-amber-500" : "text-rose-600"}`}>
+                          {seoResult.score} / 100
+                        </span>
+                        <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded border ${
+                          seoResult.score >= 80
+                            ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+                            : seoResult.score >= 50
+                              ? "bg-amber-50 border-amber-200 text-amber-800"
+                              : "bg-rose-50 border-rose-200 text-rose-800"
+                        }`}>
+                          {seoResult.score >= 80 ? "Excellent" : seoResult.score >= 50 ? "Moderate" : "Poor"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Meta Info Snippet Preview */}
+                    <div className="mt-4 p-3 border border-[var(--border)] rounded bg-slate-50 text-xs">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase">Search Engine Snippet Preview</p>
+                      <h4 className="text-[#1a0dab] hover:underline font-medium text-base truncate mt-1.5 leading-snug">
+                        {seoResult.title || "Missing Title"}
+                      </h4>
+                      <p className="text-[#006621] truncate mt-0.5 leading-tight">
+                        {typeof window !== "undefined" ? window.location.origin : "https://kannadaquiz.in"}{seoSlug}
+                      </p>
+                      <p className="text-[#545454] mt-1 line-clamp-2 leading-relaxed">
+                        {seoResult.metaDesc || "Missing meta description. Search engines will fallback to scrap content from your body text which may degrade CTR."}
+                      </p>
+                    </div>
+
+                    {/* Metrics Checklist details */}
+                    <div className="mt-4 grid gap-2 grid-cols-3 text-[10px] font-bold uppercase tracking-wider text-[var(--muted)] text-center">
+                      <div className="p-2 border border-[var(--border)] rounded bg-white">
+                        <span>H1 tags</span>
+                        <span className={`block text-sm font-bold mt-0.5 ${seoResult.h1Count === 1 ? "text-emerald-600" : "text-amber-500"}`}>
+                          {seoResult.h1Count}
+                        </span>
+                      </div>
+                      <div className="p-2 border border-[var(--border)] rounded bg-white">
+                        <span>Missing alt</span>
+                        <span className={`block text-sm font-bold mt-0.5 ${seoResult.missingAltCount === 0 ? "text-emerald-600" : "text-rose-600"}`}>
+                          {seoResult.missingAltCount} / {seoResult.imgCount}
+                        </span>
+                      </div>
+                      <div className="p-2 border border-[var(--border)] rounded bg-white">
+                        <span>Schemas</span>
+                        <span className={`block text-sm font-bold mt-0.5 ${seoResult.schemaCount > 0 ? "text-emerald-600" : "text-rose-500"}`}>
+                          {seoResult.schemaCount}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Suggestions */}
+                    {seoResult.suggestions.length > 0 && (
+                      <div className="mt-4">
+                        <h4 className="text-xs font-bold text-[var(--primary)] uppercase tracking-wider mb-2">Suggestions to Optimize</h4>
+                        <ul className="text-xs space-y-1.5 text-[var(--muted)] list-none pl-0">
+                          {seoResult.suggestions.map((sug: string, idx: number) => (
+                            <li key={idx} className="flex gap-1.5 items-start">
+                              <span className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${sug.startsWith("Critical:") ? "bg-rose-500" : sug.startsWith("Warning:") ? "bg-amber-500" : "bg-sky-500"}`}></span>
+                              <span>{sug}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="mt-8 text-center text-xs text-[var(--muted)] py-12 border border-dashed border-[var(--border)] rounded">
+                    Click "Analyze" to audit the SEO parameters of any URL paths on your site.
+                  </div>
+                )}
               </div>
             </div>
           </div>
