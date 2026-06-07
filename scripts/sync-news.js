@@ -124,7 +124,7 @@ CRITICAL RULES TO AVOID AI-GENERATION SIGNS (HUMANIZATION):
    Every article's body text MUST be divided into the following structured layout separated by newlines:
    - Paragraph 1: Direct, simple introduction of the news (no fluffy intro).
    - Paragraph 2: Key details, facts, numbers, or terms.
-   - Paragraph 3: A dedicated "Exam Insights & GK Analysis" (in English) / "ಪರೀಕ್ಷಾ ದೃಷ್ಟಿಕೋನ ಮತ್ತು ಜಿ.ಕೆ ವಿಶ್ಲೇಷಣೆ" (in Kannada). This section must be original, human-like editorial value-add. It should analyze why this news matters for exams (KPSC, KEA, Banking, SSC), list 2-3 key potential GK questions, or list related static facts (e.g., parent organization, established year, headquarters, or related constitutional article).
+   - Paragraph 3: A dedicated "Exam Insights & GK Analysis" (in English) / "ಪರೀಕ್ಷಾ ದೃಷ್ಟಿಕೋನ ಮತ್ತು ಜಿ.ಕೆ ವಿಶ್ಲೇಷಣೆ" (in Kannada) describing why this news matters for exams (KPSC, KEA, Banking, SSC) and listing static background facts (e.g., parent organization, established year, headquarters). Do NOT write multiple-choice questions inside the body text; instead, output them in the structured "quiz" schema array.
 6. Categorize the article appropriately (e.g. 'KPSC', 'Jobs', 'Current Affairs', 'Karnataka', 'National', 'International', or 'Agriculture').
 7. Respond ONLY with a valid JSON object matching the requested schema. Do not add markdown wrapping or text before/after.`;
 
@@ -149,9 +149,27 @@ English Summary/Description: ${summary}`;
             properties: {
               title: { type: "STRING", description: "The translated and rewritten title in Kannada." },
               excerpt: { type: "STRING", description: "A clean 1-2 sentence summary in Kannada." },
-              body: { type: "STRING", description: "The full news article body rewritten in Kannada, formatted with newline breaks between paragraphs." }
+              body: { type: "STRING", description: "The news article body in Kannada. Do not include multiple-choice questions here." },
+              quiz: {
+                type: "ARRAY",
+                description: "Exactly 2-3 multiple choice questions based on the news context in Kannada.",
+                items: {
+                  type: "OBJECT",
+                  properties: {
+                    question: { type: "STRING", description: "The question text in Kannada." },
+                    options: { 
+                      type: "ARRAY", 
+                      items: { type: "STRING" },
+                      description: "Exactly 4 options in Kannada."
+                    },
+                    correctOptionIndex: { type: "INTEGER", description: "Correct option index (0-3)." },
+                    explanation: { type: "STRING", description: "Brief explanation in Kannada." }
+                  },
+                  required: ["question", "options", "correctOptionIndex", "explanation"]
+                }
+              }
             },
-            required: ["title", "excerpt", "body"]
+            required: ["title", "excerpt", "body", "quiz"]
           },
           en: {
             type: "OBJECT",
@@ -159,9 +177,27 @@ English Summary/Description: ${summary}`;
             properties: {
               title: { type: "STRING", description: "The rewritten, clean, professional title in English." },
               excerpt: { type: "STRING", description: "A clean 1-2 sentence summary in English." },
-              body: { type: "STRING", description: "The full news article body rewritten in English, formatted with newline breaks between paragraphs." }
+              body: { type: "STRING", description: "The news article body rewritten in English. Do not include multiple-choice questions here." },
+              quiz: {
+                type: "ARRAY",
+                description: "Exactly 2-3 multiple choice questions based on the news context in English.",
+                items: {
+                  type: "OBJECT",
+                  properties: {
+                    question: { type: "STRING", description: "The question text in English." },
+                    options: { 
+                      type: "ARRAY", 
+                      items: { type: "STRING" },
+                      description: "Exactly 4 options in English."
+                    },
+                    correctOptionIndex: { type: "INTEGER", description: "Correct option index (0-3)." },
+                    explanation: { type: "STRING", description: "Brief explanation in English." }
+                  },
+                  required: ["question", "options", "correctOptionIndex", "explanation"]
+                }
+              }
             },
-            required: ["title", "excerpt", "body"]
+            required: ["title", "excerpt", "body", "quiz"]
           },
           category: { type: "STRING", description: "Category name e.g. KPSC, Jobs, Current Affairs, Karnataka, National, International, Agriculture." }
         },
@@ -258,7 +294,8 @@ async function runSync() {
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
             sourceUrl: sourceUrl,
             sourceName: feed.name,
-            isManual: isManual
+            isManual: isManual,
+            quiz: translated.kn.quiz || []
           };
           const docRefKn = await db.collection("posts").add(newPostKn);
           postsCreated++;
@@ -277,7 +314,8 @@ async function runSync() {
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
             sourceUrl: sourceUrl,
             sourceName: feed.name,
-            isManual: isManual
+            isManual: isManual,
+            quiz: translated.en.quiz || []
           };
           const docRefEn = await db.collection("posts").add(newPostEn);
           postsCreated++;
