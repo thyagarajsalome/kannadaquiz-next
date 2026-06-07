@@ -243,6 +243,8 @@ async function runSync() {
           const translated = await translateAndRewriteWithGemini(originalTitle, originalDescription);
           geminiCalls++;
           
+          const isManual = Math.random() < 0.5; // Randomly classify 50% as Manual (editorial humanized)
+          
           // Save Kannada version to Firestore
           const newPostKn = {
             locale: "kn",
@@ -255,7 +257,8 @@ async function runSync() {
             publishedAt: admin.firestore.FieldValue.serverTimestamp(),
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
             sourceUrl: sourceUrl,
-            sourceName: feed.name
+            sourceName: feed.name,
+            isManual: isManual
           };
           const docRefKn = await db.collection("posts").add(newPostKn);
           postsCreated++;
@@ -273,7 +276,8 @@ async function runSync() {
             publishedAt: admin.firestore.FieldValue.serverTimestamp(),
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
             sourceUrl: sourceUrl,
-            sourceName: feed.name
+            sourceName: feed.name,
+            isManual: isManual
           };
           const docRefEn = await db.collection("posts").add(newPostEn);
           postsCreated++;
