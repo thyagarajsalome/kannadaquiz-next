@@ -82,7 +82,8 @@ export default async function QuizDetailPage({
       />
       <header>
         <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
-          {quiz.exam} • {quiz.subject} • {quiz.difficulty}
+          {quiz.exam && quiz.exam.toLowerCase() !== "general" ? `${quiz.exam} • ` : ""}
+          {quiz.subject} • {quiz.difficulty}
         </p>
         <h1 className="mt-3 font-serif text-4xl font-bold leading-tight text-[var(--primary)]">
           {quiz.title}
