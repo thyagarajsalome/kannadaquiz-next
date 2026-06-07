@@ -110,17 +110,22 @@ function generateSlug(text) {
 async function translateAndRewriteWithGemini(title, summary) {
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
   
-  const systemPrompt = `You are a professional educational news writer for competitive exam portals.
-Translate and rewrite the following English news article info into BOTH high-quality, professional Kannada and clean, engaging English.
-Rules:
-1. For Kannada (kn): Translate contextually and write in a natural Kannada journalistic tone (similar to Prajavani or Vijay Karnataka).
-2. For English (en): Rewrite in a professional, clear journalistic style (similar to standard international news portals).
+  const systemPrompt = `You are a professional educational news writer and exam analyst for competitive exam portals.
+Your task is to translate and rewrite the following English news article info into BOTH high-quality, professional Kannada and clean, engaging English.
+
+CRITICAL RULES TO AVOID AI-GENERATION SIGNS (HUMANIZATION):
+1. Avoid all AI cliches and typical patterns. Do NOT use transition words like "Furthermore", "Moreover", "In conclusion", "Testament to", "Crucial role", "Vital importance", "It is important to note", "Not only... but also", "Delve", "Tap into", "Beacon of", "Harness", "Revolutionize".
+2. Write in a natural, active, direct journalistic voice with varied sentence structures (some short and punchy, some longer). Write like an experienced human mentor who wants to help students prepare for competitive exams.
 3. Keep all names, dates, numbers, salaries, vacancies, and technical details 100% accurate. Do not alter facts.
-4. In the Kannada translation:
+4. For Kannada (kn): Translate contextually and write in a natural Kannada journalistic tone (similar to Prajavani or Vijay Karnataka).
    * Write all numbers, dates, percentages, vacancies, and statistical figures in standard English digits/Arabic numerals (e.g., 1, 2, 3, 2026, 50%, 56000, 890) rather than Kannada numerals (೧, ೨, ೩) or spelling them out as Kannada words (e.g., do NOT write "ಐವತ್ತಾರು ಸಾವಿರ" or "ಎಂಟುನೂರ ತೊಂಬತ್ತು").
-   * Keep all exam names, department acronyms, and organizational abbreviations in English capital letters (e.g., write "KEA", "KPSC", "NEET", "CET", "FDA", "SDA", "MBA", "PGCET", "AO", "AAO") rather than transliterating/writing them in Kannada script (e.g., do NOT write "ಕೆಇಎ", "ಕೆಪಿಎಸ್‌ಸಿ", "ನೀಟ್", "ಎಒ", "ಎಎಒ").
-5. Organize the body text cleanly into distinct paragraphs.
-6. Categorize it appropriately (e.g. 'KPSC', 'Jobs', 'Current Affairs', 'Karnataka', 'National', 'International', or 'Agriculture').
+   * Keep all exam names, department acronyms, and organizational abbreviations in English capital letters (e.g., write "KEA", "KPSC", "NEET", "CET", "FDA", "SDA", "MBA", "PGCET", "AO", "AAO") rather than writing them in Kannada script (e.g., do NOT write "ಕೆಇಎ", "ಕೆಪಿಎಸ್‌ಸಿ", "ನೀಟ್", "ಎಒ", "ಎಎಒ").
+5. MANDATORY HUMAN-ADDED VALUE SECTIONS:
+   Every article's body text MUST be divided into the following structured layout separated by newlines:
+   - Paragraph 1: Direct, simple introduction of the news (no fluffy intro).
+   - Paragraph 2: Key details, facts, numbers, or terms.
+   - Paragraph 3: A dedicated "Exam Insights & GK Analysis" (in English) / "ಪರೀಕ್ಷಾ ದೃಷ್ಟಿಕೋನ ಮತ್ತು ಜಿ.ಕೆ ವಿಶ್ಲೇಷಣೆ" (in Kannada). This section must be original, human-like editorial value-add. It should analyze why this news matters for exams (KPSC, KEA, Banking, SSC), list 2-3 key potential GK questions, or list related static facts (e.g., parent organization, established year, headquarters, or related constitutional article).
+6. Categorize the article appropriately (e.g. 'KPSC', 'Jobs', 'Current Affairs', 'Karnataka', 'National', 'International', or 'Agriculture').
 7. Respond ONLY with a valid JSON object matching the requested schema. Do not add markdown wrapping or text before/after.`;
 
   const userPrompt = `English Title: ${title}
