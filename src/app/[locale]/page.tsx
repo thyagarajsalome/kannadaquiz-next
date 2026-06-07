@@ -353,7 +353,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                       <div>
                         <div className="flex justify-between items-center gap-2">
                           <span className="text-[10px] font-bold uppercase tracking-wider bg-[var(--surface-muted)] text-[var(--muted)] px-2 py-0.5 rounded">
-                            {quiz.exam}
+                            {quiz.exam && quiz.exam.toLowerCase() !== "general" ? quiz.exam : quiz.subject}
                           </span>
                           <span className="text-xs text-[var(--muted)]">
                             {quiz.difficulty} • {quiz.timeLimitMinutes} {text.minutes}

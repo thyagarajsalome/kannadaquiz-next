@@ -42,7 +42,8 @@ export default async function QuizzesPage({ params }: { params: Promise<{ locale
         {quizzes.map((quiz) => (
           <Link key={quiz.slug} href={`/${locale}/quizzes/${quiz.slug}`} className="kq-card p-5">
             <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
-              {quiz.exam} • {quiz.subject} • {quiz.timeLimitMinutes} {text.minutes}
+              {quiz.exam && quiz.exam.toLowerCase() !== "general" ? `${quiz.exam} • ` : ""}
+              {quiz.subject} • {quiz.timeLimitMinutes} {text.minutes}
             </p>
             <h2 className="mt-3 font-serif text-2xl font-bold text-[var(--primary)]">
               {quiz.title}
