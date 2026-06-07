@@ -27,6 +27,13 @@ type RunQueryRow = {
   document?: FirestoreDocument;
 };
 
+export type MiniQuizQuestion = {
+  question: string;
+  options: string[];
+  correctOptionIndex: number;
+  explanation: string;
+};
+
 export type PublicPost = {
   id: string;
   slug: string;
@@ -39,6 +46,7 @@ export type PublicPost = {
   featuredImageUrl?: string;
   sourceUrl?: string;
   sourceName?: string;
+  quiz?: MiniQuizQuestion[];
 };
 
 export type PublicJob = {
@@ -337,6 +345,7 @@ function toPublicPost(doc: FirestoreDocument): PublicPost | null {
     featuredImageUrl: typeof data.featuredImageUrl === "string" ? data.featuredImageUrl : undefined,
     sourceUrl: typeof data.sourceUrl === "string" ? data.sourceUrl : undefined,
     sourceName: typeof data.sourceName === "string" ? data.sourceName : undefined,
+    quiz: Array.isArray(data.quiz) ? (data.quiz as MiniQuizQuestion[]) : undefined,
   };
 }
 

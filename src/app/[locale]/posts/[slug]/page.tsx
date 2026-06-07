@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale, type Locale } from "@/lib/locales";
 import { getPublicPostBySlug } from "@/lib/public-content";
+import { MiniQuizPlayer } from "@/components/MiniQuizPlayer";
 
 export const revalidate = 300;
 
@@ -189,6 +190,10 @@ export default async function PostPage({
           </div>
         ) : null}
       </div>
+
+      {post.quiz && post.quiz.length > 0 ? (
+        <MiniQuizPlayer questions={post.quiz} locale={locale} />
+      ) : null}
 
       {/* Back to Home Button at the Bottom */}
       <div className="mt-8 flex justify-center border-t border-[var(--border)] pt-8">
