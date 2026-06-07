@@ -47,6 +47,7 @@ type PublishedItem = {
   slug?: string;
   locale?: string;
   status?: string;
+  isManual?: boolean;
 };
 
 const kindLabels: Record<ContentKind, string> = {
@@ -300,6 +301,7 @@ export function AdminDashboard() {
             slug: typeof data.slug === "string" ? data.slug : undefined,
             locale: typeof data.locale === "string" ? data.locale : undefined,
             status: typeof data.status === "string" ? data.status : undefined,
+            isManual: data.isManual === true,
             updatedAt:
               typeof data.updatedAt === "string"
                 ? data.updatedAt
@@ -693,6 +695,25 @@ export function AdminDashboard() {
       setMessage(readFirebaseError(error));
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleVerifyItem(itemId: string) {
+    if (!firestore) return;
+    try {
+      const docRef = doc(firestore, firestoreCollections[kind], itemId);
+      await setDoc(docRef, {
+        isManual: true,
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+      
+      setItems((prev) =>
+        prev.map((item) => (item.id === itemId ? { ...item, isManual: true } : item))
+      );
+      void loadStats();
+      setMessage("Item successfully verified & marked as manual-reviewed.");
+    } catch (error) {
+      setMessage(readFirebaseError(error));
     }
   }
 
@@ -1348,30 +1369,51 @@ export function AdminDashboard() {
               items.map((item) => (
                 <article key={item.id} className="rounded-md border border-[var(--border)] p-3 flex justify-between items-start gap-4">
                   <div>
-                    <p className="font-bold text-[var(--primary)]">
-                      {item.title}
+                    <p className="font-bold text-[var(--primary)] flex flex-wrap gap-1.5 items-center">
+                      <span>{item.title}</span>
                       {item.status === "draft" && (
-                        <span className="ml-2 inline-block rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-amber-800 border border-amber-200">
+                        <span className="inline-block rounded bg-amber-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-amber-800 border border-amber-200">
                           Draft
                         </span>
+                      )}
+                      {(kind === "posts" || kind === "jobs") && (
+                        item.isManual ? (
+                          <span className="inline-block rounded bg-emerald-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-emerald-800 border border-emerald-200">
+                            Manual
+                          </span>
+                        ) : (
+                          <span className="inline-block rounded bg-violet-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-violet-800 border border-violet-200">
+                            Auto
+                          </span>
+                        )
                       )}
                     </p>
                     <p className="mt-1 text-xs text-[var(--muted)]">
                       {item.locale ?? "n/a"} {item.slug ? `• ${item.slug}` : ""}
                     </p>
                   </div>
-                  <div className="flex gap-2 shrink-0">
+                  <div className="flex gap-2 shrink-0 items-center">
+                    {(kind === "posts" || kind === "jobs") && !item.isManual && (
+                      <button
+                        type="button"
+                        onClick={() => handleVerifyItem(item.id)}
+                        className="text-xs text-emerald-600 font-bold hover:underline cursor-pointer"
+                        title="Mark as human reviewed & manual equivalent"
+                      >
+                        Verify
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => handleEditInit(item.id)}
-                      className="text-xs text-[var(--primary)] font-bold hover:underline"
+                      className="text-xs text-[var(--primary)] font-bold hover:underline cursor-pointer"
                     >
                       Edit
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDelete(item.id)}
-                      className="text-xs text-[var(--secondary)] font-bold hover:underline"
+                      className="text-xs text-[var(--secondary)] font-bold hover:underline cursor-pointer"
                     >
                       Delete
                     </button>
