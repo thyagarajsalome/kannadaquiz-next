@@ -128,18 +128,30 @@ export function AdminDashboard() {
 
   const syncStats = useMemo(() => {
     const now = new Date();
+    const fourHoursAgo = new Date(now.getTime() - 4 * 60 * 60 * 1000);
+    const twelveHoursAgo = new Date(now.getTime() - 12 * 60 * 60 * 1000);
     const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
+    let fourFeeds = 0, fourCalls = 0, fourPosts = 0;
+    let twelveFeeds = 0, twelveCalls = 0, twelvePosts = 0;
     let dayFeeds = 0, dayCalls = 0, dayPosts = 0;
     let weekFeeds = 0, weekCalls = 0, weekPosts = 0;
-    let monthFeeds = 0, monthCalls = 0, monthPosts = 0;
 
     syncLogs.forEach((log) => {
       const d = log.dateObj;
       if (!d) return;
 
+      if (d >= fourHoursAgo) {
+        fourFeeds += log.feedItemsChecked;
+        fourCalls += log.geminiCalls;
+        fourPosts += log.postsCreated;
+      }
+      if (d >= twelveHoursAgo) {
+        twelveFeeds += log.feedItemsChecked;
+        twelveCalls += log.geminiCalls;
+        twelvePosts += log.postsCreated;
+      }
       if (d >= oneDayAgo) {
         dayFeeds += log.feedItemsChecked;
         dayCalls += log.geminiCalls;
@@ -150,17 +162,13 @@ export function AdminDashboard() {
         weekCalls += log.geminiCalls;
         weekPosts += log.postsCreated;
       }
-      if (d >= thirtyDaysAgo) {
-        monthFeeds += log.feedItemsChecked;
-        monthCalls += log.geminiCalls;
-        monthPosts += log.postsCreated;
-      }
     });
 
     return {
+      fourHours: { feeds: fourFeeds, calls: fourCalls, posts: fourPosts },
+      twelveHours: { feeds: twelveFeeds, calls: twelveCalls, posts: twelvePosts },
       day: { feeds: dayFeeds, calls: dayCalls, posts: dayPosts },
       week: { feeds: weekFeeds, calls: weekCalls, posts: weekPosts },
-      month: { feeds: monthFeeds, calls: monthCalls, posts: monthPosts },
     };
   }, [syncLogs]);
 
@@ -1478,7 +1486,37 @@ export function AdminDashboard() {
                 <p className="text-xs text-[var(--muted)] mt-1">Volume of data fetched & summarized via Gemini API</p>
                 
                 <div className="mt-4 space-y-4">
-                  {/* Daily Stats */}
+                  {/* Last 4 Hours */}
+                  <div>
+                    <div className="flex justify-between text-xs font-bold text-[var(--primary)] mb-1">
+                      <span>Last 4 Hours</span>
+                      <span className="text-violet-600 font-extrabold">{syncStats.fourHours.calls} Gemini calls</span>
+                    </div>
+                    <div className="w-full bg-slate-100 rounded-full h-2 border border-slate-200 overflow-hidden relative">
+                      <div className="bg-blue-500 h-full inline-block" style={{ width: `${Math.min(100, (syncStats.fourHours.feeds / 200) * 100)}%` }} title="Scanned feeds"></div>
+                    </div>
+                    <div className="flex justify-between text-[9px] text-[var(--muted)] font-bold mt-1">
+                      <span>{syncStats.fourHours.feeds} Items Scanned</span>
+                      <span>{syncStats.fourHours.posts} Articles Created</span>
+                    </div>
+                  </div>
+
+                  {/* Last 12 Hours */}
+                  <div>
+                    <div className="flex justify-between text-xs font-bold text-[var(--primary)] mb-1">
+                      <span>Last 12 Hours</span>
+                      <span className="text-violet-600 font-extrabold">{syncStats.twelveHours.calls} Gemini calls</span>
+                    </div>
+                    <div className="w-full bg-slate-100 rounded-full h-2 border border-slate-200 overflow-hidden relative">
+                      <div className="bg-blue-500 h-full inline-block" style={{ width: `${Math.min(100, (syncStats.twelveHours.feeds / 500) * 100)}%` }} title="Scanned feeds"></div>
+                    </div>
+                    <div className="flex justify-between text-[9px] text-[var(--muted)] font-bold mt-1">
+                      <span>{syncStats.twelveHours.feeds} Items Scanned</span>
+                      <span>{syncStats.twelveHours.posts} Articles Created</span>
+                    </div>
+                  </div>
+
+                  {/* Last 24 Hours */}
                   <div>
                     <div className="flex justify-between text-xs font-bold text-[var(--primary)] mb-1">
                       <span>Last 24 Hours</span>
@@ -1493,33 +1531,18 @@ export function AdminDashboard() {
                     </div>
                   </div>
 
-                  {/* Weekly Stats */}
+                  {/* Last 7 Days */}
                   <div>
                     <div className="flex justify-between text-xs font-bold text-[var(--primary)] mb-1">
                       <span>Last 7 Days</span>
                       <span className="text-violet-600 font-extrabold">{syncStats.week.calls} Gemini calls</span>
                     </div>
                     <div className="w-full bg-slate-100 rounded-full h-2 border border-slate-200 overflow-hidden relative">
-                      <div className="bg-blue-500 h-full inline-block" style={{ width: `${Math.min(100, (syncStats.week.feeds / 3000) * 100)}%` }} title="Scanned feeds"></div>
+                      <div className="bg-blue-500 h-full inline-block" style={{ width: `${Math.min(100, (syncStats.week.feeds / 6000) * 100)}%` }} title="Scanned feeds"></div>
                     </div>
                     <div className="flex justify-between text-[9px] text-[var(--muted)] font-bold mt-1">
                       <span>{syncStats.week.feeds} Items Scanned</span>
                       <span>{syncStats.week.posts} Articles Created</span>
-                    </div>
-                  </div>
-
-                  {/* Monthly Stats */}
-                  <div>
-                    <div className="flex justify-between text-xs font-bold text-[var(--primary)] mb-1">
-                      <span>Last 30 Days</span>
-                      <span className="text-violet-600 font-extrabold">{syncStats.month.calls} Gemini calls</span>
-                    </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2 border border-slate-200 overflow-hidden relative">
-                      <div className="bg-blue-500 h-full inline-block" style={{ width: `${Math.min(100, (syncStats.month.feeds / 12000) * 100)}%` }} title="Scanned feeds"></div>
-                    </div>
-                    <div className="flex justify-between text-[9px] text-[var(--muted)] font-bold mt-1">
-                      <span>{syncStats.month.feeds} Items Scanned</span>
-                      <span>{syncStats.month.posts} Articles Created</span>
                     </div>
                   </div>
                 </div>
