@@ -1633,9 +1633,9 @@ export function AdminDashboard() {
                     ></div>
                     <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-white opacity-80" title="50% Target"></div>
                   </div>
-                  <div className="flex justify-between text-[9px] font-bold text-[var(--muted)] mt-1">
-                    <span>Automated ({autoPct}%)</span>
-                    <span>Manual ({manualPct}%)</span>
+                  <div className="flex justify-between text-[9px] font-bold mt-1">
+                    <span className="text-orange-600">Manual ({manualPct}%)</span>
+                    <span className="text-violet-600">Automated ({autoPct}%)</span>
                   </div>
                 </div>
 
