@@ -1,8 +1,8 @@
 name: Auto Sync News
 
 on:
-  schedule:
-    - cron: '0 */6 * * *' # Runs automatically every 6 hours
+  # schedule:
+  #   - cron: '0 */6 * * *' # Runs automatically every 6 hours
   workflow_dispatch: # Allows you to run it manually from GitHub click of a button
 
 jobs:
