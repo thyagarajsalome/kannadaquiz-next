@@ -38,6 +38,9 @@ export function Header({ locale }: { locale: Locale }) {
           <Link href={`/${locale}/category/jobs`} className="hover:text-[var(--secondary)] transition-colors">
             {locale === "kn" ? "ಉದ್ಯೋಗ ಮಾಹಿತಿ" : "Jobs & Careers"}
           </Link>
+          <Link href={`/${locale}/syllabus`} className="hover:text-[var(--secondary)] transition-colors">
+            {locale === "kn" ? "ಪರೀಕ್ಷಾ ಪಠ್ಯಕ್ರಮ" : "Exam Syllabus"}
+          </Link>
           {/* Dropdown Menu for More Categories */}
           <div className="relative group">
             <button className="flex items-center gap-1 hover:text-[var(--secondary)] transition-colors font-semibold text-[var(--muted)] py-2 select-none cursor-pointer">
@@ -81,6 +84,9 @@ export function Header({ locale }: { locale: Locale }) {
             className="bg-[var(--secondary)] text-white px-2 py-0.5 rounded text-[10px] font-extrabold select-none"
           >
             {locale === "kn" ? "ಕ್ವಿಜ್‌ಗಳು" : "Quizzes"}
+          </Link>
+          <Link href={`/${locale}/syllabus`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಪಠ್ಯಕ್ರಮ" : "Syllabus"}
           </Link>
           <Link href={`/${locale}/category/karnataka`} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಕರ್ನಾಟಕ" : "Karnataka"}
