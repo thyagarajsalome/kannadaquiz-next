@@ -173,7 +173,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     <>
       {/* 1. Breaking News Ticker */}
       {posts.length > 0 && (
-        <div className="bg-[var(--primary)] text-white text-sm py-2 border-b border-[var(--border)]">
+        <div className="bg-[var(--primary)] text-white text-sm py-2">
           <div className="kq-container flex items-center gap-3">
             <span className="bg-[var(--secondary)] text-white text-xs font-bold uppercase px-2 py-0.5 rounded shrink-0">
               {locale === "kn" ? "ನೇರ ಸುದ್ದಿ" : "BREAKING"}

@@ -5,7 +5,7 @@ import { Logo } from "@/components/Logo";
 
 export function Header({ locale }: { locale: Locale }) {
   return (
-    <header className="border-b border-[var(--border)] bg-white">
+    <header className="bg-white md:border-b md:border-[var(--border)]">
       <div className="kq-container flex min-h-16 items-center justify-between gap-6">
         <Link href={`/${locale}`} className="flex items-center">
           <Logo />
@@ -80,7 +80,7 @@ export function Header({ locale }: { locale: Locale }) {
       </div>
       
       {/* Mobile Category Scrollbar */}
-      <div className="border-t border-[var(--border)] bg-[var(--surface-soft)] md:hidden py-2.5 overflow-x-auto whitespace-nowrap">
+      <div className="border-b border-[var(--border)] bg-[var(--surface-soft)] md:hidden py-2.5 overflow-x-auto whitespace-nowrap">
         <div className="kq-container flex gap-5 text-xs font-bold uppercase tracking-wider text-[var(--muted)] items-center">
           <Link href={`/${locale}`} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಮುಖಪುಟ" : "Home"}
