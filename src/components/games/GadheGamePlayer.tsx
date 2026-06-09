@@ -35,6 +35,56 @@ const proverbsData: ProverbData[] = [
     correctOrder: ["ಉಪ್ಪಿಗಿಂತ", "ರುಚಿಯಿಲ್ಲ", "ತಾಯಿಗಿಂತ", "ಬಂಧುವಿಲ್ಲ"],
     meaningKn: "ಜೀವನಕ್ಕೆ ಉಪ್ಪು ಎಷ್ಟು ಮುಖ್ಯವೋ, ತಾಯಿಯ ಪ್ರೀತಿ ಮತ್ತು ಸಂಬಂಧ ಅಷ್ಟೇ ಶ್ರೇಷ್ಠ ಎಂಬ ನೀತಿ.",
     meaningEn: "Nothing is tastier than salt, and no one is closer than a mother."
+  },
+  {
+    correctOrder: ["ಮಾಡಿದ್ದುಣ್ಣೋ", "ಮಹಾರಾಯ"],
+    meaningKn: "ನಾವು ಮಾಡುವ ಪ್ರತಿಯೊಂದು ಕೆಲಸದ ಫಲವನ್ನು ನಾವೇ ಉಣ್ಣಬೇಕಾಗುತ್ತದೆ ಎಂಬ ನೀತಿ.",
+    meaningEn: "As you sow, so shall you reap (literally: eat what you made, oh great king)."
+  },
+  {
+    correctOrder: ["ಅತಿ", "ಆಸೆ", "ಗತಿ", "ಗೇಡು"],
+    meaningKn: "ಅತಿಯಾದ ಆಸೆಯು ಕೊನೆಗೆ ಮನುಷ್ಯನಿಗೆ ದುಃಖ ಮತ್ತು ಕೆಡುಕನ್ನು ಉಂಟುಮಾಡುತ್ತದೆ ಎಂಬ ನೀತಿ.",
+    meaningEn: "Greed leads to grief/ruin."
+  },
+  {
+    correctOrder: ["ಮಾತು", "ಬೆಳ್ಳಿ", "ಮೌನ", "ಬಂಗಾರ"],
+    meaningKn: "ಮಾತನಾಡುವುದಕ್ಕಿಂತ ಸಂದರ್ಭಕ್ಕೆ ತಕ್ಕಂತೆ ಮೌನವಾಗಿರುವುದು ಹೆಚ್ಚು ಮೌಲ್ಯಯುತ ಎಂಬ ನೀತಿ.",
+    meaningEn: "Speech is silver, silence is golden."
+  },
+  {
+    correctOrder: ["ಸತ್ಯಕ್ಕೆ", "ಸಾವಿಲ್ಲ", "ಸುಳ್ಳಿಗೆ", "ಬಾಳಿಲ್ಲ"],
+    meaningKn: "ಸತ್ಯವು ಯಾವಾಗಲೂ ಸಾರ್ವಕಾಲಿಕ ಮತ್ತು ಶಾಶ್ವತ, ಆದರೆ ಸುಳ್ಳು ಹೆಚ್ಚು ಕಾಲ ಬಾಳಲಾರದು ಎಂಬ ನೀತಿ.",
+    meaningEn: "Truth never dies, falsehood has no future."
+  },
+  {
+    correctOrder: ["ಚಿಂತೆ", "ಇಲ್ಲದವನಿಗೆ", "ಸಂತೆನಲ್ಲೂ", "ನಿದ್ದೆ"],
+    meaningKn: "ಯಾವ ಚಿಂತೆಯೂ ಕಾಡದವನಿಗೆ ಗದ್ದಲದ ಸಂತೆ ಮಾರುಕಟ್ಟೆಯಲ್ಲೂ ನೆಮ್ಮದಿಯ ನಿದ್ದೆ ಬರುತ್ತದೆ.",
+    meaningEn: "A worry-free mind can sleep peacefully even in a chaotic market."
+  },
+  {
+    correctOrder: ["ಕೋಪವೇ", "ತನ್ನ", "ಶತ್ರು", "ಶಾಂತಿಯೇ", "ತನ್ನ", "ಬಂಧು"],
+    meaningKn: "ನಮ್ಮ ಕೋಪವೇ ನಮಗೆ ದೊಡ್ಡ ಶತ್ರು, ಹಾಗೆಯೇ ನಮ್ಮ ಶಾಂತ ಗುಣವೇ ನಮಗೆ ಉತ್ತಮ ಬಂಧು ಎಂಬ ನೀತಿ.",
+    meaningEn: "Anger is your enemy, peace is your friend (literally: anger is one's own enemy, peace is one's relation)."
+  },
+  {
+    correctOrder: ["ತುಂಬಿದ", "ಕೊಡ", "ತುಳುಕುವುದಿಲ್ಲ"],
+    meaningKn: "ಜ್ಞಾನ ಹೊಂದಿರುವ ಸುಸಂಸ್ಕೃತ ವ್ಯಕ್ತಿಗಳು ಎಂದಿಗೂ ಅಹಂಕಾರ ಪಡುವುದಿಲ್ಲ ಎಂಬ ನೀತಿ.",
+    meaningEn: "Deep rivers run silent (literally: a full pot does not spill)."
+  },
+  {
+    correctOrder: ["ಹನಿ", "ಹನಿ", "ಗೂಡಿದರೆ", "ಹಳ್ಳ"],
+    meaningKn: "ಸಣ್ಣ ಪ್ರಯತ್ನಗಳು ಅಥವಾ ಉಳಿತಾಯಗಳು ಸೇರಿ ಕೊನೆಗೆ ದೊಡ್ಡ ಯಶಸ್ಸನ್ನು ನೀಡುತ್ತವೆ ಎಂಬ ನೀತಿ.",
+    meaningEn: "Many drops make an ocean (literally: drops joined together make a stream)."
+  },
+  {
+    correctOrder: ["ಮನಸ್ಸಿದ್ದರೆ", "ಮಾರ್ಗ"],
+    meaningKn: "ಕೆಲಸ ಮಾಡಲು ಇಚ್ಛೆಯಿದ್ದರೆ ಅದನ್ನು ಸಾಧಿಸಲು ನಮಗೆ ದಾರಿ ತಾನೇ ಸಿಗುತ್ತದೆ ಎಂಬ ನೀತಿ.",
+    meaningEn: "Where there is a will, there is a way (literally: if there is mind/intent, there is a path)."
+  },
+  {
+    correctOrder: ["ಹೆಣ್ಣು", "ಸಂಸಾರದ", "ಕಣ್ಣು"],
+    meaningKn: "ಮನೆಯ ಹೆಣ್ಣುಮಗಳು ಕುಟುಂಬದ ಜ್ಯೋತಿಯಂತೆ ಇಡೀ ಮನೆಗೆ ಬೆಳಕನ್ನು ನೀಡುತ್ತಾಳೆ ಎಂಬ ನೀತಿ.",
+    meaningEn: "A woman is the light/eye of the family."
   }
 ];
 
@@ -110,7 +160,7 @@ export function GadheGamePlayer({ locale }: { locale: Locale }) {
       setShowFeedback("correct");
       setTimeout(() => {
         setShowFeedback(null);
-        if (currentIdx < 3) { // Play 4 proverbs total (0, 1, 2, 3)
+        if (currentIdx < proverbsData.length - 1) {
           const nextIdx = currentIdx + 1;
           setCurrentIdx(nextIdx);
           setSelectedWords([]);
@@ -143,7 +193,7 @@ export function GadheGamePlayer({ locale }: { locale: Locale }) {
       rulesHeader: "ಆಟದ ನಿಯಮಗಳು:",
       rule1: "1. ಪರದೆಯ ಮೇಲೆ ಪದಗಳನ್ನು ಯಾದೃಚ್ಛಿಕವಾಗಿ (Scrambled) ನೀಡಲಾಗುತ್ತದೆ.",
       rule2: "2. ಅವುಗಳ ಮೇಲೆ ಕ್ಲಿಕ್ ಮಾಡುವ ಮೂಲಕ ಸರಿಯಾದ ಗಾದೆ ಮಾತನ್ನು ರಚಿಸಿ.",
-      rule3: "3. ಒಟ್ಟು 4 ಗಾದೆ ಮಾತುಗಳನ್ನು ಪೂರ್ಣಗೊಳಿಸಿದ ಸಮಯವನ್ನು ದಾಖಲಿಸಲಾಗುತ್ತದೆ.",
+      rule3: "3. ಒಟ್ಟು 15 ಗಾದೆ ಮಾತುಗಳನ್ನು ಪೂರ್ಣಗೊಳಿಸಿದ ಸಮಯವನ್ನು ದಾಖಲಿಸಲಾಗುತ್ತದೆ.",
       startButton: "ಆಟ ಪ್ರಾರಂಭಿಸಿ ➔",
       timerLabel: "ಸಮಯ:",
       seconds: "ಸೆಕೆಂಡುಗಳು",
@@ -169,7 +219,7 @@ export function GadheGamePlayer({ locale }: { locale: Locale }) {
       rulesHeader: "Rules of the Game:",
       rule1: "1. Words of a famous proverb will be shown in a scrambled format.",
       rule2: "2. Click the words in order to construct the proverb.",
-      rule3: "3. Complete 4 levels. Your total time will be recorded.",
+      rule3: "3. Complete 15 levels. Your total time will be recorded.",
       startButton: "Start Game ➔",
       timerLabel: "Time:",
       seconds: "seconds",
@@ -246,7 +296,7 @@ export function GadheGamePlayer({ locale }: { locale: Locale }) {
             <div className="flex justify-between items-center border-b border-slate-100 pb-3 mb-5 text-xs font-bold text-slate-500">
               <div className="flex items-center gap-1">
                 <span>{text.levelLabel}</span>
-                <span className="text-indigo-600 font-extrabold text-sm">{currentIdx + 1} / 4</span>
+                <span className="text-indigo-600 font-extrabold text-sm">{currentIdx + 1} / {proverbsData.length}</span>
               </div>
               <div className="flex items-center gap-1 bg-indigo-50 text-indigo-700 px-3 py-1 rounded-lg">
                 <span>{text.timerLabel}</span>
