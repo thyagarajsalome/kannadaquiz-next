@@ -26,6 +26,12 @@ export function Header({ locale }: { locale: Locale }) {
           >
             {locale === "kn" ? "ಅಭ್ಯಾಸ ಕ್ವಿಜ್‌ಗಳು" : "Practice Quizzes"}
           </Link>
+          <Link
+            href={`/${locale}/games/gadhe`}
+            className="rounded border border-indigo-200 hover:border-indigo-400 bg-indigo-50 px-3 py-1.5 text-xs font-extrabold uppercase text-indigo-750 hover:bg-white transition-colors shadow-sm select-none"
+          >
+            {locale === "kn" ? "ಗಾದೆ ಜೋಡಿಸಿ 🧩" : "Proverb Jumble 🧩"}
+          </Link>
           <Link href={`/${locale}/category/karnataka`} className="hover:text-[var(--secondary)] transition-colors">
             {locale === "kn" ? "ಕರ್ನಾಟಕ ಸುದ್ದಿ" : "Karnataka News"}
           </Link>
@@ -87,6 +93,9 @@ export function Header({ locale }: { locale: Locale }) {
           </Link>
           <Link href={`/${locale}/syllabus`} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಪಠ್ಯಕ್ರಮ" : "Syllabus"}
+          </Link>
+          <Link href={`/${locale}/games/gadhe`} className="bg-indigo-600 text-white px-2 py-0.5 rounded text-[10px] font-extrabold select-none">
+            {locale === "kn" ? "ಗಾದೆ ಜೋಡಿಸಿ 🧩" : "Proverb Jumble 🧩"}
           </Link>
           <Link href={`/${locale}/category/karnataka`} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಕರ್ನಾಟಕ" : "Karnataka"}
