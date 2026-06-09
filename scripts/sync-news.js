@@ -77,10 +77,10 @@ const FEEDS = [
   { name: "Karnataka Jobs", url: "https://news.google.com/rss/search?q=karnataka+jobs+recruitment&hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "Exam Notifications", url: "https://news.google.com/rss/search?q=kpsc+OR+kea+OR+fda+OR+sda+OR+psi+recruitment+exam+karnataka&hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "Current Affairs & GK", url: "https://news.google.com/rss/search?q=daily+current+affairs+for+competitive+exams+india&hl=en-IN&gl=IN&ceid=IN:en" },
-  { name: "Karnataka State News", url: "https://news.google.com/rss/search?q=karnataka+news+government&hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "India National News", url: "https://news.google.com/rss/search?q=india+national+news&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "CNN World News", url: "http://rss.cnn.com/rss/edition_world.rss" },
   { name: "BBC News World", url: "http://feeds.bbci.co.uk/news/world/rss.xml" },
-  { name: "Agriculture & Krishi", url: "https://news.google.com/rss/search?q=karnataka+agriculture+OR+krishi+OR+farmers+OR+kpsc+agricultural+officer&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "Google News International", url: "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "Government Schemes", url: "https://news.google.com/rss/search?q=karnataka+government+schemes+OR+yojana&hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "Sports News", url: "https://news.google.com/rss/search?q=sports+news+india+OR+cricket&hl=en-IN&gl=IN&ceid=IN:en" }
 ];
@@ -245,12 +245,17 @@ async function runSync() {
       console.log(`Found ${feedData.items.length} items in feed.`);
       feedItemsChecked += feedData.items.length;
  
-      // Take the top 3 newest articles per feed execution to conserve API quota
-      const itemsToProcess = feedData.items.slice(0, 3);
+      // Scan up to 15 items in the feed to find fresh content, but limit imports per feed to 2 items
+      const itemsToProcess = feedData.items.slice(0, 15);
+      let feedArticlesImported = 0;
  
       for (const item of itemsToProcess) {
         if (geminiCalls >= MAX_GEMINI_CALLS_PER_RUN) {
           console.log(`\n[Safeguard] Reached maximum Gemini API calls limit (${MAX_GEMINI_CALLS_PER_RUN}) during feed processing. Exiting to prevent high billing.`);
+          break;
+        }
+        if (feedArticlesImported >= 2) {
+          console.log(`[Limit] Already imported 2 new articles for feed "${feed.name}" in this run. Moving to next feed.`);
           break;
         }
         const originalTitle = item.title;
@@ -319,6 +324,7 @@ async function runSync() {
           };
           const docRefEn = await db.collection("posts").add(newPostEn);
           postsCreated++;
+          feedArticlesImported++;
           console.log(`[Success] Published English! (ID: ${docRefEn.id}) -> ${translated.en.title}`);
 
           // If the post is categorized as "Current Affairs" or belongs to the GK feed, save it to the currentAffairs collection too
