@@ -65,6 +65,9 @@ export function Header({ locale }: { locale: Locale }) {
               <Link href={`/${locale}/services`} className="block px-4 py-2 text-sm font-bold text-[var(--secondary)] border-b border-[var(--border)]/30 hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ಸರ್ಕಾರಿ ಸೇವೆಗಳು 🏛️" : "Gov Services 🏛️"}
               </Link>
+              <Link href={`/${locale}/expat`} className="block px-4 py-2 text-sm font-bold text-[var(--secondary)] border-b border-[var(--border)]/30 hover:bg-[var(--surface-soft)] transition-colors">
+                {locale === "kn" ? "ಅನಿವಾಸಿ ಮಾರ್ಗದರ್ಶಿ 🌍" : "Expat Guide 🌍"}
+              </Link>
               <Link href={`/${locale}/category/technology`} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ಕಂಪ್ಯೂಟರ್ & ತಂತ್ರಜ್ಞಾನ" : "Computer & Tech"}
               </Link>
@@ -126,6 +129,9 @@ export function Header({ locale }: { locale: Locale }) {
           </Link>
           <Link href={`/${locale}/services`} className="bg-emerald-600 text-white px-2 py-0.5 rounded text-[10px] font-extrabold select-none shrink-0">
             {locale === "kn" ? "ಸೇವೆಗಳು 🏛️" : "Services 🏛️"}
+          </Link>
+          <Link href={`/${locale}/expat`} className="bg-orange-600 text-white px-2 py-0.5 rounded text-[10px] font-extrabold select-none shrink-0">
+            {locale === "kn" ? "ಅನಿವಾಸಿ 🌍" : "Expat 🌍"}
           </Link>
           <Link href={`/${locale}/category/technology`} className="hover:text-[var(--secondary)] shrink-0">
             {locale === "kn" ? "ತಂತ್ರಜ್ಞಾನ" : "Technology"}
