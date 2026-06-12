@@ -33,8 +33,58 @@ const categoryTranslations: Record<string, Record<string, string>> = {
   general: { kn: "ಸಾಮಾನ್ಯ ಸುದ್ದಿ", en: "General News" }
 };
 
+const categorySynonyms: Record<string, string> = {
+  kpsc: "jobs",
+  job: "jobs",
+  exam: "jobs",
+  career: "jobs",
+  krishi: "agriculture",
+  farm: "agriculture",
+  college: "education",
+  guide: "education",
+  yojane: "schemes",
+  heritage: "tourism",
+  itihasa: "tourism",
+  culture: "tourism",
+  game: "sports",
+  kriide: "sports",
+  tech: "technology",
+  computer: "technology",
+  ai: "technology",
+  intelligence: "technology"
+};
+
+export function resolveCategoryKey(category: string): string {
+  const catKey = category.toLowerCase().trim();
+  
+  if (categoryTranslations[catKey]) {
+    return catKey;
+  }
+
+  if (categorySynonyms[catKey]) {
+    return categorySynonyms[catKey];
+  }
+
+  const synonyms = Object.keys(categorySynonyms);
+  for (const syn of synonyms) {
+    if (catKey.includes(syn)) {
+      return categorySynonyms[syn];
+    }
+  }
+
+  const baseKeys = Object.keys(categoryTranslations);
+  for (const base of baseKeys) {
+    if (catKey.includes(base)) {
+      return base;
+    }
+  }
+
+  return "general";
+}
+
 function getLocalizedCategory(categoryKey: string, locale: string): string {
-  return categoryTranslations[categoryKey]?.[locale] || categoryKey;
+  const resolvedKey = resolveCategoryKey(categoryKey);
+  return categoryTranslations[resolvedKey]?.[locale] || categoryKey;
 }
 
 export async function generateMetadata({
@@ -93,17 +143,7 @@ export async function generateMetadata({
     }
   };
 
-  const catKey = category.toLowerCase();
-  const matchedKey = catKey.includes("karnataka") ? "karnataka" :
-                     catKey.includes("international") ? "international" :
-                     catKey.includes("national") ? "national" :
-                     (catKey.includes("job") || catKey.includes("kpsc") || catKey.includes("exam") || catKey.includes("career")) ? "jobs" :
-                     (catKey.includes("agriculture") || catKey.includes("krishi") || catKey.includes("farm")) ? "agriculture" :
-                     (catKey.includes("college") || catKey.includes("guide") || catKey.includes("education")) ? "education" :
-                     (catKey.includes("scheme") || catKey.includes("yojane")) ? "schemes" :
-                     (catKey.includes("tourism") || catKey.includes("heritage") || catKey.includes("itihasa") || catKey.includes("culture")) ? "tourism" :
-                     (catKey.includes("sport") || catKey.includes("game") || catKey.includes("kriide")) ? "sports" :
-                     (catKey.includes("technology") || catKey.includes("tech") || catKey.includes("computer") || catKey.includes("ai") || catKey.includes("intelligence")) ? "technology" : "general";
+  const matchedKey = resolveCategoryKey(category);
 
   return {
     title: locale === "kn" 
@@ -142,9 +182,10 @@ export default async function CategoryPage({
   const { locale: rawLocale, category } = await params;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
 
-  const posts = await getPublicPostsByCategory(locale, category, 30);
+  const resolvedCategory = resolveCategoryKey(category);
+  const posts = await getPublicPostsByCategory(locale, resolvedCategory, 30);
 
-  const catTitle = getLocalizedCategory(category, locale);
+  const catTitle = getLocalizedCategory(resolvedCategory, locale);
 
   return (
     <section className="kq-container py-10" id="category-section">
