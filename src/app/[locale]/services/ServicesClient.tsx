@@ -418,7 +418,7 @@ const SERVICES_DATA: ServiceItem[] = [
     ],
     benefitsKn: [
       "ನಿಗದಿತ ಆಸ್ಪತ್ರೆಗಳಲ್ಲಿ ವಾರ್ಷಿಕ ₹2 ಲಕ್ಷಗಳವರೆಗೆ ನಗದು ರಹಿತ ಶಸ್ತ್ರಚಿಕಿತ್ಸಾ ಸೌಲಭ್ಯ.",
-      "೮೦೦ಕ್ಕೂ ಹೆಚ್ಚು ವಿವಿಧ ರೀತಿಯ ಶಸ್ತ್ರಚಿಕಿತ್ಸೆಗಳು ಮತ್ತು ವೈದ್ಯಕೀಯ ಪರೀಕ್ಷೆಗಳ ವೆಚ್ಚ ಭರಿಸುವಿಕೆ.",
+      "800ಕ್ಕೂ ಹೆಚ್ಚು ವಿವಿಧ ರೀತಿಯ ಶಸ್ತ್ರಚಿಕಿತ್ಸೆಗಳು ಮತ್ತು ವೈದ್ಯಕೀಯ ಪರೀಕ್ಷೆಗಳ ವೆಚ್ಚ ಭರಿಸುವಿಕೆ.",
       "ಸಹಕಾರ ಸಂಘಗಳ ನೋಂದಾಯಿತ ಸದಸ್ಯರು ಮತ್ತು ಅವರ ಇಡೀ ಕುಟುಂಬದ ಸದಸ್ಯರಿಗೆ ಲಭ್ಯ."
     ],
     howToObtain: "Register through your local cooperative society or agricultural cooperative bank by submitting the application and paying a low annual membership premium (usually ₹500 to ₹1000).",
