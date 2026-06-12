@@ -189,18 +189,67 @@ const categoriesInfo = [
     color: "text-pink-755 bg-pink-50 hover:bg-pink-100 hover:border-pink-300"
   },
   {
-    key: "syllabus",
-    kn: "ಪಠ್ಯಕ್ರಮ",
-    en: "Syllabus",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />`,
-    color: "text-cyan-755 bg-cyan-50 hover:bg-cyan-100 hover:border-cyan-300"
-  },
-  {
     key: "technology",
     kn: "ತಂತ್ರಜ್ಞಾನ",
     en: "Tech & AI",
     icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />`,
     color: "text-blue-755 bg-blue-50 hover:bg-blue-100 hover:border-blue-300"
+  },
+  {
+    key: "syllabus",
+    kn: "ಪಠ್ಯಕ್ರಮ",
+    en: "Syllabus",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />`,
+    color: "text-cyan-755 bg-cyan-50 hover:bg-cyan-100 hover:border-cyan-300",
+    url: "syllabus"
+  },
+  {
+    key: "quizzes",
+    kn: "ರಸಪ್ರಶ್ನೆಗಳು",
+    en: "Quizzes",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />`,
+    color: "text-rose-755 bg-rose-50 hover:bg-rose-100 hover:border-rose-300",
+    url: "quizzes"
+  },
+  {
+    key: "gadhe",
+    kn: "ಗಾದೆ ಜೋಡಿಸಿ",
+    en: "Proverb Jumble",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />`,
+    color: "text-violet-755 bg-violet-50 hover:bg-violet-100 hover:border-violet-300",
+    url: "games/gadhe"
+  },
+  {
+    key: "worldcup",
+    kn: "ವಿಶ್ವಕಪ್ ⚽",
+    en: "World Cup ⚽",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v5m-3 0h6M4 7h16M4 7a3 3 0 003 3h10a3 3 0 003-3M4 7V4a1 1 0 011-1h14a1 1 0 011 1v3M7 10v4a5 5 0 0010 0v-4" />`,
+    color: "text-yellow-755 bg-yellow-50 hover:bg-yellow-100 hover:border-yellow-300",
+    url: "games/worldcup"
+  },
+  {
+    key: "services",
+    kn: "ಸರ್ಕಾರಿ ಸೇವೆಗಳು",
+    en: "Gov Services",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16M9 6v12m6-12v12M3 21h18M12 3L3 6h18l-9-3z" />`,
+    color: "text-emerald-755 bg-emerald-50 hover:bg-emerald-100 hover:border-emerald-300",
+    url: "services"
+  },
+  {
+    key: "railway",
+    kn: "ರೈಲ್ವೆ ಕ್ಯಾಲ್ಕುಲೇಟರ್",
+    en: "Railway Calc",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />`,
+    color: "text-blue-755 bg-blue-50 hover:bg-blue-100 hover:border-blue-300",
+    url: "services/railway"
+  },
+  {
+    key: "expat",
+    kn: "ಅನಿವಾಸಿ ಮಾರ್ಗದರ್ಶಿ",
+    en: "Expat Guide",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 100-18 9 9 0 000 18z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v18M3 12h18M12 3a15 15 0 00-3 9 15 15 0 003 9M12 3a15 15 0 013 9 15 15 0 01-3 9" />`,
+    color: "text-orange-755 bg-orange-50 hover:bg-orange-100 hover:border-orange-300",
+    url: "expat"
   }
 ];
 
@@ -353,11 +402,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </h3>
           </div>
  
-          <div className="grid gap-2.5 grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-11">
+          <div className="grid gap-2.5 grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-9">
             {categoriesInfo.map((cat) => (
               <Link
                 key={cat.key}
-                href={cat.key === "syllabus" ? `/${locale}/syllabus` : `/${locale}/category/${cat.key}`}
+                href={cat.url ? `/${locale}/${cat.url}` : `/${locale}/category/${cat.key}`}
                 className={`kq-card px-1.5 py-3 sm:p-3 flex flex-col items-center text-center justify-between transition-all duration-300 border border-[var(--border)]/60 hover:shadow-sm hover:border-[var(--secondary)]/40 rounded-xl group ${cat.color}`}
               >
                 <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-[var(--border)]/20 shadow-sm group-hover:scale-110 transition-transform duration-300 mb-2">
