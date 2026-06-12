@@ -368,7 +368,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     {locale === "kn" ? "ವಿಶ್ವಕಪ್ ವಿಶೇಷ" : "WORLD CUP SPECIAL"}
                   </span>
                   <h3 className="font-serif text-lg md:text-xl font-bold text-white leading-tight">
-                    {locale === "kn" ? "ಫಿಫಾ ವಿಶ್ವಕಪ್ ೨೦೨೬ ಪ್ರೆಡಿಕ್ಟರ್ ಮತ್ತು ಕ್ವಿಜ್ ಹಬ್!" : "FIFA World Cup 2026 Predictor & Trivia Hub!"}
+                    {locale === "kn" ? "ಫಿಫಾ ವಿಶ್ವಕಪ್ 2026 ಪ್ರೆಡಿಕ್ಟರ್ ಮತ್ತು ಕ್ವಿಜ್ ಹಬ್!" : "FIFA World Cup 2026 Predictor & Trivia Hub!"}
                   </h3>
                   <p className="text-xs text-emerald-100/80 mt-1 max-w-xl">
                     {locale === "kn"

@@ -107,16 +107,16 @@ const TRIVIA_QUESTIONS: TriviaQuestion[] = [
   },
   {
     question: "How many nations are participating in the FIFA World Cup 2026?",
-    questionKn: "ಫಿಫಾ ವಿಶ್ವಕಪ್ ೨೦೨೬ ರಲ್ಲಿ ಎಷ್ಟು ದೇಶಗಳು ಭಾಗವಹಿಸುತ್ತಿವೆ?",
+    questionKn: "ಫಿಫಾ ವಿಶ್ವಕಪ್ 2026 ರಲ್ಲಿ ಎಷ್ಟು ದೇಶಗಳು ಭಾಗವಹಿಸುತ್ತಿವೆ?",
     options: ["32 Teams", "40 Teams", "48 Teams", "64 Teams"],
     optionsKn: ["32 ತಂಡಗಳು", "40 ತಂಡಗಳು", "48 ತಂಡಗಳು", "64 ತಂಡಗಳು"],
     correctIdx: 2,
     explanation: "The 2026 World Cup is the first to feature 48 teams, expanding from the traditional 32 teams.",
-    explanationKn: "೨೦೨೬ ರ ವಿಶ್ವಕಪ್ ಮೊದಲ ಬಾರಿಗೆ 48 ತಂಡಗಳನ್ನು ಒಳಗೊಂಡಿದೆ, ಇದು ಸಾಂಪ್ರದಾಯಿಕ 32 ತಂಡಗಳಿಂದ ವಿಸ್ತರಿಸಲ್ಪಟ್ಟಿದೆ."
+    explanationKn: "2026 ರ ವಿಶ್ವಕಪ್ ಮೊದಲ ಬಾರಿಗೆ 48 ತಂಡಗಳನ್ನು ಒಳಗೊಂಡಿದೆ, ಇದು ಸಾಂಪ್ರದಾಯಿಕ 32 ತಂಡಗಳಿಂದ ವಿಸ್ತರಿಸಲ್ಪಟ್ಟಿದೆ."
   },
   {
     question: "Who is the defending champion entering the 2026 FIFA World Cup?",
-    questionKn: "೨೦೨೬ ರ ಫಿಫಾ ವಿಶ್ವಕಪ್‌ಗೆ ಪ್ರವೇಶಿಸುವಾಗ ಹಾಲಿ ಚಾಂಪಿಯನ್ ದೇಶ ಯಾವುದು?",
+    questionKn: "2026 ರ ಫಿಫಾ ವಿಶ್ವಕಪ್‌ಗೆ ಪ್ರವೇಶಿಸುವಾಗ ಹಾಲಿ ಚಾಂಪಿಯನ್ ದೇಶ ಯಾವುದು?",
     options: ["France", "Argentina", "Croatia", "Brazil"],
     optionsKn: ["ಫ್ರಾನ್ಸ್", "ಅರ್ಜೆಂಟೀನಾ", "ಕ್ರೊಯೇಷಿಯಾ", "ಬ್ರೆಜಿಲ್"],
     correctIdx: 1,
@@ -152,12 +152,12 @@ const TRIVIA_QUESTIONS: TriviaQuestion[] = [
   },
   {
     question: "Which countries are co-hosting the FIFA World Cup 2026?",
-    questionKn: "ಫಿಫಾ ವಿಶ್ವಕಪ್ ೨೦೨೬ ರ ಜಂಟಿ ಆತಿಥ್ಯ ವಹಿಸಿರುವ ದೇಶಗಳು ಯಾವುವು?",
+    questionKn: "ಫಿಫಾ ವಿಶ್ವಕಪ್ 2026 ರ ಜಂಟಿ ಆತಿಥ್ಯ ವಹಿಸಿರುವ ದೇಶಗಳು ಯಾವುವು?",
     options: ["Japan & South Korea", "USA, Canada & Mexico", "Spain & Portugal", "Australia & New Zealand"],
     optionsKn: ["ಜಪಾನ್ ಮತ್ತು ದಕ್ಷಿಣ ಕೊರಿಯಾ", "ಯು.ಎಸ್.ಎ, ಕೆನಡಾ ಮತ್ತು ಮೆಕ್ಸಿಕೋ", "ಸ್ಪೇನ್ ಮತ್ತು ಪೋರ್ಚುಗಲ್", "ಆಸ್ಟ್ರೇಲಿಯಾ ಮತ್ತು ನ್ಯೂಜಿಲೆಂಡ್"],
     correctIdx: 1,
     explanation: "The 2026 World Cup is co-hosted by three North American countries: USA, Canada, and Mexico.",
-    explanationKn: "೨೦೨೬ ರ ವಿಶ್ವಕಪ್ ಅನ್ನು ಮೂರು ಉತ್ತರ ಅಮೆರಿಕದ ದೇಶಗಳು ಜಂಟಿಯಾಗಿ ಆಯೋಜಿಸುತ್ತಿವೆ: ಯುಎಸ್ಎ, ಕೆನಡಾ ಮತ್ತು ಮೆಕ್ಸಿಕೋ."
+    explanationKn: "2026 ರ ವಿಶ್ವಕಪ್ ಅನ್ನು ಮೂರು ಉತ್ತರ ಅಮೆರಿಕದ ದೇಶಗಳು ಜಂಟಿಯಾಗಿ ಆಯೋಜಿಸುತ್ತಿವೆ: ಯುಎಸ್ಎ, ಕೆನಡಾ ಮತ್ತು ಮೆಕ್ಸಿಕೋ."
   }
 ];
 
@@ -225,7 +225,7 @@ export function WorldCupClient({ locale }: { locale: Locale }) {
     const predictedTeamKn = choice === "A" ? match.teamAKn : choice === "B" ? match.teamBKn : "ಡ್ರಾ";
     
     const text = locale === "kn"
-      ? `🏆 ನಾನು ಫಿಫಾ ವಿಶ್ವಕಪ್ ೨೦೨೬ ರ ${match.teamAKn} vs ${match.teamBKn} ಪಂದ್ಯಕ್ಕೆ "${predictedTeamKn}" ಗೆಲ್ಲುತ್ತದೆ ಎಂದು ಭವಿಷ್ಯ ನುಡಿದಿದ್ದೇನೆ! ನೀವೂ ಪ್ರೆಡಿಕ್ಟ್ ಮಾಡಿ ಮತ್ತು ರಸಪ್ರಶ್ನೆ ಆಡಿ: `
+      ? `🏆 ನಾನು ಫಿಫಾ ವಿಶ್ವಕಪ್ 2026 ರ ${match.teamAKn} vs ${match.teamBKn} ಪಂದ್ಯಕ್ಕೆ "${predictedTeamKn}" ಗೆಲ್ಲುತ್ತದೆ ಎಂದು ಭವಿಷ್ಯ ನುಡಿದಿದ್ದೇನೆ! ನೀವೂ ಪ್ರೆಡಿಕ್ಟ್ ಮಾಡಿ ಮತ್ತು ರಸಪ್ರಶ್ನೆ ಆಡಿ: `
       : `🏆 I predicted "${predictedTeam}" in the FIFA World Cup 2026 match between ${match.teamA} vs ${match.teamB}! Play Predictor & Trivia now: `;
       
     const url = typeof window !== "undefined" ? window.location.href : "";
@@ -235,7 +235,7 @@ export function WorldCupClient({ locale }: { locale: Locale }) {
 
   const shareQuizScore = () => {
     const text = locale === "kn"
-      ? `⚽ ನಾನು ಕನ್ನಡಕ್ವಿಜ್ ಫಿಫಾ ವಿಶ್ವಕಪ್ ೨೦೨೬ ಕ್ವಿಜ್‌ನಲ್ಲಿ ${score}/${TRIVIA_QUESTIONS.length} ಅಂಕ ಗಳಿಸಿದ್ದೇನೆ! ನಿಮ್ಮ ಫುಟ್‌ಬಾಲ್ ಜ್ಞಾನ ಪರೀಕ್ಷಿಸಿ ನೋಡಿ: `
+      ? `⚽ ನಾನು ಕನ್ನಡಕ್ವಿಜ್ ಫಿಫಾ ವಿಶ್ವಕಪ್ 2026 ಕ್ವಿಜ್‌ನಲ್ಲಿ ${score}/${TRIVIA_QUESTIONS.length} ಅಂಕ ಗಳಿಸಿದ್ದೇನೆ! ನಿಮ್ಮ ಫುಟ್‌ಬಾಲ್ ಜ್ಞಾನ ಪರೀಕ್ಷಿಸಿ ನೋಡಿ: `
       : `⚽ I scored ${score}/${TRIVIA_QUESTIONS.length} in the KannadaQuiz FIFA World Cup 2026 Trivia! Can you beat me? Play here: `;
       
     const url = typeof window !== "undefined" ? window.location.href : "";
@@ -254,7 +254,7 @@ export function WorldCupClient({ locale }: { locale: Locale }) {
             <span>⚽</span> FIFA WORLD CUP 2026 SPECIAL <span>🏆</span>
           </span>
           <h1 className="font-serif text-3xl md:text-5xl font-black text-white leading-tight tracking-tight drop-shadow-md">
-            {locale === "kn" ? "ಫಿಫಾ ವಿಶ್ವಕಪ್ ೨೦೨೬ ಹಬ್" : "FIFA World Cup 2026 Hub"}
+            {locale === "kn" ? "ಫಿಫಾ ವಿಶ್ವಕಪ್ 2026 ಹಬ್" : "FIFA World Cup 2026 Hub"}
           </h1>
           <p className="mt-3 text-sm md:text-base text-emerald-100/90 leading-relaxed font-normal">
             {locale === "kn"
@@ -423,7 +423,7 @@ export function WorldCupClient({ locale }: { locale: Locale }) {
 
         {/* RIGHT COLUMN: INTERACTIVE TRIVIA QUIZ */}
         <div>
-          <section className="kq-card p-5 md:p-6 bg-slate-900 text-white rounded-xl shadow-lg border border-slate-750 relative overflow-hidden h-fit sticky top-6">
+          <section className="p-5 md:p-6 bg-slate-900 text-white rounded-xl shadow-lg border border-slate-800 relative overflow-hidden h-fit sticky top-6">
             <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
 
             {/* Header */}
@@ -431,7 +431,7 @@ export function WorldCupClient({ locale }: { locale: Locale }) {
               <h2 className="font-serif text-lg md:text-xl font-bold text-emerald-400 flex items-center gap-1.5">
                 <span>⚽</span> {locale === "kn" ? "ವಿಶ್ವಕಪ್ ರಸಪ್ರಶ್ನೆ" : "World Cup Trivia"}
               </h2>
-              <span className="text-xs font-mono font-bold bg-slate-850 px-2 py-0.5 rounded text-emerald-400/80">
+              <span className="text-xs font-mono font-bold bg-slate-800 px-2 py-0.5 rounded text-emerald-400/80">
                 {!quizFinished ? `${currentQIdx + 1} / ${TRIVIA_QUESTIONS.length}` : "Done"}
               </span>
             </div>
@@ -449,15 +449,15 @@ export function WorldCupClient({ locale }: { locale: Locale }) {
                   {(locale === "kn" ? TRIVIA_QUESTIONS[currentQIdx].optionsKn : TRIVIA_QUESTIONS[currentQIdx].options).map((opt, idx) => {
                     const isCorrect = idx === TRIVIA_QUESTIONS[currentQIdx].correctIdx;
                     const isSelected = idx === selectedOpt;
-                    let optStyle = "bg-slate-850 hover:bg-slate-800 border-slate-800";
+                    let optStyle = "bg-slate-800 hover:bg-slate-700 border-slate-700";
 
                     if (isAnswered) {
                       if (isCorrect) {
                         optStyle = "bg-emerald-600 border-emerald-600 text-white";
                       } else if (isSelected) {
-                        optStyle = "bg-red-650 border-red-650 text-white";
+                        optStyle = "bg-red-600 border-red-600 text-white";
                       } else {
-                        optStyle = "bg-slate-850/50 border-slate-850/50 opacity-60 text-slate-400";
+                        optStyle = "bg-slate-800/50 border-slate-800/50 opacity-60 text-slate-400";
                       }
                     }
 
@@ -541,7 +541,7 @@ export function WorldCupClient({ locale }: { locale: Locale }) {
 
                   <button
                     onClick={resetQuiz}
-                    className="w-full bg-slate-800 hover:bg-slate-750 text-white font-extrabold text-xs py-3 rounded-lg border border-slate-700 transition-colors cursor-pointer select-none"
+                    className="w-full bg-slate-800 hover:bg-slate-700 text-white font-extrabold text-xs py-3 rounded-lg border border-slate-700 transition-colors cursor-pointer select-none"
                   >
                     {locale === "kn" ? "ಮತ್ತೆ ಆಡಿ ↺" : "Play Again ↺"}
                   </button>

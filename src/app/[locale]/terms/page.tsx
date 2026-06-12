@@ -31,31 +31,31 @@ export default async function TermsPage({
       <div className="kq-card p-6 md:p-8 space-y-6 text-sm md:text-base leading-7 text-[var(--muted)]">
         {locale === "kn" ? (
           <>
-            <p className="font-medium text-[var(--primary)]">ಕೊನೆಯದಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ: ಜೂನ್ ೨೦೨೬</p>
+            <p className="font-medium text-[var(--primary)]">ಕೊನೆಯದಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ: ಜೂನ್ 2026</p>
 
             <section className="space-y-3">
-              <h2 className="font-serif text-lg font-bold text-[var(--primary)]">೧. ನಿಯಮಗಳ ಒಪ್ಪಿಗೆ</h2>
+              <h2 className="font-serif text-lg font-bold text-[var(--primary)]">1. ನಿಯಮಗಳ ಒಪ್ಪಿಗೆ</h2>
               <p>
                 ಕನ್ನಡಕ್ವಿಜ್ ವೆಬ್‌ಸೈಟ್ ಬಳಸುವ ಮೂಲಕ, ನೀವು ನಮ್ಮ ನಿಯಮಗಳು, ಹಕ್ಕುತ್ಯಾಗಗಳು ಮತ್ತು ಗೌಪ್ಯತಾ ನೀತಿಗಳಿಗೆ ಬದ್ಧರಾಗಿರಲು ಒಪ್ಪುತ್ತೀರಿ. ನೀವು ಈ ನಿಯಮಗಳನ್ನು ಒಪ್ಪದಿದ್ದರೆ, ದಯವಿಟ್ಟು ಸೈಟ್ ಬಳಸಬೇಡಿ.
               </p>
             </section>
 
             <section className="space-y-3">
-              <h2 className="font-serif text-lg font-bold text-[var(--primary)]">೨. ಕೃತಿಸ್ವಾಮ್ಯ ಮತ್ತು ವಿಷಯ ತೆಗೆದುಹಾಕುವಿಕೆ ವಿನಂತಿಗಳು (DMCA / Copyright Take-Down)</h2>
+              <h2 className="font-serif text-lg font-bold text-[var(--primary)]">2. ಕೃತಿಸ್ವಾಮ್ಯ ಮತ್ತು ವಿಷಯ ತೆಗೆದುಹಾಕುವಿಕೆ ವಿನಂತಿಗಳು (DMCA / Copyright Take-Down)</h2>
               <p>
-                ನಾವು ಬೌದ್ಧಿಕ ಆಸ್ತಿ ಹಕ್ಕುಗಳನ್ನು ಗೌರವಿಸುತ್ತೇವೆ. ನಮ್ಮ ವೆಬ್‌ಸೈಟ್ ಸುದ್ದಿ ಸಂಗ್ರಹಣೆ ಹಾಗೂ ಅನುವಾದವನ್ನು ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷಾ ತಯಾರಿಗಾಗಿ ಮಾತ್ರ ಮಾಡುತ್ತದೆ. ಪ್ರತಿಯೊಂದು ಸುದ್ದಿಯ ಕೊನೆಯಲ್ಲಿ ನಾವು ಮೂಲ ಸುದ್ದಿಯ ಲಿಂಕ್ ಅನ್ನು ನೀಡಿರುತ್ತೇವೆ. ಯಾವುದೇ ಸುದ್ದಿ ಮಾಲೀಕರು ತಮ್ಮ ವಿಷಯ ಅಥವಾ ಕೊಂಡಿಗಳನ್ನು ಕನ್ನಡಕ್ವಿಜ್‌ನಿಂದ ತೆಗೆದುಹಾಕಲು ವಿನಂತಿಸುವುದಿದ್ದರೆ, ಅವರು <strong>support@kannadaquiz.in</strong> ಗೆ ಇಮೇಲ್ ಕಳುಹಿಸಬಹುದು. ನಾವು ಅಂತಹ ವಿಷಯವನ್ನು ೨೪ ರಿಂದ ೪೮ ಗಂಟೆಗಳಲ್ಲಿ ತೆಗೆದುಹಾಕುತ್ತೇವೆ.
+                ನಾವು ಬೌದ್ಧಿಕ ಆಸ್ತಿ ಹಕ್ಕುಗಳನ್ನು ಗೌರವಿಸುತ್ತೇವೆ. ನಮ್ಮ ವೆಬ್‌ಸೈಟ್ ಸುದ್ದಿ ಸಂಗ್ರಹಣೆ ಹಾಗೂ ಅನುವಾದವನ್ನು ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷಾ ತಯಾರಿಗಾಗಿ ಮಾತ್ರ ಮಾಡುತ್ತದೆ. ಪ್ರತಿಯೊಂದು ಸುದ್ದಿಯ ಕೊನೆಯಲ್ಲಿ ನಾವು ಮೂಲ ಸುದ್ದಿಯ ಲಿಂಕ್ ಅನ್ನು ನೀಡಿರುತ್ತೇವೆ. ಯಾವುದೇ ಸುದ್ದಿ ಮಾಲೀಕರು ತಮ್ಮ ವಿಷಯ ಅಥವಾ ಕೊಂಡಿಗಳನ್ನು ಕನ್ನಡಕ್ವಿಜ್‌ನಿಂದ ತೆಗೆದುಹಾಕಲು ವಿನಂತಿಸುವುದಿದ್ದರೆ, ಅವರು <strong>support@kannadaquiz.in</strong> ಗೆ ಇಮೇಲ್ ಕಳುಹಿಸಬಹುದು. ನಾವು ಅಂತಹ ವಿಷಯವನ್ನು 24 ರಿಂದ 48 ಗಂಟೆಗಳಲ್ಲಿ ತೆಗೆದುಹಾಕುತ್ತೇವೆ.
               </p>
             </section>
 
             <section className="space-y-3">
-              <h2 className="font-serif text-lg font-bold text-[var(--primary)]">೩. ಬಳಕೆದಾರರ ನಡವಳಿಕೆ</h2>
+              <h2 className="font-serif text-lg font-bold text-[var(--primary)]">3. ಬಳಕೆದಾರರ ನಡವಳಿಕೆ</h2>
               <p>
                 ವಾಣಿಜ್ಯ ಉದ್ದೇಶಗಳಿಗಾಗಿ ನಮ್ಮ ಸೈಟ್‌ನಿಂದ ಯಾವುದೇ ವಿಷಯವನ್ನು ನಕಲಿಸುವುದು ಅಥವಾ ಆಟೋಮೇಟೆಡ್ ಬಾಟ್‌ಗಳ ಮೂಲಕ ಮಾಹಿತಿಯನ್ನು ಸಂಗ್ರಹಿಸುವುದನ್ನು ಕಟ್ಟುನಿಟ್ಟಾಗಿ ನಿಷೇಧಿಸಲಾಗಿದೆ.
               </p>
             </section>
 
             <section className="space-y-3">
-              <h2 className="font-serif text-lg font-bold text-[var(--primary)]">೪. ಕಾನೂನು ವ್ಯಾಪ್ತಿ</h2>
+              <h2 className="font-serif text-lg font-bold text-[var(--primary)]">4. ಕಾನೂನು ವ್ಯಾಪ್ತಿ</h2>
               <p>
                 ಈ ನಿಯಮಗಳನ್ನು ಭಾರತೀಯ ಕಾನೂನುಗಳ ಅಡಿಯಲ್ಲಿ ನಿಯಂತ್ರಿಸಲಾಗುತ್ತದೆ ಮತ್ತು ಯಾವುದೇ ಕಾನೂನು ವಿವಾದಗಳಿಗೆ ಬೆಂಗಳೂರು, ಕರ್ನಾಟಕ ನ್ಯಾಯಾಲಯಗಳು ಮಾತ್ರ ಸೂಕ್ತ ವ್ಯಾಪ್ತಿಯನ್ನು ಹೊಂದಿರುತ್ತವೆ.
               </p>
