@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { isLocale, type Locale } from "@/lib/locales";
-import { getPublicPosts } from "@/lib/public-content";
+import { getPublicPostsByCategory } from "@/lib/public-content";
+import { CategoryFilterList } from "@/components/CategoryFilterList";
 
 export const revalidate = 300;
 
@@ -113,6 +113,13 @@ export async function generateMetadata({
       ? `ಕನ್ನಡದಲ್ಲೇ ಓದಿ: ${catTitle} ಕುರಿತಾದ ಪ್ರಮುಖ ವಿಶ್ಲೇಷಣೆಗಳು, ಮುಖ್ಯಾಂಶಗಳು ಮತ್ತು ಸರಳ ಸುದ್ದಿ ಸಾರಾಂಶಗಳು.`
       : `Read in English & Kannada: Latest news summaries, exam-focused updates, and analysis on ${catTitle}.`,
     keywords: keywordsMap[matchedKey]?.[locale] || [],
+    alternates: {
+      canonical: `/${locale}/category/${category}`,
+      languages: {
+        kn: `/kn/category/${category}`,
+        en: `/en/category/${category}`,
+      },
+    },
   };
 }
 
@@ -135,28 +142,12 @@ export default async function CategoryPage({
   const { locale: rawLocale, category } = await params;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
 
-  const getCategoryKey = (cat: string) => {
-    const c = cat.toLowerCase();
-    if (c.includes("karnataka")) return "karnataka";
-    if (c.includes("international")) return "international";
-    if (c.includes("national") || c.includes("affair") || c.includes("current") || c.includes("general")) return "national";
-    if (c.includes("job") || c.includes("kpsc") || c.includes("exam") || c.includes("career")) return "jobs";
-    if (c.includes("agriculture") || c.includes("krishi") || c.includes("farm")) return "agriculture";
-    if (c.includes("college") || c.includes("guide") || c.includes("education")) return "education";
-    if (c.includes("scheme") || c.includes("yojane")) return "schemes";
-    if (c.includes("tourism") || c.includes("heritage") || c.includes("itihasa") || c.includes("culture")) return "tourism";
-    if (c.includes("sport") || c.includes("game") || c.includes("kriide")) return "sports";
-    if (c.includes("technology") || c.includes("tech") || c.includes("computer") || c.includes("ai") || c.includes("intelligence")) return "technology";
-    return "general";
-  };
-
-  const allPosts = await getPublicPosts(locale, 100);
-  const posts = allPosts.filter((post) => getCategoryKey(post.category) === category);
+  const posts = await getPublicPostsByCategory(locale, category, 30);
 
   const catTitle = getLocalizedCategory(category, locale);
 
   return (
-    <section className="kq-container py-10">
+    <section className="kq-container py-10" id="category-section">
       <div className="flex items-center gap-2 border-b-2 border-[var(--secondary)] pb-2 mb-6">
         <span className="w-3 h-6 bg-[var(--secondary)] inline-block"></span>
         <h1 className="font-serif text-3xl font-bold text-[var(--primary)]">
@@ -164,41 +155,7 @@ export default async function CategoryPage({
         </h1>
       </div>
 
-      {posts.length === 0 ? (
-        <div className="kq-card p-10 text-center text-[var(--muted)] opacity-70">
-          {locale === "kn"
-            ? "ಈ ವರ್ಗದಲ್ಲಿ ಪ್ರಸ್ತುತ ಯಾವುದೇ ಸುದ್ದಿಗಳು ಲಭ್ಯವಿಲ್ಲ."
-            : "No news articles available in this category yet."}
-        </div>
-      ) : (
-        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-          {posts.map((post) => (
-            <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-md transition-shadow">
-              <div>
-                
-                <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
-                  <span>{getSourceName(post)}</span>
-                  <span>•</span>
-                  <time>{post.date}</time>
-                </div>
-                <Link href={`/${locale}/posts/${post.slug}`} className="group">
-                  <h2 className="mt-2 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2">
-                    {post.title}
-                  </h2>
-                </Link>
-                <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
-                  {post.excerpt}
-                </p>
-              </div>
-              <div className="mt-4 pt-3 border-t border-[var(--border)]">
-                <Link href={`/${locale}/posts/${post.slug}`} className="text-xs font-bold text-[var(--secondary)] hover:underline">
-                  {locale === "kn" ? "ಹೆಚ್ಚಿನ ಮಾಹಿತಿ ➔" : "Read More ➔"}
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      <CategoryFilterList initialPosts={posts} locale={locale} categoryKey={category} />
     </section>
   );
 }

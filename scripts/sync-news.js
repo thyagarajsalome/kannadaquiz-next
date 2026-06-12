@@ -83,7 +83,7 @@ const FEEDS = [
   { name: "Google News International", url: "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "Government Schemes", url: "https://news.google.com/rss/search?q=karnataka+government+schemes+OR+yojana&hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "Sports News", url: "https://news.google.com/rss/search?q=sports+news+india+OR+cricket&hl=en-IN&gl=IN&ceid=IN:en" },
-  { name: "Technology & AI News", url: "https://news.google.com/rss/search?q=artificial+intelligence+OR+cybersecurity+OR+software+technology&hl=en-IN&gl=IN&ceid=IN:en" }
+  { name: "Technology & AI News", url: "https://news.google.com/rss/search?q=artificial+intelligence+OR+cybersecurity+OR+software+development+OR+computer+basics+OR+tech+careers&hl=en-IN&gl=IN&ceid=IN:en" }
 ];
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -126,7 +126,7 @@ CRITICAL RULES TO AVOID AI-GENERATION SIGNS (HUMANIZATION):
    - Paragraph 1: Direct, simple introduction of the news (no fluffy intro).
    - Paragraph 2: Key details, facts, numbers, or terms.
    - Paragraph 3: A dedicated "Exam Insights & GK Analysis" (in English) / "ಪರೀಕ್ಷಾ ದೃಷ್ಟಿಕೋನ ಮತ್ತು ಜಿ.ಕೆ ವಿಶ್ಲೇಷಣೆ" (in Kannada) describing why this news matters for exams (KPSC, KEA, Banking, SSC) and listing static background facts (e.g., parent organization, established year, headquarters). Do NOT write multiple-choice questions inside the body text; instead, output them in the structured "quiz" schema array.
-6. Categorize the article appropriately (e.g. 'KPSC', 'Jobs', 'Current Affairs', 'Karnataka', 'National', 'International', 'Agriculture', or 'Technology').
+6. Categorize the article appropriately (e.g. 'KPSC', 'Jobs', 'Current Affairs', 'Karnataka', 'National', 'International', 'Agriculture', or 'Technology'). If the category is 'Technology', determine which specific subCategory it fits: 'AI & Future Tech', 'Computer Basics', 'Cyber Safety', 'Mobile & Gadgets', or 'Careers'. For other categories, set subCategory to an empty string.
 7. Respond ONLY with a valid JSON object matching the requested schema. Do not add markdown wrapping or text before/after.`;
 
   const userPrompt = `English Title: ${title}
@@ -200,9 +200,10 @@ English Summary/Description: ${summary}`;
             },
             required: ["title", "excerpt", "body", "quiz"]
           },
-          category: { type: "STRING", description: "Category name e.g. KPSC, Jobs, Current Affairs, Karnataka, National, International, Agriculture, Technology." }
+          category: { type: "STRING", description: "Category name e.g. KPSC, Jobs, Current Affairs, Karnataka, National, International, Agriculture, Technology." },
+          subCategory: { type: "STRING", description: "Subcategory name if category is Technology: AI & Future Tech, Computer Basics, Cyber Safety, Mobile & Gadgets, Careers. Else empty string." }
         },
-        required: ["kn", "en", "category"]
+        required: ["kn", "en", "category", "subCategory"]
       }
     }
   };
@@ -325,6 +326,7 @@ async function runSync() {
             excerpt: translated.kn.excerpt.trim(),
             body: translated.kn.body.trim(),
             category: translated.category || "General",
+            subCategory: translated.subCategory || "",
             status: "published",
             publishedAt: admin.firestore.FieldValue.serverTimestamp(),
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -345,6 +347,7 @@ async function runSync() {
             excerpt: translated.en.excerpt.trim(),
             body: translated.en.body.trim(),
             category: translated.category || "General",
+            subCategory: translated.subCategory || "",
             status: "published",
             publishedAt: admin.firestore.FieldValue.serverTimestamp(),
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),

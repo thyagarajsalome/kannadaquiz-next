@@ -47,6 +47,7 @@ export type PublicPost = {
   sourceUrl?: string;
   sourceName?: string;
   quiz?: MiniQuizQuestion[];
+  subCategory?: string;
 };
 
 export type PublicJob = {
@@ -126,6 +127,30 @@ export async function getPublicPosts(locale: Locale, count = 20): Promise<Public
   const remote = await queryPublishedByLocale("posts", locale, count);
   const mapped = remote.map(toPublicPost).filter((post): post is PublicPost => Boolean(post));
 
+  return mapped;
+}
+
+export async function getPublicPostsByCategory(
+  locale: Locale,
+  categoryKey: string,
+  count = 20
+): Promise<PublicPost[]> {
+  const categoryNamesMap: Record<string, string[]> = {
+    karnataka: ["Karnataka", "ಕರ್ನಾಟಕ"],
+    national: ["National", "National News"],
+    international: ["International", "International News"],
+    jobs: ["Jobs", "KPSC", "Exam Notifications"],
+    agriculture: ["Agriculture", "Agriculture Info"],
+    education: ["College Guide", "Education", "Education & College Guide"],
+    schemes: ["Government Schemes", "Schemes"],
+    tourism: ["Heritage & Tourism", "Tourism"],
+    sports: ["Sports News", "Sports"],
+    technology: ["Technology"],
+  };
+
+  const allowedCategories = categoryNamesMap[categoryKey] || [categoryKey];
+  const remote = await queryPublishedByLocaleAndCategory("posts", locale, allowedCategories, count);
+  const mapped = remote.map(toPublicPost).filter((post): post is PublicPost => Boolean(post));
   return mapped;
 }
 
@@ -323,6 +348,79 @@ async function queryPublishedByLocale(collectionId: string, locale: Locale, limi
   }
 }
 
+async function queryPublishedByLocaleAndCategory(
+  collectionId: string,
+  locale: Locale,
+  categories: string[],
+  limitCount: number
+) {
+  if (!firestoreProjectId || !firestoreApiKey) {
+    return [];
+  }
+
+  try {
+    const response = await fetch(
+      `https://firestore.googleapis.com/v1/projects/${firestoreProjectId}/databases/(default)/documents:runQuery?key=${firestoreApiKey}`,
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          structuredQuery: {
+            from: [{ collectionId }],
+            where: {
+              compositeFilter: {
+                op: "AND",
+                filters: [
+                  {
+                    fieldFilter: {
+                      field: { fieldPath: "status" },
+                      op: "EQUAL",
+                      value: { stringValue: "published" },
+                    },
+                  },
+                  {
+                    fieldFilter: {
+                      field: { fieldPath: "locale" },
+                      op: "EQUAL",
+                      value: { stringValue: locale },
+                    },
+                  },
+                  {
+                    fieldFilter: {
+                      field: { fieldPath: "category" },
+                      op: "IN",
+                      value: {
+                        arrayValue: {
+                          values: categories.map((cat) => ({ stringValue: cat })),
+                        },
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            limit: limitCount,
+          },
+        }),
+        next: { revalidate: revalidateSeconds },
+      },
+    );
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const rows = (await response.json()) as RunQueryRow[];
+    return rows
+      .map((row) => row.document)
+      .filter((doc): doc is FirestoreDocument => Boolean(doc?.fields));
+  } catch {
+    return [];
+  }
+}
+
 function toPublicPost(doc: FirestoreDocument): PublicPost | null {
   const data = parseFields(doc.fields);
   const locale = parseLocale(data.locale);
@@ -346,6 +444,7 @@ function toPublicPost(doc: FirestoreDocument): PublicPost | null {
     sourceUrl: typeof data.sourceUrl === "string" ? data.sourceUrl : undefined,
     sourceName: typeof data.sourceName === "string" ? data.sourceName : undefined,
     quiz: Array.isArray(data.quiz) ? (data.quiz as MiniQuizQuestion[]) : undefined,
+    subCategory: typeof data.subCategory === "string" ? data.subCategory : "",
   };
 }
 
