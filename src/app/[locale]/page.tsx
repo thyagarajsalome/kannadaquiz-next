@@ -353,6 +353,44 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
  
+      {/* 1e. FIFA World Cup 2026 Promo Banner */}
+      <section className="py-6 bg-[var(--surface-soft)] border-b border-[var(--border)]">
+        <div className="kq-container">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-800 via-teal-900 to-green-950 text-white p-6 shadow-md border border-emerald-700/20">
+            {/* Accents */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <span className="text-4xl shrink-0 animate-bounce">🏆</span>
+                <div>
+                  <span className="bg-yellow-500 text-slate-950 text-[9px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-full select-none shadow-sm mb-1.5 inline-block">
+                    {locale === "kn" ? "ವಿಶ್ವಕಪ್ ವಿಶೇಷ" : "WORLD CUP SPECIAL"}
+                  </span>
+                  <h3 className="font-serif text-lg md:text-xl font-bold text-white leading-tight">
+                    {locale === "kn" ? "ಫಿಫಾ ವಿಶ್ವಕಪ್ ೨೦೨೬ ಪ್ರೆಡಿಕ್ಟರ್ ಮತ್ತು ಕ್ವಿಜ್ ಹಬ್!" : "FIFA World Cup 2026 Predictor & Trivia Hub!"}
+                  </h3>
+                  <p className="text-xs text-emerald-100/80 mt-1 max-w-xl">
+                    {locale === "kn"
+                      ? "ಇಂದಿನ ಪಂದ್ಯಗಳನ್ನು ಪ್ರೆಡಿಕ್ಟ್ ಮಾಡಿ, ನಿಮ್ಮ ಕ್ರೇಜ್ ಶೇರ್ ಮಾಡಿ ಮತ್ತು ಫುಟ್‌ಬಾಲ್ ಜ್ಞಾನ ಪರೀಕ್ಷಿಸಲು ಕ್ವಿಜ್ ಆಡಿ."
+                      : "Predict match outcomes, challenge friends, and play soccer trivia to test your football knowledge."}
+                  </p>
+                </div>
+              </div>
+              <Link
+                href={`/${locale}/games/worldcup`}
+                className="bg-yellow-500 hover:bg-yellow-600 text-slate-950 text-center font-bold px-6 py-3 rounded-xl transition-all duration-300 shadow-md hover:-translate-y-0.5 text-xs uppercase tracking-wider whitespace-nowrap select-none flex items-center justify-center gap-1.5"
+              >
+                <span>{locale === "kn" ? "ಈಗಲೇ ಆಡಿ ⚽" : "Play Now ⚽"}</span>
+                <svg className="w-4 h-4 shrink-0 text-slate-950" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+ 
       {/* 2. Main Headline Hero Section */}
       <section className="py-8 bg-[var(--surface)] border-b border-[var(--border)]">
         <div className="kq-container">
