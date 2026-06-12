@@ -10,10 +10,10 @@ export function Header({ locale }: { locale: Locale }) {
         <Link href={`/${locale}`} className="flex items-center">
           <Logo />
         </Link>
-        <nav className="hidden items-center gap-6 text-sm font-semibold text-[var(--muted)] md:flex">
+        <nav className="hidden items-center gap-3 lg:gap-4 xl:gap-6 text-xs lg:text-sm font-semibold text-[var(--muted)] md:flex">
           <Link
             href={`/${locale}`}
-            className="hover:text-[var(--secondary)] flex items-center gap-1 text-[var(--muted)] transition-colors"
+            className="hover:text-[var(--secondary)] flex items-center gap-1 text-[var(--muted)] transition-colors whitespace-nowrap"
             title={locale === "kn" ? "ಮುಖಪುಟ" : "Home"}
           >
             <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -22,35 +22,35 @@ export function Header({ locale }: { locale: Locale }) {
           </Link>
           <Link
             href={`/${locale}/quizzes`}
-            className="rounded bg-[var(--secondary)] px-3 py-1.5 text-xs font-extrabold uppercase text-white hover:bg-[var(--secondary)]/90 transition-colors shadow-sm select-none"
+            className="rounded border border-[var(--secondary)] bg-[var(--secondary)] px-3 py-1.5 text-[11px] font-extrabold uppercase text-white hover:bg-[var(--secondary)]/90 hover:border-[var(--secondary)]/90 transition-all shadow-sm select-none whitespace-nowrap"
           >
             {locale === "kn" ? "ಅಭ್ಯಾಸ ಕ್ವಿಜ್‌ಗಳು" : "Practice Quizzes"}
           </Link>
           <Link
             href={`/${locale}/games/gadhe`}
-            className="rounded border border-indigo-200 hover:border-indigo-400 bg-indigo-50 px-3 py-1.5 text-xs font-extrabold uppercase text-indigo-750 hover:bg-white transition-colors shadow-sm select-none"
+            className="rounded border border-indigo-200 hover:border-indigo-400 bg-indigo-50 px-3 py-1.5 text-[11px] font-extrabold uppercase text-indigo-750 hover:bg-white transition-all shadow-sm select-none whitespace-nowrap"
           >
             {locale === "kn" ? "ಗಾದೆ ಜೋಡಿಸಿ 🧩" : "Proverb Jumble 🧩"}
           </Link>
           <Link
             href={`/${locale}/games/worldcup`}
-            className="rounded border border-yellow-250 hover:border-yellow-450 bg-yellow-50 px-3 py-1.5 text-xs font-extrabold uppercase text-yellow-900 hover:bg-white transition-colors shadow-sm select-none"
+            className="rounded border border-yellow-250 hover:border-yellow-450 bg-yellow-50 px-3 py-1.5 text-[11px] font-extrabold uppercase text-yellow-900 hover:bg-white transition-all shadow-sm select-none whitespace-nowrap"
           >
             {locale === "kn" ? "ವಿಶ್ವಕಪ್ ⚽" : "World Cup ⚽"}
           </Link>
-          <Link href={`/${locale}/category/karnataka`} className="hover:text-[var(--secondary)] transition-colors">
+          <Link href={`/${locale}/category/karnataka`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
             {locale === "kn" ? "ಕರ್ನಾಟಕ" : "Karnataka"}
           </Link>
-          <Link href={`/${locale}/category/national`} className="hover:text-[var(--secondary)] transition-colors">
+          <Link href={`/${locale}/category/national`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
             {locale === "kn" ? "ರಾಷ್ಟ್ರೀಯ" : "National"}
           </Link>
-          <Link href={`/${locale}/category/international`} className="hover:text-[var(--secondary)] transition-colors">
+          <Link href={`/${locale}/category/international`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
             {locale === "kn" ? "ಅಂತರರಾಷ್ಟ್ರೀಯ" : "International"}
           </Link>
-          <Link href={`/${locale}/category/jobs`} className="hover:text-[var(--secondary)] transition-colors">
+          <Link href={`/${locale}/category/jobs`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
             {locale === "kn" ? "ಉದ್ಯೋಗಗಳು" : "Jobs"}
           </Link>
-          <Link href={`/${locale}/syllabus`} className="hover:text-[var(--secondary)] transition-colors">
+          <Link href={`/${locale}/syllabus`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
             {locale === "kn" ? "ಪಠ್ಯಕ್ರಮ" : "Syllabus"}
           </Link>
           {/* Dropdown Menu for More Categories */}
