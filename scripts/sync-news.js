@@ -264,6 +264,18 @@ async function runSync() {
  
         if (!originalTitle) continue;
  
+        // Skip articles older than 24 hours to maintain less content but keep it fresh
+        const pubDateStr = item.isoDate || item.pubDate;
+        if (pubDateStr) {
+          const pubDate = new Date(pubDateStr);
+          const now = new Date();
+          const ageInHours = (now - pubDate) / (1000 * 60 * 60);
+          if (ageInHours > 24) {
+            console.log(`[Skip] Too old (${Math.round(ageInHours)} hours): "${originalTitle}"`);
+            continue;
+          }
+        }
+ 
         const slug = generateSlug(originalTitle);
         if (!slug) continue;
  
