@@ -148,7 +148,7 @@ export async function getPublicPostsByCategory(
     technology: ["Technology"],
   };
 
-  const allowedCategories = categoryNamesMap[categoryKey] || [categoryKey];
+  const allowedCategories = categoryNamesMap[categoryKey.toLowerCase()] || [categoryKey];
   const remote = await queryPublishedByLocaleAndCategory("posts", locale, allowedCategories, count);
   const mapped = remote.map(toPublicPost).filter((post): post is PublicPost => Boolean(post));
   return mapped;
