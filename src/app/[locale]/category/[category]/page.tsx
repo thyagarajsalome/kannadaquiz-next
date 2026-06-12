@@ -6,7 +6,7 @@ import { getPublicPosts } from "@/lib/public-content";
 export const revalidate = 300;
 
 export function generateStaticParams() {
-  const categories = ["karnataka", "national", "international", "jobs", "agriculture", "education", "schemes", "tourism", "sports"];
+  const categories = ["karnataka", "national", "international", "jobs", "agriculture", "education", "schemes", "tourism", "sports", "technology"];
   const params: { locale: string; category: string }[] = [];
   
   // Create paths for both locales and all standard categories
@@ -29,6 +29,7 @@ const categoryTranslations: Record<string, Record<string, string>> = {
   schemes: { kn: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು", en: "Government Schemes" },
   tourism: { kn: "ಇತಿಹಾಸ ಮತ್ತು ಪ್ರವಾಸೋದ್ಯಮ", en: "Heritage & Tourism" },
   sports: { kn: "ಕ್ರೀಡಾ ಸುದ್ದಿ", en: "Sports News" },
+  technology: { kn: "ಕಂಪ್ಯೂಟರ್ ಮತ್ತು ತಂತ್ರಜ್ಞಾನ", en: "Computer & Technology" },
   general: { kn: "ಸಾಮಾನ್ಯ ಸುದ್ದಿ", en: "General News" }
 };
 
@@ -82,6 +83,10 @@ export async function generateMetadata({
       kn: ["ಕ್ರೀಡಾ ಸುದ್ದಿ", "ಕ್ರಿಕೆಟ್ ಅಪ್ಡೇಟ್ಸ್", "ಐಪಿಎಲ್ ಸುದ್ದಿ", "ಕ್ರೀಡೆ"],
       en: ["Sports News India", "Cricket Updates", "IPL Highlights", "Sports Events"]
     },
+    technology: {
+      kn: ["ಕಂಪ್ಯೂಟರ್ ತಂತ್ರಜ್ಞಾನ", "ಆರ್ಟಿಫಿಶಿಯಲ್ ಇಂಟೆಲಿಜೆನ್ಸ್", "ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ", "ಸೈಬರ್ ಸೆಕ್ಯುರಿಟಿ", "ಸಾಫ್ಟ್‌ವೇರ್", "ತಂತ್ರಜ್ಞಾನ ಸುದ್ದಿ"],
+      en: ["Computer Technology", "Artificial Intelligence", "AI News", "Cybersecurity", "Software Development", "Tech News"]
+    },
     general: {
       kn: ["ಸಾಮಾನ್ಯ ಸುದ್ದಿ", "ಕನ್ನಡ ಕ್ವಿಜ್", "ಕನ್ನಡ ವಾರ್ತೆಗಳು", "ಸಾಮಾನ್ಯ ಜ್ಞಾನ"],
       en: ["General News", "Kannada Quiz Portal", "Kannada News Summaries", "GK and Quizzes"]
@@ -97,7 +102,8 @@ export async function generateMetadata({
                      (catKey.includes("college") || catKey.includes("guide") || catKey.includes("education")) ? "education" :
                      (catKey.includes("scheme") || catKey.includes("yojane")) ? "schemes" :
                      (catKey.includes("tourism") || catKey.includes("heritage") || catKey.includes("itihasa") || catKey.includes("culture")) ? "tourism" :
-                     (catKey.includes("sport") || catKey.includes("game") || catKey.includes("kriide")) ? "sports" : "general";
+                     (catKey.includes("sport") || catKey.includes("game") || catKey.includes("kriide")) ? "sports" :
+                     (catKey.includes("technology") || catKey.includes("tech") || catKey.includes("computer") || catKey.includes("ai") || catKey.includes("intelligence")) ? "technology" : "general";
 
   return {
     title: locale === "kn" 
@@ -140,6 +146,7 @@ export default async function CategoryPage({
     if (c.includes("scheme") || c.includes("yojane")) return "schemes";
     if (c.includes("tourism") || c.includes("heritage") || c.includes("itihasa") || c.includes("culture")) return "tourism";
     if (c.includes("sport") || c.includes("game") || c.includes("kriide")) return "sports";
+    if (c.includes("technology") || c.includes("tech") || c.includes("computer") || c.includes("ai") || c.includes("intelligence")) return "technology";
     return "general";
   };
 

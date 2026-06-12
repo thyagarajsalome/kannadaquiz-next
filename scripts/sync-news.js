@@ -82,7 +82,8 @@ const FEEDS = [
   { name: "BBC News World", url: "http://feeds.bbci.co.uk/news/world/rss.xml" },
   { name: "Google News International", url: "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "Government Schemes", url: "https://news.google.com/rss/search?q=karnataka+government+schemes+OR+yojana&hl=en-IN&gl=IN&ceid=IN:en" },
-  { name: "Sports News", url: "https://news.google.com/rss/search?q=sports+news+india+OR+cricket&hl=en-IN&gl=IN&ceid=IN:en" }
+  { name: "Sports News", url: "https://news.google.com/rss/search?q=sports+news+india+OR+cricket&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "Technology & AI News", url: "https://news.google.com/rss/search?q=artificial+intelligence+OR+cybersecurity+OR+software+technology&hl=en-IN&gl=IN&ceid=IN:en" }
 ];
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -125,7 +126,7 @@ CRITICAL RULES TO AVOID AI-GENERATION SIGNS (HUMANIZATION):
    - Paragraph 1: Direct, simple introduction of the news (no fluffy intro).
    - Paragraph 2: Key details, facts, numbers, or terms.
    - Paragraph 3: A dedicated "Exam Insights & GK Analysis" (in English) / "ಪರೀಕ್ಷಾ ದೃಷ್ಟಿಕೋನ ಮತ್ತು ಜಿ.ಕೆ ವಿಶ್ಲೇಷಣೆ" (in Kannada) describing why this news matters for exams (KPSC, KEA, Banking, SSC) and listing static background facts (e.g., parent organization, established year, headquarters). Do NOT write multiple-choice questions inside the body text; instead, output them in the structured "quiz" schema array.
-6. Categorize the article appropriately (e.g. 'KPSC', 'Jobs', 'Current Affairs', 'Karnataka', 'National', 'International', or 'Agriculture').
+6. Categorize the article appropriately (e.g. 'KPSC', 'Jobs', 'Current Affairs', 'Karnataka', 'National', 'International', 'Agriculture', or 'Technology').
 7. Respond ONLY with a valid JSON object matching the requested schema. Do not add markdown wrapping or text before/after.`;
 
   const userPrompt = `English Title: ${title}
@@ -199,7 +200,7 @@ English Summary/Description: ${summary}`;
             },
             required: ["title", "excerpt", "body", "quiz"]
           },
-          category: { type: "STRING", description: "Category name e.g. KPSC, Jobs, Current Affairs, Karnataka, National, International, Agriculture." }
+          category: { type: "STRING", description: "Category name e.g. KPSC, Jobs, Current Affairs, Karnataka, National, International, Agriculture, Technology." }
         },
         required: ["kn", "en", "category"]
       }

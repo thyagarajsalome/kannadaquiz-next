@@ -79,6 +79,7 @@ const categoryTranslations: Record<string, Record<string, string>> = {
   current_affairs: { kn: "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", en: "Current Affairs" },
   agriculture: { kn: "ಕೃಷಿ ಮಾಹಿತಿ", en: "Agriculture Info" },
   education: { kn: "ಶಿಕ್ಷಣ ಮತ್ತು ಕಾಲೇಜು ಮಾರ್ಗದರ್ಶಿ", en: "Education & College Guide" },
+  technology: { kn: "ಕಂಪ್ಯೂಟರ್ & ತಂತ್ರಜ್ಞಾನ", en: "Computer & Tech" },
   general: { kn: "ಸಾಮಾನ್ಯ ಸುದ್ದಿ", en: "General News" }
 };
 
@@ -99,6 +100,9 @@ function getLocalizedCategory(category: string, locale: string): string {
   if (norm.includes("college") || norm.includes("guide") || norm.includes("education")) {
     return categoryTranslations.education[locale] || category;
   }
+  if (norm.includes("technology") || norm.includes("tech") || norm.includes("computer") || norm.includes("ai") || norm.includes("intelligence")) {
+    return categoryTranslations.technology[locale] || category;
+  }
   return categoryTranslations.general[locale] || category;
 }
 
@@ -117,6 +121,7 @@ const sectionTitles: Record<string, Record<Locale, string>> = {
   schemes: { kn: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು ಮತ್ತು ಅಪ್ಡೇಟ್ಸ್", en: "Government Schemes & Updates" },
   tourism: { kn: "ಕರ್ನಾಟಕ ಇತಿಹಾಸ ಮತ್ತು ಪ್ರವಾಸೋದ್ಯಮ", en: "Karnataka Heritage & Tourism" },
   sports: { kn: "ಕ್ರೀಡಾ ಸುದ್ದಿ ಮತ್ತು ಅಪ್ಡೇಟ್ಸ್", en: "Sports News & Updates" },
+  technology: { kn: "ಕಂಪ್ಯೂಟರ್ ಮತ್ತು ತಂತ್ರಜ್ಞಾನ (Technology & AI)", en: "Computer & Technology (AI)" },
 };
 
 const categoriesInfo = [
@@ -189,6 +194,13 @@ const categoriesInfo = [
     en: "Syllabus",
     icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />`,
     color: "text-cyan-755 bg-cyan-50 hover:bg-cyan-100 hover:border-cyan-300"
+  },
+  {
+    key: "technology",
+    kn: "ತಂತ್ರಜ್ಞಾನ",
+    en: "Tech & AI",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />`,
+    color: "text-blue-755 bg-blue-50 hover:bg-blue-100 hover:border-blue-300"
   }
 ];
 
@@ -229,6 +241,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     if (c.includes("scheme") || c.includes("yojane")) return "schemes";
     if (c.includes("tourism") || c.includes("heritage") || c.includes("itihasa") || c.includes("culture")) return "tourism";
     if (c.includes("sport") || c.includes("game") || c.includes("kriide")) return "sports";
+    if (c.includes("technology") || c.includes("tech") || c.includes("computer") || c.includes("ai") || c.includes("intelligence")) return "technology";
     return "general";
   };
 
@@ -241,6 +254,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const schemesPosts = posts.filter(p => getCategoryKey(p.category) === "schemes").slice(0, 3);
   const tourismPosts = posts.filter(p => getCategoryKey(p.category) === "tourism").slice(0, 3);
   const sportsPosts = posts.filter(p => getCategoryKey(p.category) === "sports").slice(0, 3);
+  const technologyPosts = posts.filter(p => getCategoryKey(p.category) === "technology").slice(0, 3);
 
   return (
     <>
@@ -339,7 +353,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </h3>
           </div>
  
-          <div className="grid gap-3 grid-cols-3 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10">
+          <div className="grid gap-3 grid-cols-3 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-11">
             {categoriesInfo.map((cat) => (
               <Link
                 key={cat.key}
@@ -939,6 +953,44 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </div>
               <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                 {sportsPosts.map((post) => (
+                  <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
+                    <div>
+                      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
+                        <span>{getSourceName(post)}</span>
+                        <span>•</span>
+                        <time>{post.date}</time>
+                      </div>
+                      <Link href={`/${locale}/posts/${post.slug}`} className="group">
+                        <h4 className="mt-2 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2">
+                          {post.title}
+                        </h4>
+                      </Link>
+                      <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
+                        {post.excerpt}
+                      </p>
+                    </div>
+                    <div className="mt-4 pt-3 border-t border-[var(--border)]">
+                      <Link href={`/${locale}/posts/${post.slug}`} className="text-xs font-bold text-[var(--secondary)] hover:underline">
+                        {sectionTitles.readMore[locale]}
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Computer & Technology Section */}
+          {technologyPosts.length > 0 && (
+            <div>
+              <div className="flex items-center justify-between border-b-2 border-[var(--secondary)] pb-2 mb-5">
+                <h3 className="font-serif text-2xl font-bold text-[var(--primary)] flex items-center gap-2">
+                  <span className="w-3 h-6 bg-[var(--secondary)] inline-block"></span>
+                  {sectionTitles.technology[locale]}
+                </h3>
+              </div>
+              <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+                {technologyPosts.map((post) => (
                   <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
                     <div>
                       <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
