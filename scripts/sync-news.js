@@ -264,6 +264,24 @@ async function runSync() {
  
         if (!originalTitle) continue;
  
+        // Skip political content related to BJP or the specific blocked link
+        const lowerTitle = originalTitle.toLowerCase();
+        const lowerDesc = originalDescription.toLowerCase();
+        const lowerUrl = sourceUrl.toLowerCase();
+        
+        const isBjpRelated = lowerTitle.includes("bjp") || 
+                            lowerTitle.includes("bharatiya janata party") ||
+                            lowerDesc.includes("bjp") ||
+                            lowerDesc.includes("bharatiya janata party") ||
+                            lowerUrl.includes("bjp");
+                            
+        const isBlockedLink = lowerUrl.includes("thenewsmill.com/2026/05/karnataka-bjp-chief-calls-state-government-guarantee-schemes-election-gimmicks");
+        
+        if (isBjpRelated || isBlockedLink) {
+          console.log(`[Skip] Blocked political/BJP content: "${originalTitle}"`);
+          continue;
+        }
+ 
         // Skip articles older than 24 hours to maintain less content but keep it fresh
         const pubDateStr = item.isoDate || item.pubDate;
         if (pubDateStr) {
