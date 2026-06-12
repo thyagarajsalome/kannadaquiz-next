@@ -182,6 +182,13 @@ const categoriesInfo = [
     en: "Sports",
     icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />`,
     color: "text-pink-755 bg-pink-50 hover:bg-pink-100 hover:border-pink-300"
+  },
+  {
+    key: "syllabus",
+    kn: "ಪಠ್ಯಕ್ರಮ",
+    en: "Syllabus",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />`,
+    color: "text-cyan-755 bg-cyan-50 hover:bg-cyan-100 hover:border-cyan-300"
   }
 ];
 
@@ -332,11 +339,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </h3>
           </div>
  
-          <div className="grid gap-3 grid-cols-3 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9">
+          <div className="grid gap-3 grid-cols-3 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10">
             {categoriesInfo.map((cat) => (
               <Link
                 key={cat.key}
-                href={`/${locale}/category/${cat.key}`}
+                href={cat.key === "syllabus" ? `/${locale}/syllabus` : `/${locale}/category/${cat.key}`}
                 className={`kq-card p-3 flex flex-col items-center text-center justify-between transition-all duration-300 border border-[var(--border)]/60 hover:shadow-sm hover:border-[var(--secondary)]/40 rounded-xl group ${cat.color}`}
               >
                 <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-[var(--border)]/20 shadow-sm group-hover:scale-110 transition-transform duration-300 mb-2">
