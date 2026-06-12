@@ -312,6 +312,118 @@ const SERVICES_DATA: ServiceItem[] = [
     howToObtain: "Visit the Sarathi (for DL) or Vahan (for RC) sections on the Parivahan portal. Select 'Karnataka' or your respective state, complete the forms, upload documents (age/address proofs), pay the RTO fee, and schedule your test or inspection appointment online.",
     howToObtainKn: "ಪರಿವಾಹನ ಪೋರ್ಟಲ್‌ಗೆ ಭೇಟಿ ನೀಡಿ ಸಾರಥಿ (DL ಗಾಗಿ) ಅಥವಾ ವಾಹನ (RC ಗಾಗಿ) ವಿಭಾಗವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ. ಕರ್ನಾಟಕ ರಾಜ್ಯವನ್ನು ಆಯ್ದು ಅಗತ್ಯ ಫಾರ್ಮ್ ತುಂಬಿ, ವಯಸ್ಸು ಮತ್ತು ವಿಳಾಸದ ದಾಖಲೆ ಸಲ್ಲಿಸಿ ಶುಲ್ಕ ಪಾವತಿಸಿ. ನಂತರ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಟೆಸ್ಟ್ ಸ್ಲಾಟ್ ಬುಕ್ ಮಾಡಿ ಆರ್‌ಟಿಒ (RTO) ಕಚೇರಿಗೆ ಭೇಟಿ ನೀಡಿ.",
     officialUrl: "https://parivahan.gov.in/"
+  },
+  {
+    id: "senior-citizen-card",
+    name: "Karnataka Senior Citizen Card",
+    nameKn: "ಕರ್ನಾಟಕ ಹಿರಿಯ ನಾಗರಿಕರ ಗುರುತಿನ ಚೀಟಿ",
+    category: "identity",
+    categoryKn: "ಗುರುತಿನ ಚೀಟಿ",
+    categoryEn: "Identity Card",
+    type: "state",
+    typeKn: "ಕರ್ನಾಟಕ ರಾಜ್ಯ",
+    typeEn: "Karnataka State",
+    agency: "Department of Senior Citizens & Differently Abled, Govt. of Karnataka",
+    agencyKn: "ಹಿರಿಯ ನಾಗರಿಕರ ಮತ್ತು ವಿಕಲಚೇತನರ ಸಬಲೀಕರಣ ಇಲಾಖೆ, ಕರ್ನಾಟಕ ಸರ್ಕಾರ",
+    description: "Official identification card issued to senior citizens (aged 60 and above) in Karnataka to claim concessions and benefits.",
+    descriptionKn: "ಕರ್ನಾಟಕದಲ್ಲಿ ವಾಸಿಸುವ 60 ವರ್ಷ ಮೇಲ್ಪಟ್ಟ ಹಿರಿಯ ನಾಗರಿಕರಿಗೆ ವಿವಿಧ ಸರ್ಕಾರಿ ಸೌಲಭ್ಯಗಳು ಮತ್ತು ರಿಯಾಯಿತಿಗಳನ್ನು ಪಡೆಯಲು ನೀಡಲಾಗುವ ಅಧಿಕೃತ ಗುರುತಿನ ಚೀಟಿ.",
+    benefits: [
+      "Up to 25% discount on KSRTC/BMTC bus fares in Karnataka.",
+      "Priority queues and concessions in government hospitals.",
+      "Helpful for availing state-sponsored pension schemes (Sandhya Suraksha)."
+    ],
+    benefitsKn: [
+      "ಕರ್ನಾಟಕ ಸಾರಿಗೆ ಬಸ್‌ಗಳಲ್ಲಿ (KSRTC/BMTC) ಹಿರಿಯ ನಾಗರಿಕರಿಗೆ ಪ್ರಯಾಣದ ದರದಲ್ಲಿ 25% ರಿಯಾಯಿತಿ.",
+      "ಸರ್ಕಾರಿ ಆಸ್ಪತ್ರೆಗಳಲ್ಲಿ ಆದ್ಯತೆಯ ಚಿಕಿತ್ಸೆ ಮತ್ತು ಉಚಿತ ವೈದ್ಯಕೀಯ ತಪಾಸಣೆ ಸೌಲಭ್ಯ.",
+      "ರಾಜ್ಯ ಸರ್ಕಾರದ ಸಂಧ್ಯಾ ಸುರಕ್ಷಾ ಮಾಸಾಶನ ಯೋಜನೆಯನ್ನು ಪಡೆಯಲು ಸಹಕಾರಿ."
+    ],
+    howToObtain: "Apply online via the Seva Sindhu portal or visit a nearby Karnataka One/Bangalore One center with age proof (Aadhaar/PAN), address proof, and passport photos.",
+    howToObtainKn: "ಸೇವಾ ಸಿಂಧು ನಾಗರಿಕ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ಆನ್‌ಲೈನ್ ಮೂಲಕ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ ಅಥವಾ ನಿಮ್ಮ ಹತ್ತಿರದ ಕರ್ನಾಟಕ ಒನ್/ಬೆಂಗಳೂರು ಒನ್ ಕೇಂದ್ರಕ್ಕೆ ವಯಸ್ಸಿನ ಪುರಾವೆ (ಆಧಾರ್/ಪ್ಯಾನ್), ವಿಳಾಸದ ಪುರಾವೆ ಹಾಗೂ ಭಾವಚಿತ್ರಗಳೊಂದಿಗೆ ಭೇಟಿ ನೀಡಿ ನೋಂದಾಯಿಸಿಕೊಳ್ಳಿ.",
+    officialUrl: "https://sevasindhu.karnataka.gov.in/"
+  },
+  {
+    id: "domicile-certificate",
+    name: "Karnataka Domicile (Residence) Certificate",
+    nameKn: "ವಾಸಸ್ಥಳ ದೃಢೀಕರಣ ಪತ್ರ (Domicile Certificate)",
+    category: "identity",
+    categoryKn: "ಗುರುತಿನ ಚೀಟಿ",
+    categoryEn: "Identity Card",
+    type: "state",
+    typeKn: "ಕರ್ನಾಟಕ ರಾಜ್ಯ",
+    typeEn: "Karnataka State",
+    agency: "Revenue Department, Government of Karnataka",
+    agencyKn: "ಕಂದಾಯ ಇಲಾಖೆ, ಕರ್ನಾಟಕ ಸರ್ಕಾರ",
+    description: "An official document certifying that a person has been residing in a particular location in Karnataka.",
+    descriptionKn: "ಒಬ್ಬ ನಾಗರಿಕನು ಕರ್ನಾಟಕ ರಾಜ್ಯದ ನಿರ್ದಿಷ್ಟ ಸ್ಥಳದಲ್ಲಿ ನೆಲೆಸಿದ್ದಾನೆ ಎಂಬುದನ್ನು ದೃಢೀಕರಿಸುವ ಅಧಿಕೃತ ಸರ್ಕಾರಿ ಪ್ರಮಾಣಪತ್ರ.",
+    benefits: [
+      "Required to claim local reservation/quota in education (KCET/NEET/PGCET).",
+      "Essential for securing Karnataka State Government jobs.",
+      "Used to apply for various regional government welfare programs and grants."
+    ],
+    benefitsKn: [
+      "ರಾಜ್ಯ ಮಟ್ಟದ ಶೈಕ್ಷಣಿಕ ಕೋಟಾಗಳಡಿ (KCET/NEET/PGCET) ಸ್ಥಳೀಯ ಮೀಸಲಾತಿ ಸೌಲಭ್ಯ ಪಡೆಯಲು ಅಗತ್ಯ ದಾಖಲೆ.",
+      "ಕರ್ನಾಟಕ ಸರ್ಕಾರಿ ಹುದ್ದೆಗಳ ನೇಮಕಾತಿ ಸಂದರ್ಭದಲ್ಲಿ ಮೀಸಲಾತಿ ಪಡೆಯಲು ಕಡ್ಡಾಯ.",
+      "ಸ್ಥಳೀಯ ಕಲ್ಯಾಣ ಯೋಜನೆಗಳು ಮತ್ತು ಧನಸಹಾಯಕ್ಕಾಗಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಲು ಅತ್ಯಗತ್ಯ."
+    ],
+    howToObtain: "Apply online on the Nada Kacheri or Seva Sindhu website. Submit supporting documents such as school certificates showing study in Karnataka, electricity bills, Aadhaar card, and ration card. The certificate is issued by the Tahsildar after verification.",
+    howToObtainKn: "ನಾಡಕಚೇರಿ (Nada Kacheri) ಅಥವಾ ಸೇವಾ ಸಿಂಧು ವೆಬ್‌ಸೈಟ್‌ ಮೂಲಕ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ. ನಿಮ್ಮ ಕರ್ನಾಟಕ ಶಾಲಾ ದಾಖಲೆಗಳು, ಆಧಾರ್ ಕಾರ್ಡ್, ಮತ್ತು ರೇಷನ್ ಕಾರ್ಡ್ ದಾಖಲೆಗಳನ್ನು ಸಲ್ಲಿಸಿ. ಪರಿಶೀಲನೆಯ ನಂತರ ತಹಶೀಲ್ದಾರರಿಂದ ಈ ಪ್ರಮಾಣಪತ್ರ ನೀಡಲಾಗುತ್ತದೆ.",
+    officialUrl: "https://nadakacheri.karnataka.gov.in/"
+  },
+  {
+    id: "arogya-karnataka",
+    name: "Arogya Karnataka (AB-ARK)",
+    nameKn: "ಆಯುಷ್ಮಾನ್ ಭಾರತ್ - ಆರೋಗ್ಯ ಕರ್ನಾಟಕ (AB-ARK)",
+    category: "health",
+    categoryKn: "ಆರೋಗ್ಯ",
+    categoryEn: "Health & Insurance",
+    type: "state",
+    typeKn: "ಕರ್ನಾಟಕ ರಾಜ್ಯ",
+    typeEn: "Karnataka State",
+    agency: "Department of Health & Family Welfare, Government of Karnataka",
+    agencyKn: "ಆರೋಗ್ಯ ಮತ್ತುಕುಟುಂಬ ಕಲ್ಯಾಣ ಇಲಾಖೆ, ಕರ್ನಾಟಕ ಸರ್ಕಾರ",
+    description: "An integrated health insurance scheme of Karnataka state providing healthcare access to BPL and APL families.",
+    descriptionKn: "ಕರ್ನಾಟಕ ಸರ್ಕಾರದ ಮಹತ್ವಾಕಾಂಕ್ಷೆಯ ಆರೋಗ್ಯ ವಿಮೆ ಯೋಜನೆ. ಇದು ರಾಜ್ಯದ ಬಡತನ ರೇಖೆಗಿಂತ ಕೆಳಗಿರುವ (BPL) ಮತ್ತು ಮೇಲಿರುವ (APL) ಕುಟುಂಬಗಳಿಗೆ ಉಚಿತ ಅಥವಾ ರಿಯಾಯಿತಿ ದರದಲ್ಲಿ ಚಿಕಿತ್ಸೆ ನೀಡುತ್ತದೆ.",
+    benefits: [
+      "Up to ₹5 Lakhs per year cashless treatment for eligible BPL cardholders.",
+      "APL cardholders get 30% co-payment concession for secondary and tertiary surgeries.",
+      "Applicable in all major government hospitals and registered private referral hospitals."
+    ],
+    benefitsKn: [
+      "ಬಿಪಿಎಲ್ (BPL) ಕಾರ್ಡ್ ಹೊಂದಿರುವ ಕುಟುಂಬಗಳಿಗೆ ವಾರ್ಷಿಕ ₹5 ಲಕ್ಷಗಳವರೆಗೆ ಉಚಿತ ವೈದ್ಯಕೀಯ ಚಿಕಿತ್ಸೆ.",
+      "ಎಪಿಎಲ್ (APL) ಕಾರ್ಡ್ ಹೊಂದಿರುವ ಕುಟುಂಬಗಳಿಗೆ ಚಿಕಿತ್ಸಾ ವೆಚ್ಚದಲ್ಲಿ 30% ವರೆಗೆ ಸರ್ಕಾರದಿಂದ ರಿಯಾಯಿತಿ ಸೌಲಭ್ಯ.",
+      "ರಾಜ್ಯದ ಎಲ್ಲಾ ಸರ್ಕಾರಿ ಆಸ್ಪತ್ರೆಗಳು ಮತ್ತು ನೋಂದಾಯಿತ ಖಾಸಗಿ ಆಸ್ಪತ್ರೆಗಳಲ್ಲಿ ಚಿಕಿತ್ಸೆ ಲಭ್ಯ."
+    ],
+    howToObtain: "Register with your Aadhaar Card and Ration Card (BPL/APL) at a government hospital. A unique AB-ARK ID will be generated. Take a referral from a government hospital if seeking treatment in an empanelled private hospital.",
+    howToObtainKn: "ನಿಮ್ಮ ಆಧಾರ್ ಕಾರ್ಡ್ ಮತ್ತು ರೇಷನ್ ಕಾರ್ಡ್‌ನೊಂದಿಗೆ ಸರ್ಕಾರಿ ಆಸ್ಪತ್ರೆಗೆ ಭೇಟಿ ನೀಡಿ ನೋಂದಾಯಿಸಿ. ನಿಮ್ಮ ವಿಶಿಷ್ಟ AB-ARK ಗುರುತಿನ ಚೀಟಿಯನ್ನು ಪಡೆದುಕೊಳ್ಳಿ. ಖಾಸಗಿ ಆಸ್ಪತ್ರೆಯಲ್ಲಿ ಚಿಕಿತ್ಸೆ ಪಡೆಯಲು ಮೊದಲು ಸರ್ಕಾರಿ ಆಸ್ಪತ್ರೆಯಿಂದ ರೆಫರಲ್ (Referral) ಪಡೆಯುವುದು ಕಡ್ಡಾಯ.",
+    officialUrl: "https://arogya.karnataka.gov.in/"
+  },
+  {
+    id: "yeshasvini",
+    name: "Yeshasvini Cooperative Health Scheme",
+    nameKn: "ಯಶಸ್ವಿನಿ ಸಹಕಾರ ಆರೋಗ್ಯ ರಕ್ಷಣೆ ಯೋಜನೆ",
+    category: "health",
+    categoryKn: "ಆರೋಗ್ಯ",
+    categoryEn: "Health & Insurance",
+    type: "state",
+    typeKn: "ಕರ್ನಾಟಕ ರಾಜ್ಯ",
+    typeEn: "Karnataka State",
+    agency: "Cooperative Department, Government of Karnataka",
+    agencyKn: "ಸಹಕಾರ ಇಲಾಖೆ, ಕರ್ನಾಟಕ ಸರ್ಕಾರ",
+    description: "A cashless healthcare scheme designed specifically for cooperative society farmers, milk producers, and self-help groups in Karnataka.",
+    descriptionKn: "ಕರ್ನಾಟಕದ ಸಹಕಾರ ಸಂಘಗಳ ರೈತ ಸದಸ್ಯರು, ಹಾಲು ಉತ್ಪಾದಕರು ಮತ್ತು ಸ್ವಸಹಾಯ ಗುಂಪುಗಳ ಸದಸ್ಯರಿಗಾಗಿ ರೂಪಿಸಲಾದ ನಗದು ರಹಿತ ಚಿಕಿತ್ಸಾ ಯೋಜನೆ.",
+    benefits: [
+      "Cashless hospital surgical treatments up to ₹2 Lakhs per year.",
+      "Covers more than 800 types of surgeries and diagnostic checks.",
+      "Available to members of cooperative societies and their family members."
+    ],
+    benefitsKn: [
+      "ನಿಗದಿತ ಆಸ್ಪತ್ರೆಗಳಲ್ಲಿ ವಾರ್ಷಿಕ ₹2 ಲಕ್ಷಗಳವರೆಗೆ ನಗದು ರಹಿತ ಶಸ್ತ್ರಚಿಕಿತ್ಸಾ ಸೌಲಭ್ಯ.",
+      "೮೦೦ಕ್ಕೂ ಹೆಚ್ಚು ವಿವಿಧ ರೀತಿಯ ಶಸ್ತ್ರಚಿಕಿತ್ಸೆಗಳು ಮತ್ತು ವೈದ್ಯಕೀಯ ಪರೀಕ್ಷೆಗಳ ವೆಚ್ಚ ಭರಿಸುವಿಕೆ.",
+      "ಸಹಕಾರ ಸಂಘಗಳ ನೋಂದಾಯಿತ ಸದಸ್ಯರು ಮತ್ತು ಅವರ ಇಡೀ ಕುಟುಂಬದ ಸದಸ್ಯರಿಗೆ ಲಭ್ಯ."
+    ],
+    howToObtain: "Register through your local cooperative society or agricultural cooperative bank by submitting the application and paying a low annual membership premium (usually ₹500 to ₹1000).",
+    howToObtainKn: "ನಿಮ್ಮ ಗ್ರಾಮದ ಕೃಷಿ ಪತ್ತಿನ ಸಹಕಾರ ಸಂಘ, ಹಾಲು ಉತ್ಪಾದಕರ ಸಂಘ ಅಥವಾ ಸಹಕಾರ ಬ್ಯಾಂಕ್‌ ಮೂಲಕ ವಾರ್ಷಿಕ ಪ್ರೀಮಿಯಂ ಶುಲ್ಕ ಪಾವತಿಸಿ ನೋಂದಣಿ ಮಾಡಿಸಿಕೊಳ್ಳಿ.",
+    officialUrl: "https://cooperative.kar.gov.in/"
   }
 ];
 
