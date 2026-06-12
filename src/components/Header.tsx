@@ -32,6 +32,12 @@ export function Header({ locale }: { locale: Locale }) {
           >
             {locale === "kn" ? "ಗಾದೆ ಜೋಡಿಸಿ 🧩" : "Proverb Jumble 🧩"}
           </Link>
+          <Link
+            href={`/${locale}/games/worldcup`}
+            className="rounded border border-yellow-250 hover:border-yellow-450 bg-yellow-50 px-3 py-1.5 text-xs font-extrabold uppercase text-yellow-900 hover:bg-white transition-colors shadow-sm select-none"
+          >
+            {locale === "kn" ? "ವಿಶ್ವಕಪ್ ⚽" : "World Cup ⚽"}
+          </Link>
           <Link href={`/${locale}/category/karnataka`} className="hover:text-[var(--secondary)] transition-colors">
             {locale === "kn" ? "ಕರ್ನಾಟಕ" : "Karnataka"}
           </Link>
@@ -99,6 +105,9 @@ export function Header({ locale }: { locale: Locale }) {
           </Link>
           <Link href={`/${locale}/games/gadhe`} className="bg-indigo-600 text-white px-2 py-0.5 rounded text-[10px] font-extrabold select-none">
             {locale === "kn" ? "ಗಾದೆ ಜೋಡಿಸಿ 🧩" : "Proverb Jumble 🧩"}
+          </Link>
+          <Link href={`/${locale}/games/worldcup`} className="bg-yellow-500 text-slate-950 px-2 py-0.5 rounded text-[10px] font-black select-none shrink-0">
+            {locale === "kn" ? "ವಿಶ್ವಕಪ್ ⚽" : "World Cup ⚽"}
           </Link>
           <Link href={`/${locale}/category/karnataka`} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಕರ್ನಾಟಕ" : "Karnataka"}
