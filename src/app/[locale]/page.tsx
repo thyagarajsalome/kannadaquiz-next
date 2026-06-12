@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { siteText } from "@/data/content";
 import { isLocale, locales, type Locale } from "@/lib/locales";
-import { getPublicCurrentAffairs, getPublicJobs, getPublicPosts, getPublicQuizzes } from "@/lib/public-content";
+import { getPublicCurrentAffairs, getPublicJobs, getPublicPosts, getPublicQuizzes, getPublicPostsByCategory } from "@/lib/public-content";
 
 export const revalidate = 300;
 
@@ -220,11 +220,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
   const text = siteText[locale];
   
-  const [currentAffairs, posts, jobs, quizzes] = await Promise.all([
+  const [currentAffairs, posts, jobs, quizzes, technologyPosts] = await Promise.all([
     getPublicCurrentAffairs(locale, 8),
     getPublicPosts(locale, 35),
     getPublicJobs(locale, 4),
     getPublicQuizzes(locale, 4),
+    getPublicPostsByCategory(locale, "technology", 3),
   ]);
 
   const heroPost = posts[0] || null;
@@ -254,7 +255,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const schemesPosts = posts.filter(p => getCategoryKey(p.category) === "schemes").slice(0, 3);
   const tourismPosts = posts.filter(p => getCategoryKey(p.category) === "tourism").slice(0, 3);
   const sportsPosts = posts.filter(p => getCategoryKey(p.category) === "sports").slice(0, 3);
-  const technologyPosts = posts.filter(p => getCategoryKey(p.category) === "technology").slice(0, 3);
 
   return (
     <>
@@ -353,12 +353,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </h3>
           </div>
  
-          <div className="grid gap-3 grid-cols-3 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-11">
+          <div className="grid gap-2.5 grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-11">
             {categoriesInfo.map((cat) => (
               <Link
                 key={cat.key}
                 href={cat.key === "syllabus" ? `/${locale}/syllabus` : `/${locale}/category/${cat.key}`}
-                className={`kq-card p-3 flex flex-col items-center text-center justify-between transition-all duration-300 border border-[var(--border)]/60 hover:shadow-sm hover:border-[var(--secondary)]/40 rounded-xl group ${cat.color}`}
+                className={`kq-card px-1.5 py-3 sm:p-3 flex flex-col items-center text-center justify-between transition-all duration-300 border border-[var(--border)]/60 hover:shadow-sm hover:border-[var(--secondary)]/40 rounded-xl group ${cat.color}`}
               >
                 <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-[var(--border)]/20 shadow-sm group-hover:scale-110 transition-transform duration-300 mb-2">
                   <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: cat.icon }} />
