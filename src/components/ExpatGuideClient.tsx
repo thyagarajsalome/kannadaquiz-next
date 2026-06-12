@@ -351,11 +351,9 @@ export function ExpatGuideClient({ locale }: { locale: Locale }) {
                       : "bg-white border-[var(--border)]/70 text-[var(--primary)] hover:border-[var(--secondary)]/50 hover:bg-[var(--surface-soft)]"
                   }`}
                 >
-                  <img
-                    src={`https://flagcdn.com/w80/${c.flag}.png`}
-                    alt={c.name}
-                    className="w-12 h-8 object-cover rounded shadow-sm border border-[var(--border)]/30 mb-2 select-none"
-                  />
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--secondary)] mb-1 bg-[var(--surface-soft)] px-2 py-0.5 rounded-md border border-[var(--border)]/40">
+                    {c.code}
+                  </span>
                   <span className="text-xs md:text-sm font-bold block">{c.name}</span>
                 </button>
               );
@@ -367,11 +365,9 @@ export function ExpatGuideClient({ locale }: { locale: Locale }) {
             <div className="max-w-4xl mx-auto bg-white border border-[var(--border)]/70 rounded-2xl p-6 md:p-8 shadow-sm space-y-8 transition-opacity duration-300">
               {/* Country Title */}
               <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4">
-                <img
-                  src={`https://flagcdn.com/w80/${currentCountry.flag}.png`}
-                  alt={currentCountry.name}
-                  className="w-14 h-9 object-cover rounded shadow-sm border border-[var(--border)]/30 select-none"
-                />
+                <div className="w-12 h-12 rounded-xl bg-[var(--surface-soft)] border border-[var(--border)]/50 flex items-center justify-center text-sm md:text-base font-bold text-[var(--secondary)] select-none shrink-0">
+                  {currentCountry.code}
+                </div>
                 <div>
                   <h2 className="font-serif text-xl md:text-2xl font-bold text-[var(--primary)]">
                     {currentCountry.name} - {locale === "kn" ? "ಸಹಾಯ ಕೇಂದ್ರ" : "Info Hub"}
