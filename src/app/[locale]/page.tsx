@@ -409,6 +409,110 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
+      {/* 3b. Evergreen Government Services Section */}
+      <section className="py-10 bg-white border-b border-[var(--border)]">
+        <div className="kq-container">
+          <div className="flex items-center justify-between border-b-2 border-[var(--primary)] pb-2 mb-6">
+            <h3 className="font-serif text-2xl font-bold text-[var(--primary)]">
+              {locale === "kn" ? "ಅಗತ್ಯ ಸರ್ಕಾರಿ ಸೇವೆಗಳು (Gov Services)" : "Essential Government Services"}
+            </h3>
+            <Link href={`/${locale}/services`} className="text-xs font-bold text-[var(--secondary)] hover:underline">
+              {locale === "kn" ? "ಎಲ್ಲಾ ಸೇವೆಗಳು ➔" : "View All Services ➔"}
+            </Link>
+          </div>
+ 
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Card 1: Aadhaar */}
+            <div className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-all border-l-2 border-l-sky-500">
+              <div>
+                <h4 className="font-serif text-base font-bold text-[var(--primary)]">
+                  {locale === "kn" ? "ಆಧಾರ್ ಕಾರ್ಡ್ ಸೇವೆಗಳು" : "Aadhaar Card Portal"}
+                </h4>
+                <p className="mt-2 text-xs text-[var(--muted)] leading-relaxed">
+                  {locale === "kn"
+                    ? "ಆಧಾರ್ ಡೌನ್‌ಲೋಡ್, ವಿಳಾಸ ತಿದ್ದುಪಡಿ, ಮತ್ತು ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ಲಿಂಕ್ ಮಾಡುವ ವಿವರಗಳು."
+                    : "Download Aadhaar, update address, check linking status, and lock biometrics."}
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-[var(--border)]/30">
+                <a href="https://myaadhaar.uidai.gov.in/" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[var(--secondary)] hover:underline flex items-center gap-1">
+                  <span>myaadhaar.uidai.gov.in</span>
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+ 
+            {/* Card 2: Ration Card */}
+            <div className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-all border-l-2 border-l-emerald-500">
+              <div>
+                <h4 className="font-serif text-base font-bold text-[var(--primary)]">
+                  {locale === "kn" ? "ಪಡಿತರ ಚೀಟಿ (Ration Card)" : "Ration Card (Ahara)"}
+                </h4>
+                <p className="mt-2 text-xs text-[var(--muted)] leading-relaxed">
+                  {locale === "kn"
+                    ? "ಹೊಸ ರೇಷನ್ ಕಾರ್ಡ್ ಅರ್ಜಿ, ಸದಸ್ಯರ ಸೇರ್ಪಡೆ, ಮತ್ತು ಅನ್ನಭಾಗ್ಯ ಯೋಜನೆಯ ವಿವರಗಳು."
+                    : "Apply for new card, check entitlement status, and edit family member details."}
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-[var(--border)]/30">
+                <a href="https://ahara.kar.nic.in/" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[var(--secondary)] hover:underline flex items-center gap-1">
+                  <span>ahara.kar.nic.in</span>
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+ 
+            {/* Card 3: Voter ID */}
+            <div className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-all border-l-2 border-l-indigo-500">
+              <div>
+                <h4 className="font-serif text-base font-bold text-[var(--primary)]">
+                  {locale === "kn" ? "ಮತದಾರರ ಪಟ್ಟಿ ಮತ್ತು Voter ID" : "Voter Services (ECI)"}
+                </h4>
+                <p className="mt-2 text-xs text-[var(--muted)] leading-relaxed">
+                  {locale === "kn"
+                    ? "ಹೊಸ ಮತದಾರರ ನೋಂದಣಿ, ತಿದ್ದುಪಡಿ ಹಾಗೂ ಡಿಜಿಟಲ್ ಇ-ಮತದಾರರ ಪತ್ರ ಡೌನ್‌ಲೋಡ್."
+                    : "Register as voter, download e-EPIC card, search voter list and correct details."}
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-[var(--border)]/30">
+                <a href="https://voters.eci.gov.in/" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[var(--secondary)] hover:underline flex items-center gap-1">
+                  <span>voters.eci.gov.in</span>
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+ 
+            {/* Card 4: PAN Card */}
+            <div className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-all border-l-2 border-l-orange-500">
+              <div>
+                <h4 className="font-serif text-base font-bold text-[var(--primary)]">
+                  {locale === "kn" ? "ಪ್ಯಾನ್ ಕಾರ್ಡ್ ಸೇವೆಗಳು" : "PAN Card Portal"}
+                </h4>
+                <p className="mt-2 text-xs text-[var(--muted)] leading-relaxed">
+                  {locale === "kn"
+                    ? "ಹೊಸ ಪ್ಯಾನ್ ಕಾರ್ಡ್ ಅರ್ಜಿ, ತಿದ್ದುಪಡಿ, ಮತ್ತು ಆಧಾರ್-ಪ್ಯಾನ್ ಲಿಂಕ್ ಮಾಡುವ ಪ್ರಕ್ರಿಯೆ."
+                    : "Apply online for new PAN, request card reprint, correct details, and link Aadhaar."}
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-[var(--border)]/30">
+                <a href="https://www.onlineservices.nsdl.com/paam/endUserRegisterContact.html" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[var(--secondary)] hover:underline flex items-center gap-1">
+                  <span>nsdl.com / utiitsl.com</span>
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+ 
       {/* 4. Categorized News Sections */}
       <section className="py-10 bg-white">
         <div className="kq-container flex flex-col gap-10">

@@ -369,17 +369,14 @@ export function ServicesClient({ locale }: { locale: Locale }) {
       </div>
 
       {/* Safety Alert Block */}
-      <div className="border border-amber-200 bg-amber-50 rounded-lg p-4 mb-8 flex gap-3 text-amber-900 max-w-4xl mx-auto">
-        <svg className="w-5 h-5 shrink-0 mt-0.5 text-amber-700" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <div className="border border-amber-250 bg-amber-50 rounded-lg p-3 mb-8 flex gap-2.5 text-amber-900 max-w-4xl mx-auto items-center">
+        <svg className="w-5 h-5 shrink-0 text-amber-700" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/205 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
         </svg>
-        <div className="text-xs md:text-sm">
-          <strong className="font-bold">
-            {locale === "kn" ? "ಸುರಕ್ಷತಾ ಎಚ್ಚರಿಕೆ:" : "Security Warning:"}
-          </strong>{" "}
+        <div className="text-xs">
           {locale === "kn"
-            ? "ಆಧಾರ್, ಪ್ಯಾನ್, ಮತ್ತು ಪಡಿತರ ಚೀಟಿಗಳ ಹೆಸರಿನಲ್ಲಿ ಹಲವು ಖಾಸಗಿ ನಕಲಿ ವೆಬ್‌ಸೈಟ್‌ಗಳು ವಂಚಿಸುತ್ತಿವೆ. ಯಾವಾಗಲೂ ವೆಬ್ ವಿಳಾಸದಲ್ಲಿ ಕೊನೆಯಲ್ಲಿ '.gov.in' ಅಥವಾ '.kar.nic.in' ಇರುವುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ. ನಾವು ಒದಗಿಸುವ ಎಲ್ಲಾ ಲಿಂಕ್‌ಗಳು 100% ಅಧಿಕೃತ ಸರ್ಕಾರಿ ಮೂಲಗಳಾಗಿವೆ."
-            : "Many fraudulent websites mimic official portals for Aadhaar, PAN, and Ration Cards to steal data or charge illegal fees. Always verify that the website URL ends with '.gov.in' or '.nic.in'. All links provided below redirect strictly to official government portals."}
+            ? "ನಾವು ಅಧಿಕೃತ ಹಾಗೂ ನಿಖರ ಮೂಲಗಳಿಂದ ಮಾಹಿತಿಯನ್ನು ಒದಗಿಸಲು ಪ್ರಯತ್ನಿಸುತ್ತೇವೆ. ದಯವಿಟ್ಟು ವಿವರಗಳನ್ನು ಅಧಿಕೃತ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ಪರಿಶೀಲಿಸಿ."
+            : "We try to obtain sources that are accurate and correct. Please verify official terms at the government portals."}
         </div>
       </div>
 
@@ -551,16 +548,12 @@ export function ServicesClient({ locale }: { locale: Locale }) {
       )}
 
       {/* Bottom Disclaimer */}
-      <div className="text-center text-[11px] text-[var(--muted)]/60 max-w-2xl mx-auto mt-12 border-t border-[var(--border)]/40 pt-6">
-        {locale === "kn" ? (
-          <p>
-            ಹಕ್ಕುತ್ಯಾಗ: ಕನ್ನಡಕ್ವಿಜ್ ಕೇವಲ ಮಾಹಿತಿ ಒದಗಿಸುವ ಶೈಕ್ಷಣಿಕ ವೇದಿಕೆಯಾಗಿದೆ. ನಾವು ಯಾವುದೇ ಸರ್ಕಾರಿ ಸೇವೆಗಳನ್ನು ನೇರವಾಗಿ ನೀಡುವುದಿಲ್ಲ ಮತ್ತು ಯಾವುದೇ ನಾಗರಿಕರಿಂದ ಹಣವನ್ನು ಸಂಗ್ರಹಿಸುವುದಿಲ್ಲ. ಅಧಿಕೃತ ಪೋರ್ಟಲ್‌ಗಳಿಗೆ ಭೇಟಿ ನೀಡುವಾಗ ಬಳಕೆದಾರರು ಸುರಕ್ಷತಾ ಸೂಚನೆಗಳನ್ನು ಅನುಸರಿಸಲು ಕೋರಲಾಗಿದೆ.
-          </p>
-        ) : (
-          <p>
-            Disclaimer: KannadaQuiz is an educational platform providing informational guidance. We do not directly issue certificates or insurance policies, nor do we collect payments from citizens. Users are requested to perform due diligence when visiting official government websites.
-          </p>
-        )}
+      <div className="text-center text-[10px] text-[var(--muted)]/50 max-w-2xl mx-auto mt-12 border-t border-[var(--border)]/40 pt-4">
+        <p>
+          {locale === "kn"
+            ? "ನಾವು ಅಧಿಕೃತ ಹಾಗೂ ನಿಖರ ಮೂಲಗಳಿಂದ ಮಾಹಿತಿಯನ್ನು ಒದಗಿಸಲು ಪ್ರಯತ್ನಿಸುತ್ತೇವೆ."
+            : "We try to obtain sources that are accurate and correct."}
+        </p>
       </div>
     </article>
   );
