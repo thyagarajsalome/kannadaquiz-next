@@ -119,6 +119,72 @@ const sectionTitles: Record<string, Record<Locale, string>> = {
   sports: { kn: "ಕ್ರೀಡಾ ಸುದ್ದಿ ಮತ್ತು ಅಪ್ಡೇಟ್ಸ್", en: "Sports News & Updates" },
 };
 
+const categoriesInfo = [
+  {
+    key: "karnataka",
+    kn: "ಕರ್ನಾಟಕ",
+    en: "Karnataka",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />`,
+    color: "text-red-755 bg-red-50 hover:bg-red-100 hover:border-red-300"
+  },
+  {
+    key: "national",
+    kn: "ರಾಷ್ಟ್ರೀಯ",
+    en: "National",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h2a2 2 0 012 2v2.935M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />`,
+    color: "text-sky-755 bg-sky-50 hover:bg-sky-100 hover:border-sky-300"
+  },
+  {
+    key: "international",
+    kn: "ಅಂತರರಾಷ್ಟ್ರೀಯ",
+    en: "International",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9-9c1.657 0 3 2.5 3 6s-1.343 6-3 6m0-12c-1.657 0-3 2.5-3 6s1.343 6 3 6" />`,
+    color: "text-indigo-755 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-300"
+  },
+  {
+    key: "jobs",
+    kn: "ಉದ್ಯೋಗಗಳು",
+    en: "Jobs",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />`,
+    color: "text-emerald-755 bg-emerald-50 hover:bg-emerald-100 hover:border-emerald-300"
+  },
+  {
+    key: "schemes",
+    kn: "ಯೋಜನೆಗಳು",
+    en: "Schemes",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />`,
+    color: "text-amber-755 bg-amber-50 hover:bg-amber-100 hover:border-amber-300"
+  },
+  {
+    key: "agriculture",
+    kn: "ಕೃಷಿ",
+    en: "Agriculture",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l-.707-.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />`,
+    color: "text-teal-755 bg-teal-50 hover:bg-teal-100 hover:border-teal-300"
+  },
+  {
+    key: "education",
+    kn: "ಶೈಕ್ಷಣಿಕ",
+    en: "Education",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 14v6a3 3 0 003 3h10a3 3 0 003-3v-6" />`,
+    color: "text-purple-755 bg-purple-50 hover:bg-purple-100 hover:border-purple-300"
+  },
+  {
+    key: "tourism",
+    kn: "ಇತಿಹಾಸ",
+    en: "Heritage",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />`,
+    color: "text-orange-755 bg-orange-50 hover:bg-orange-100 hover:border-orange-300"
+  },
+  {
+    key: "sports",
+    kn: "ಕ್ರೀಡೆ",
+    en: "Sports",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />`,
+    color: "text-pink-755 bg-pink-50 hover:bg-pink-100 hover:border-pink-300"
+  }
+];
+
 function getSourceName(post: { sourceUrl?: string; sourceName?: string }) {
   if (post.sourceName) return post.sourceName;
   if (!post.sourceUrl) return "";
@@ -256,6 +322,37 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </div>
 
+      {/* 1d. Browse by Category Grid Section */}
+      <section className="py-8 bg-white border-b border-[var(--border)]">
+        <div className="kq-container">
+          <div className="flex items-center gap-2 border-b-2 border-[var(--secondary)] pb-2 mb-6">
+            <span className="w-3 h-6 bg-[var(--secondary)] inline-block"></span>
+            <h3 className="font-serif text-2xl font-bold text-[var(--primary)]">
+              {locale === "kn" ? "ವರ್ಗಾವಾರು ಸುದ್ದಿ ಓದಿ (Explore Categories)" : "Explore by Category"}
+            </h3>
+          </div>
+ 
+          <div className="grid gap-3 grid-cols-3 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9">
+            {categoriesInfo.map((cat) => (
+              <Link
+                key={cat.key}
+                href={`/${locale}/category/${cat.key}`}
+                className={`kq-card p-3 flex flex-col items-center text-center justify-between transition-all duration-300 border border-[var(--border)]/60 hover:shadow-sm hover:border-[var(--secondary)]/40 rounded-xl group ${cat.color}`}
+              >
+                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-[var(--border)]/20 shadow-sm group-hover:scale-110 transition-transform duration-300 mb-2">
+                  <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: cat.icon }} />
+                </div>
+                <div className="flex-1 flex flex-col justify-center">
+                  <span className="text-xs md:text-sm font-bold block text-[var(--primary)] leading-tight">
+                    {locale === "kn" ? cat.kn : cat.en}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+ 
       {/* 2. Main Headline Hero Section */}
       <section className="py-8 bg-[var(--surface)] border-b border-[var(--border)]">
         <div className="kq-container">
