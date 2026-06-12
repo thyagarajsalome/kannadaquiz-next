@@ -407,13 +407,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <Link
                 key={cat.key}
                 href={cat.url ? `/${locale}/${cat.url}` : `/${locale}/category/${cat.key}`}
-                className={`kq-card px-1.5 py-3 sm:p-3 flex flex-col items-center text-center justify-between transition-all duration-300 border border-[var(--border)]/60 hover:shadow-sm hover:border-[var(--secondary)]/40 rounded-xl group ${cat.color}`}
+                className={`kq-card px-2 py-3 sm:px-3 sm:py-3.5 xl:px-2.5 xl:py-3 flex flex-col items-center text-center justify-between transition-all duration-300 border border-[var(--border)]/60 hover:shadow-sm hover:border-[var(--secondary)]/40 rounded-xl group ${cat.color}`}
               >
                 <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-[var(--border)]/20 shadow-sm group-hover:scale-110 transition-transform duration-300 mb-2">
                   <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: cat.icon }} />
                 </div>
-                <div className="flex-1 flex flex-col justify-center">
-                  <span className="text-xs md:text-sm font-bold block text-[var(--primary)] leading-tight">
+                <div className="flex-1 flex flex-col justify-center w-full">
+                  <span className="text-[11px] xs:text-xs md:text-sm xl:text-xs 2xl:text-sm font-bold block text-[var(--primary)] leading-tight w-full break-words px-0.5">
                     {locale === "kn" ? cat.kn : cat.en}
                   </span>
                 </div>
