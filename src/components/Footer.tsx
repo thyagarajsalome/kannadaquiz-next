@@ -1,5 +1,6 @@
 import type { Locale } from "@/lib/locales";
 import Link from "next/link";
+import { version } from "../../package.json";
 
 export function Footer({ locale }: { locale: Locale }) {
   return (
@@ -31,7 +32,10 @@ export function Footer({ locale }: { locale: Locale }) {
               {locale === "kn" ? "ನಿಯಮಗಳು (Terms)" : "Terms & Conditions"}
             </Link>
           </div>
-          <p className="text-sm text-white/60">© 2026 KannadaQuiz</p>
+          <div className="flex items-center gap-2 md:justify-end">
+            <p className="text-sm text-white/60">© 2026 KannadaQuiz</p>
+            <span className="text-[10px] text-white/40 font-mono bg-white/5 px-1.5 py-0.5 rounded border border-white/10 select-none">v{version}</span>
+          </div>
         </div>
       </div>
     </footer>
