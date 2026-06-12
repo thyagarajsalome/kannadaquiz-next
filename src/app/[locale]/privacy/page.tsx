@@ -31,24 +31,24 @@ export default async function PrivacyPage({
       <div className="kq-card p-6 md:p-8 space-y-6 text-sm md:text-base leading-7 text-[var(--muted)]">
         {locale === "kn" ? (
           <>
-            <p className="font-medium text-[var(--primary)]">ಕೊನೆಯದಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ: ಜೂನ್ ೨೦೨೬</p>
+            <p className="font-medium text-[var(--primary)]">ಕೊನೆಯದಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ: ಜೂನ್ 2026</p>
             
             <section className="space-y-3">
-              <h2 className="font-serif text-lg font-bold text-[var(--primary)]">೧. ನಾವು ಸಂಗ್ರಹಿಸುವ ಮಾಹಿತಿ</h2>
+              <h2 className="font-serif text-lg font-bold text-[var(--primary)]">1. ನಾವು ಸಂಗ್ರಹಿಸುವ ಮಾಹಿತಿ</h2>
               <p>
                 ಕನ್ನಡಕ್ವಿಜ್ ವೆಬ್‌ಸೈಟ್‌ಗೆ ಭೇಟಿ ನೀಡುವ ಬಳಕೆದಾರರಿಂದ ನಾವು ಯಾವುದೇ ಅತಿಯಾದ ವೈಯಕ್ತಿಕ ಮಾಹಿತಿಯನ್ನು ಕಡ್ಡಾಯವಾಗಿ ಸಂಗ್ರಹಿಸುವುದಿಲ್ಲ. ಆದರೆ ಕ್ವಿಜ್ ಪ್ರಗತಿ ಅಥವಾ ವೆಬ್‌ಸೈಟ್ ಕಾರ್ಯಕ್ಷಮತೆಯನ್ನು ಉತ್ತಮಗೊಳಿಸಲು ಬ್ರೌಸರ್ ಕುಕೀಸ್ (Cookies) ಮತ್ತು ಅನಾಮಧೇಯ ಲಾಗ್ ಡೇಟಾವನ್ನು ಬಳಸಬಹುದು.
               </p>
             </section>
 
             <section className="space-y-3">
-              <h2 className="font-serif text-lg font-bold text-[var(--primary)]">೨. ಮೂರನೇ ವ್ಯಕ್ತಿಯ ಸೇವೆಗಳು (Third-Party Services)</h2>
+              <h2 className="font-serif text-lg font-bold text-[var(--primary)]">2. ಮೂರನೇ ವ್ಯಕ್ತಿಯ ಸೇವೆಗಳು (Third-Party Services)</h2>
               <p>
                 ನಮ್ಮ ಮೊಬೈಲ್ ಅಪ್ಲಿಕೇಶನ್ ಲಿಂಕ್‌ಗಳು ಅಥವಾ ವಿಶ್ಲೇಷಣೆಗಾಗಿ ನಾವು ಗೂಗಲ್ ಫೈರ್‌ಬೇಸ್ (Firebase) ಹಾಗೂ ಗೂಗಲ್ ಅನಾಲಿಟಿಕ್ಸ್ ಅನ್ನು ಬಳಸಬಹುದು. ಈ ಸೇವೆಗಳು ತಮ್ಮದೇ ಆದ ಗೌಪ್ಯತಾ ನೀತಿಗಳನ್ನು ಹೊಂದಿರುತ್ತವೆ.
               </p>
             </section>
 
             <section className="space-y-3">
-              <h2 className="font-serif text-lg font-bold text-[var(--primary)]">೩. ಡೇಟಾ ಸುರಕ್ಷತೆ</h2>
+              <h2 className="font-serif text-lg font-bold text-[var(--primary)]">3. ಡೇಟಾ ಸುರಕ್ಷತೆ</h2>
               <p>
                 ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ಡೇಟಾದ ಸುರಕ್ಷತೆ ನಮಗೆ ಅತ್ಯಂತ ಮುಖ್ಯವಾಗಿದೆ. ನಾವು ಯಾವುದೇ ಡೇಟಾವನ್ನು ತೃತೀಯ ಸಂಸ್ಥೆಗಳಿಗೆ ಮಾರಾಟ ಮಾಡುವುದಿಲ್ಲ ಅಥವಾ ಹಂಚಿಕೊಳ್ಳುವುದಿಲ್ಲ.
               </p>
