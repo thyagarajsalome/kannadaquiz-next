@@ -56,6 +56,9 @@ export function Header({ locale }: { locale: Locale }) {
               </svg>
             </button>
             <div className="absolute left-0 mt-0 hidden group-hover:block bg-white border border-[var(--border)] rounded-lg shadow-lg py-2 min-w-[200px] z-50">
+              <Link href={`/${locale}/services`} className="block px-4 py-2 text-sm font-bold text-[var(--secondary)] border-b border-[var(--border)]/30 hover:bg-[var(--surface-soft)] transition-colors">
+                {locale === "kn" ? "ಸರ್ಕಾರಿ ಸೇವೆಗಳು 🏛️" : "Gov Services 🏛️"}
+              </Link>
               <Link href={`/${locale}/category/schemes`} className="block px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು" : "Government Schemes"}
               </Link>
@@ -108,6 +111,9 @@ export function Header({ locale }: { locale: Locale }) {
           </Link>
           <Link href={`/${locale}/category/jobs`} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಉದ್ಯೋಗಗಳು" : "Jobs"}
+          </Link>
+          <Link href={`/${locale}/services`} className="bg-emerald-600 text-white px-2 py-0.5 rounded text-[10px] font-extrabold select-none shrink-0">
+            {locale === "kn" ? "ಸೇವೆಗಳು 🏛️" : "Services 🏛️"}
           </Link>
           <Link href={`/${locale}/category/schemes`} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಯೋಜನೆಗಳು" : "Schemes"}
