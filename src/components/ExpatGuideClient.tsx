@@ -28,6 +28,7 @@ type FinGuide = {
   question: string;
   answer: string;
   source: string;
+  sourceUrl: string;
 };
 
 const finGuidesMap: Record<Locale, FinGuide[]> = {
@@ -35,34 +36,40 @@ const finGuidesMap: Record<Locale, FinGuide[]> = {
     {
       question: "NRE ಮತ್ತು NRO ಬ್ಯಾಂಕ್ ಖಾತೆಗಳ ನಡುವಿನ ಪ್ರಮುಖ ವ್ಯತ್ಯಾಸಗಳೇನು?",
       answer: "ರಿಸರ್ವ್ ಬ್ಯಾಂಕ್ ಆಫ್ ಇಂಡಿಯಾ (RBI) ನಿಯಮಗಳ ಪ್ರಕಾರ ಅನಿವಾಸಿ ಭಾರತೀಯರು ಭಾರತದಲ್ಲಿ ಎರಡು ರೀತಿಯ ಪ್ರಮುಖ ಬ್ಯಾಂಕ್ ಖಾತೆಗಳನ್ನು ತೆರೆಯಬಹುದು:\n\n1. **NRE (Non-Resident External) ಖಾತೆ**: ವಿದೇಶದಲ್ಲಿ ಗಳಿಸಿದ ಆದಾಯವನ್ನು ಭಾರತೀಯ ರೂಪಾಯಿಗೆ ಪರಿವರ್ತಿಸಿ ಜಮಾ ಮಾಡಲು ಇದನ್ನು ಬಳಸಲಾಗುತ್ತದೆ. ಈ ಖಾತೆಯಲ್ಲಿರುವ ಮೊತ್ತ ಮತ್ತು ಅದರ ಮೇಲಿನ ಬಡ್ಡಿಗೆ ಭಾರತದಲ್ಲಿ ಸಂಪೂರ್ಣ ತೆರಿಗೆ ವಿನಾಯಿತಿ ಇರುತ್ತದೆ. ಅಲ್ಲದೆ, ಈ ಹಣವನ್ನು ಯಾವುದೇ ಮಿತಿಯಿಲ್ಲದೆ ವಿದೇಶಕ್ಕೆ ಮರಳಿ ವರ್ಗಾಯಿಸಬಹುದು (Fully Repatriable).\n\n2. **NRO (Non-Resident Ordinary) ಖಾತೆ**: ಭಾರತದಲ್ಲಿ ಗಳಿಸಿದ ಆದಾಯವನ್ನು (ಉದಾಹರಣೆಗೆ ಬಾಡಿಗೆ, ಡಿವಿಡೆಂಡ್, ಪಿಂಚಣಿ) ನಿರ್ವಹಿಸಲು ಇದನ್ನು ಬಳಸಲಾಗುತ್ತದೆ. ಈ ಖಾತೆಯಲ್ಲಿ ಜಮೆಯಾಗುವ ಬಡ್ಡಿಗೆ 30% ಕ್ಕಿಂತ ಹೆಚ್ಚು ಮೂಲದಲ್ಲೇ ತೆರಿಗೆ ಕಡಿತ (TDS) ಅನ್ವಯಿಸುತ್ತದೆ. ಈ ಖಾತೆಯಿಂದ ಒಂದು ಹಣಕಾಸು ವರ್ಷದಲ್ಲಿ ಗರಿಷ್ಠ 1 ಮಿಲಿಯನ್ ಅಮೆರಿಕನ್ ಡಾಲರ್ ($1,000,000) ವರೆಗೆ ಮಾತ್ರ ವಿದೇಶಕ್ಕೆ ವರ್ಗಾಯಿಸಲು ಅವಕಾಶವಿರುತ್ತದೆ.",
-      source: "ಮೂಲ: ಭಾರತೀಯ ರಿಸರ್ವ್ ಬ್ಯಾಂಕ್ (RBI) ವಿದೇಶಿ ವಿನಿಮಯ ನಿರ್ವಹಣಾ ಕಾಯ್ದೆ (FEMA) ನಿಯಮಗಳು."
+      source: "ಮೂಲ: ಭಾರತೀಯ ರಿಸರ್ವ್ ಬ್ಯಾಂಕ್ (RBI) ವಿದೇಶಿ ವಿನಿಮಯ ನಿರ್ವಹಣಾ ಕಾಯ್ದೆ (FEMA) ನಿಯಮಗಳು.",
+      sourceUrl: "https://www.rbi.org.in/Scripts/FAQView.aspx?Id=52"
     },
     {
       question: "ಅನಿವಾಸಿ ಕನ್ನಡಿಗರು ಕರ್ನಾಟಕದಲ್ಲಿ ಕೃಷಿ ಭೂಮಿಯನ್ನು ಖರೀದಿಸಬಹುದೇ?",
       answer: "ಭಾರತದ ವಿದೇಶಿ ವಿನಿಮಯ ನಿಯಮಗಳ (FEMA) ಪ್ರಕಾರ, ಅನಿವಾಸಿ ಭಾರತೀಯರು (NRI) ಅಥವಾ ವಿದೇಶಿ ಭಾರತೀಯ ಪೌರತ್ವ ಹೊಂದಿರುವವರು (OCI) ಕರ್ನಾಟಕ ಸೇರಿದಂತೆ ಭಾರತದ ಯಾವುದೇ ರಾಜ್ಯದಲ್ಲಿ ಕೃಷಿ ಭೂಮಿ (Agricultural Land), ತೋಟಗಾರಿಕಾ ಭೂಮಿ (Plantation Property) ಅಥವಾ ಫಾರ್ಮ್ ಹೌಸ್ ಅನ್ನು ಖರೀದಿಸಲು ಕಾನೂನಿನಲ್ಲಿ ಅವಕಾಶವಿಲ್ಲ.\n\nಆದರೆ, ಅವರು ವಸತಿ ಅಪಾರ್ಟ್‌ಮೆಂಟ್‌ಗಳು (Residential), ವಾಣಿಜ್ಯ ಮಳಿಗೆಗಳು (Commercial) ಮತ್ತು ಖಾಲಿ ನಿವೇಶನಗಳನ್ನು ಮುಕ್ತವಾಗಿ ಖರೀದಿಸಬಹುದು. ಕೃಷಿ ಭೂಮಿಯನ್ನು ಕೇವಲ ಆನುವಂಶಿಕವಾಗಿ (Inheritance) ಉಡುಗೊರೆಯಾಗಿ ಪಡೆಯಲು ಮಾತ್ರ ಅವಕಾಶವಿದೆ ಮತ್ತು ಅದನ್ನು ಕೇವಲ ಭಾರತದ ನಿವಾಸಿಗಳಿಗೆ ಮಾತ್ರ ಮಾರಾಟ ಮಾಡಬಹುದಾಗಿದೆ.",
-      source: "ಮೂಲ: ಕರ್ನಾಟಕ ರಿಯಲ್ ಎಸ್ಟೇಟ್ ನಿಯಂತ್ರಣ ಪ್ರಾಧಿಕಾರ (RERA) ಮತ್ತು RBI ನಿಯಮಾವಳಿಗಳು."
+      source: "ಮೂಲ: ಕರ್ನಾಟಕ ರಿಯಲ್ ಎಸ್ಟೇಟ್ ನಿಯಂತ್ರಣ ಪ್ರಾಧಿಕಾರ (RERA) ಮತ್ತು RBI ನಿಯಮಾವಳಿಗಳು.",
+      sourceUrl: "https://www.rbi.org.in/Scripts/FAQView.aspx?Id=33"
     },
     {
       question: "NRIs ಭಾರತದಲ್ಲಿ ಗಳಿಸಿದ ಆದಾಯಕ್ಕೆ ತೆರಿಗೆ ಹೇಗೆ ಲೆಕ್ಕಹಾಕಲಾಗುತ್ತದೆ?",
       answer: "ಭಾರತೀಯ ಆದಾಯ ತೆರಿಗೆ ಇಲಾಖೆಯ ನಿಯಮಗಳ ಪ್ರಕಾರ, ಅನಿವಾಸಿ ಭಾರತೀಯರು (NRIs) ವಿದೇಶದಲ್ಲಿ ಗಳಿಸುವ ಆದಾಯಕ್ಕೆ ಭಾರತದಲ್ಲಿ ತೆರಿಗೆ ಪಾವತಿಸಬೇಕಾಗಿಲ್ಲ. ಆದರೆ ಅವರು ಭಾರತದಲ್ಲಿ ಗಳಿಸುವ ಕೆಳಗಿನ ಆದಾಯಕ್ಕೆ ಭಾರತದ ತೆರಿಗೆ ದರಗಳ ಅನ್ವಯ ತೆರಿಗೆ ಪಾವತಿಸಬೇಕಾಗುತ್ತದೆ:\n\n* ಭಾರತದಲ್ಲಿರುವ ಆಸ್ತಿಯಿಂದ ಬರುವ ಬಾಡಿಗೆ ಆದಾಯ.\n* ಭಾರತದ ಬ್ಯಾಂಕ್ ಡೆಪಾಸಿಟ್‌ಗಳ ಮೇಲಿನ ಬಡ್ಡಿ.\n* ಭಾರತೀಯ ಕಂಪನಿಗಳ ಷೇರುಗಳು ಅಥವಾ ಮ್ಯೂಚುಯಲ್ ಫಂಡ್‌ಗಳಿಂದ ಬರುವ ಲಾಭ.\n\nತೆರಿಗೆ ವಿನಾಯಿತಿಗಾಗಿ ಭಾರತ ಸರ್ಕಾರವು ವಿವಿಧ ದೇಶಗಳೊಂದಿಗೆ ದ್ವಿಮುಖ ತೆರಿಗೆ ತಡೆ ಒಪ್ಪಂದವನ್ನು (DTAA - Double Taxation Avoidance Agreement) ಮಾಡಿಕೊಂಡಿದ್ದು, ಇದರ ಅಡಿಯಲ್ಲಿ ವಿದೇಶದಲ್ಲೂ ತೆರಿಗೆ ಪಾವತಿಸಿದ್ದರೆ ಭಾರತದಲ್ಲಿ ಸೂಕ್ತ ವಿನಾಯಿತಿ ಪಡೆಯಬಹುದು.",
-      source: "ಮೂಲ: ಕೇಂದ್ರ ನೇರ ತೆರಿಗೆಗಳ ಮಂಡಳಿ (CBDT), ಆದಾಯ ತೆರಿಗೆ ಇಲಾಖೆ, ಭಾರತ ಸರ್ಕಾರ."
+      source: "ಮೂಲ: ಕೇಂದ್ರ ನೇರ ತೆರಿಗೆಗಳ ಮಂಡಳಿ (CBDT), ಆದಾಯ ತೆರಿಗೆ ಇಲಾಖೆ, ಭಾರತ ಸರ್ಕಾರ.",
+      sourceUrl: "https://www.incometaxindia.gov.in/Pages/international-taxation/nri.aspx"
     }
   ],
   en: [
     {
       question: "What are the key differences between NRE and NRO bank accounts?",
       answer: "Under the Foreign Exchange Management Act (FEMA) guidelines by the Reserve Bank of India (RBI), NRIs can maintain two primary types of rupee accounts in India:\n\n1. **NRE (Non-Resident External) Account**: Used to park foreign earnings in Indian Rupees. The principal amount and the interest earned are **100% tax-free** in India. Both principal and interest are fully repatriable (you can transfer the money back abroad without limit).\n\n2. **NRO (Non-Resident Ordinary) Account**: Used to manage income earned in India (such as rental income, dividends, pension). The interest earned on this account is **subject to Indian Income Tax** (usually a TDS of 30% + applicable surcharge). Repatriation from NRO accounts is limited to **$1 Million USD per financial year**.",
-      source: "Source: Reserve Bank of India (RBI) FEMA Regulations."
+      source: "Source: Reserve Bank of India (RBI) FEMA Regulations.",
+      sourceUrl: "https://www.rbi.org.in/Scripts/FAQView.aspx?Id=52"
     },
     {
       question: "Can expat Kannadigas buy agricultural land in Karnataka?",
       answer: "No, under FEMA and Karnataka land revenue regulations, NRIs and OCI cardholders **cannot purchase agricultural land, plantation properties, or farmhouses** in India.\n\nHowever, they are fully permitted to purchase residential apartments, independent houses, and commercial properties. Agri-land can only be acquired via inheritance from a resident Indian, and must be sold or gifted only to a resident citizen of India.",
-      source: "Source: Real Estate Regulatory Authority (RERA) Karnataka and RBI guidelines."
+      source: "Source: Real Estate Regulatory Authority (RERA) Karnataka and RBI guidelines.",
+      sourceUrl: "https://www.rbi.org.in/Scripts/FAQView.aspx?Id=33"
     },
     {
       question: "How is income tax calculated for NRIs on Indian earnings?",
       answer: "According to the Income Tax Department of India, salary earned abroad by an NRI is not taxable in India. However, an NRI is liable to pay tax on income earned or received within India, which includes:\n\n* Rental income from properties owned in India.\n* Capital gains from selling shares, mutual funds, or real estate in India.\n* Interest earned on NRO savings accounts and fixed deposits.\n\nTo prevent expats from paying tax twice on the same income in both their country of residence and India, they can avail benefits under the **Double Taxation Avoidance Agreement (DTAA)** signed by India with over 85 countries.",
-      source: "Source: Central Board of Direct Taxes (CBDT), Income Tax Department of India."
+      source: "Source: Central Board of Direct Taxes (CBDT), Income Tax Department of India.",
+      sourceUrl: "https://www.incometaxindia.gov.in/Pages/international-taxation/nri.aspx"
     }
   ]
 };
@@ -308,8 +315,16 @@ export function ExpatGuideClient({ locale }: { locale: Locale }) {
                     <p className="text-xs md:text-sm text-[var(--muted)] leading-relaxed whitespace-pre-line">
                       {guide.answer}
                     </p>
-                    <div className="mt-4 pt-3 border-t border-[var(--border)]/20 text-[10px] md:text-xs font-semibold text-[var(--secondary)]">
-                      {guide.source}
+                    <div className="mt-4 pt-3 border-t border-[var(--border)]/20 text-[10px] md:text-xs font-semibold">
+                      <a
+                        href={guide.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[var(--secondary)] hover:underline inline-flex items-center gap-1"
+                      >
+                        {guide.source}
+                        <span className="text-[9px]">↗</span>
+                      </a>
                     </div>
                   </div>
                 )}
