@@ -43,3 +43,6 @@ next-env.d.ts
 
 # credentials
 service-account.json
+
+# scratch
+/scratch
