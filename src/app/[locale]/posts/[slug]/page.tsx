@@ -35,6 +35,12 @@ export async function generateMetadata({
     ? ["ಕನ್ನಡ ಸುದ್ದಿ", "ಸುದ್ದಿ ಸಾರಾಂಶ", "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", post.category]
     : ["Kannada News", "News Summary", "Current Affairs", post.category];
 
+  const imageUrl = post.featuredImageUrl
+    ? (post.featuredImageUrl.startsWith("http")
+        ? post.featuredImageUrl
+        : `https://kannadaquiz.in${post.featuredImageUrl}`)
+    : "https://kannadaquiz.in/icon.svg";
+
   return {
     title: `${post.title} | KannadaQuiz`,
     description: post.excerpt,
@@ -45,6 +51,25 @@ export async function generateMetadata({
         kn: `/kn/posts/${post.slug}`,
         en: `/en/posts/${post.slug}`,
       },
+    },
+    openGraph: {
+      title: `${post.title} | KannadaQuiz`,
+      description: post.excerpt,
+      url: `https://kannadaquiz.in/${locale}/posts/${post.slug}`,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${post.title} | KannadaQuiz`,
+      description: post.excerpt,
+      images: [imageUrl],
     },
   };
 }
@@ -105,12 +130,18 @@ export default async function PostPage({
     notFound();
   }
 
+  const absoluteImageUrl = post.featuredImageUrl
+    ? (post.featuredImageUrl.startsWith("http")
+        ? post.featuredImageUrl
+        : `https://kannadaquiz.in${post.featuredImageUrl}`)
+    : "https://kannadaquiz.in/icon.svg";
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
     "headline": post.title,
     "description": post.excerpt,
-    "image": post.featuredImageUrl ? [post.featuredImageUrl] : ["https://kannadaquiz.in/icon.svg"],
+    "image": [absoluteImageUrl],
     "datePublished": post.date,
     "dateModified": post.date,
     "author": {
@@ -161,6 +192,17 @@ export default async function PostPage({
         {post.title}
       </h1>
       <p className="mt-5 text-lg leading-8 text-[var(--muted)]">{post.excerpt}</p>
+      
+      {post.featuredImageUrl && (
+        <div className="mt-6 w-full h-[240px] xs:h-[300px] sm:h-[360px] md:h-[420px] rounded-2xl overflow-hidden shadow-sm border border-[var(--border)]/40 select-none">
+          <img
+            src={post.featuredImageUrl}
+            alt={post.title}
+            className="w-full h-full object-cover"
+            loading="eager"
+          />
+        </div>
+      )}
       
       <div className="mt-8 kq-card p-5 text-base leading-8 text-[var(--foreground)]">
         {post.body
