@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { siteText } from "@/data/content";
 import { isLocale, locales, type Locale } from "@/lib/locales";
-import { getPublicCurrentAffairs, getPublicJobs, getPublicPosts, getPublicQuizzes, getPublicPostsByCategory } from "@/lib/public-content";
+import { getPublicCurrentAffairs, getPublicJobs, getPublicPosts, getPublicQuizzes, getPublicPostsByCategory, type PublicPost } from "@/lib/public-content";
 
 export const revalidate = 300;
 
@@ -262,6 +262,51 @@ function getSourceName(post: { sourceUrl?: string; sourceName?: string }) {
   } catch {
     return "News Source";
   }
+}
+
+interface PostGridCardProps {
+  post: PublicPost;
+  locale: Locale;
+  readMoreText: string;
+}
+
+function PostGridCard({ post, locale, readMoreText }: PostGridCardProps) {
+  return (
+    <div className="kq-card overflow-hidden flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 rounded-xl border border-[var(--border)]">
+      <div>
+        {post.featuredImageUrl && (
+          <Link href={`/${locale}/posts/${post.slug}`} className="block overflow-hidden aspect-video border-b border-[var(--border)]/40 hover:opacity-95 transition-opacity">
+            <img
+              src={post.featuredImageUrl}
+              alt={post.title}
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+          </Link>
+        )}
+        <div className="p-4 pb-0">
+          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
+            <span>{getSourceName(post)}</span>
+            <span>•</span>
+            <time>{post.date}</time>
+          </div>
+          <Link href={`/${locale}/posts/${post.slug}`} className="group">
+            <h4 className="mt-2.5 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2 leading-relaxed">
+              {post.title}
+            </h4>
+          </Link>
+          <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
+            {post.excerpt}
+          </p>
+        </div>
+      </div>
+      <div className="mt-4 p-4 pt-3 border-t border-[var(--border)]">
+        <Link href={`/${locale}/posts/${post.slug}`} className="text-xs font-bold text-[var(--secondary)] hover:underline">
+          {readMoreText}
+        </Link>
+      </div>
+    </div>
+  );
 }
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
@@ -733,29 +778,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </div>
               <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                 {karnatakaPosts.map((post) => (
-                  <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
-                    <div>
-                      
-                      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
-                        <span>{getSourceName(post)}</span>
-                        <span>•</span>
-                        <time>{post.date}</time>
-                      </div>
-                      <Link href={`/${locale}/posts/${post.slug}`} className="group">
-                        <h4 className="mt-2 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2">
-                          {post.title}
-                        </h4>
-                      </Link>
-                      <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
-                        {post.excerpt}
-                      </p>
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-[var(--border)]">
-                      <Link href={`/${locale}/posts/${post.slug}`} className="text-xs font-bold text-[var(--secondary)] hover:underline">
-                        {sectionTitles.readMore[locale]}
-                      </Link>
-                    </div>
-                  </div>
+                  <PostGridCard
+                    key={post.slug}
+                    post={post}
+                    locale={locale}
+                    readMoreText={sectionTitles.readMore[locale]}
+                  />
                 ))}
               </div>
             </div>
@@ -772,29 +800,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </div>
               <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                 {nationalPosts.map((post) => (
-                  <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
-                    <div>
-                      
-                      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
-                        <span>{getSourceName(post)}</span>
-                        <span>•</span>
-                        <time>{post.date}</time>
-                      </div>
-                      <Link href={`/${locale}/posts/${post.slug}`} className="group">
-                        <h4 className="mt-2 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2">
-                          {post.title}
-                        </h4>
-                      </Link>
-                      <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
-                        {post.excerpt}
-                      </p>
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-[var(--border)]">
-                      <Link href={`/${locale}/posts/${post.slug}`} className="text-xs font-bold text-[var(--secondary)] hover:underline">
-                        {sectionTitles.readMore[locale]}
-                      </Link>
-                    </div>
-                  </div>
+                  <PostGridCard
+                    key={post.slug}
+                    post={post}
+                    locale={locale}
+                    readMoreText={sectionTitles.readMore[locale]}
+                  />
                 ))}
               </div>
             </div>
@@ -811,29 +822,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </div>
               <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                 {internationalPosts.map((post) => (
-                  <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
-                    <div>
-                      
-                      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
-                        <span>{getSourceName(post)}</span>
-                        <span>•</span>
-                        <time>{post.date}</time>
-                      </div>
-                      <Link href={`/${locale}/posts/${post.slug}`} className="group">
-                        <h4 className="mt-2 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2">
-                          {post.title}
-                        </h4>
-                      </Link>
-                      <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
-                        {post.excerpt}
-                      </p>
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-[var(--border)]">
-                      <Link href={`/${locale}/posts/${post.slug}`} className="text-xs font-bold text-[var(--secondary)] hover:underline">
-                        {sectionTitles.readMore[locale]}
-                      </Link>
-                    </div>
-                  </div>
+                  <PostGridCard
+                    key={post.slug}
+                    post={post}
+                    locale={locale}
+                    readMoreText={sectionTitles.readMore[locale]}
+                  />
                 ))}
               </div>
             </div>
@@ -850,28 +844,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </div>
               <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                 {agriculturePosts.map((post) => (
-                  <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
-                    <div>
-                      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
-                        <span>{getSourceName(post)}</span>
-                        <span>•</span>
-                        <time>{post.date}</time>
-                      </div>
-                      <Link href={`/${locale}/posts/${post.slug}`} className="group">
-                        <h4 className="mt-2 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2">
-                          {post.title}
-                        </h4>
-                      </Link>
-                      <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
-                        {post.excerpt}
-                      </p>
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-[var(--border)]">
-                      <Link href={`/${locale}/posts/${post.slug}`} className="text-xs font-bold text-[var(--secondary)] hover:underline">
-                        {sectionTitles.readMore[locale]}
-                      </Link>
-                    </div>
-                  </div>
+                  <PostGridCard
+                    key={post.slug}
+                    post={post}
+                    locale={locale}
+                    readMoreText={sectionTitles.readMore[locale]}
+                  />
                 ))}
               </div>
             </div>
@@ -888,28 +866,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </div>
               <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                 {educationPosts.map((post) => (
-                  <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
-                    <div>
-                      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
-                        <span>{getSourceName(post)}</span>
-                        <span>•</span>
-                        <time>{post.date}</time>
-                      </div>
-                      <Link href={`/${locale}/posts/${post.slug}`} className="group">
-                        <h4 className="mt-2 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2">
-                          {post.title}
-                        </h4>
-                      </Link>
-                      <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
-                        {post.excerpt}
-                      </p>
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-[var(--border)]">
-                      <Link href={`/${locale}/posts/${post.slug}`} className="text-xs font-bold text-[var(--secondary)] hover:underline">
-                        {sectionTitles.readMore[locale]}
-                      </Link>
-                    </div>
-                  </div>
+                  <PostGridCard
+                    key={post.slug}
+                    post={post}
+                    locale={locale}
+                    readMoreText={sectionTitles.readMore[locale]}
+                  />
                 ))}
               </div>
             </div>
@@ -926,28 +888,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </div>
               <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                 {schemesPosts.map((post) => (
-                  <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
-                    <div>
-                      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
-                        <span>{getSourceName(post)}</span>
-                        <span>•</span>
-                        <time>{post.date}</time>
-                      </div>
-                      <Link href={`/${locale}/posts/${post.slug}`} className="group">
-                        <h4 className="mt-2 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2">
-                          {post.title}
-                        </h4>
-                      </Link>
-                      <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
-                        {post.excerpt}
-                      </p>
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-[var(--border)]">
-                      <Link href={`/${locale}/posts/${post.slug}`} className="text-xs font-bold text-[var(--secondary)] hover:underline">
-                        {sectionTitles.readMore[locale]}
-                      </Link>
-                    </div>
-                  </div>
+                  <PostGridCard
+                    key={post.slug}
+                    post={post}
+                    locale={locale}
+                    readMoreText={sectionTitles.readMore[locale]}
+                  />
                 ))}
               </div>
             </div>
@@ -964,28 +910,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </div>
               <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                 {tourismPosts.map((post) => (
-                  <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
-                    <div>
-                      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
-                        <span>{getSourceName(post)}</span>
-                        <span>•</span>
-                        <time>{post.date}</time>
-                      </div>
-                      <Link href={`/${locale}/posts/${post.slug}`} className="group">
-                        <h4 className="mt-2 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2">
-                          {post.title}
-                        </h4>
-                      </Link>
-                      <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
-                        {post.excerpt}
-                      </p>
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-[var(--border)]">
-                      <Link href={`/${locale}/posts/${post.slug}`} className="text-xs font-bold text-[var(--secondary)] hover:underline">
-                        {sectionTitles.readMore[locale]}
-                      </Link>
-                    </div>
-                  </div>
+                  <PostGridCard
+                    key={post.slug}
+                    post={post}
+                    locale={locale}
+                    readMoreText={sectionTitles.readMore[locale]}
+                  />
                 ))}
               </div>
             </div>
@@ -1002,28 +932,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </div>
               <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                 {sportsPosts.map((post) => (
-                  <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
-                    <div>
-                      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
-                        <span>{getSourceName(post)}</span>
-                        <span>•</span>
-                        <time>{post.date}</time>
-                      </div>
-                      <Link href={`/${locale}/posts/${post.slug}`} className="group">
-                        <h4 className="mt-2 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2">
-                          {post.title}
-                        </h4>
-                      </Link>
-                      <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
-                        {post.excerpt}
-                      </p>
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-[var(--border)]">
-                      <Link href={`/${locale}/posts/${post.slug}`} className="text-xs font-bold text-[var(--secondary)] hover:underline">
-                        {sectionTitles.readMore[locale]}
-                      </Link>
-                    </div>
-                  </div>
+                  <PostGridCard
+                    key={post.slug}
+                    post={post}
+                    locale={locale}
+                    readMoreText={sectionTitles.readMore[locale]}
+                  />
                 ))}
               </div>
             </div>
@@ -1040,28 +954,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </div>
               <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                 {technologyPosts.map((post) => (
-                  <div key={post.slug} className="kq-card p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
-                    <div>
-                      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
-                        <span>{getSourceName(post)}</span>
-                        <span>•</span>
-                        <time>{post.date}</time>
-                      </div>
-                      <Link href={`/${locale}/posts/${post.slug}`} className="group">
-                        <h4 className="mt-2 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2">
-                          {post.title}
-                        </h4>
-                      </Link>
-                      <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
-                        {post.excerpt}
-                      </p>
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-[var(--border)]">
-                      <Link href={`/${locale}/posts/${post.slug}`} className="text-xs font-bold text-[var(--secondary)] hover:underline">
-                        {sectionTitles.readMore[locale]}
-                      </Link>
-                    </div>
-                  </div>
+                  <PostGridCard
+                    key={post.slug}
+                    post={post}
+                    locale={locale}
+                    readMoreText={sectionTitles.readMore[locale]}
+                  />
                 ))}
               </div>
             </div>

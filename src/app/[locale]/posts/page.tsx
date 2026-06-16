@@ -67,14 +67,32 @@ export default async function PostsPage({ params }: { params: Promise<{ locale: 
       </h1>
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         {posts.map((post) => (
-          <Link key={post.slug} href={`/${locale}/posts/${post.slug}`} className="kq-card p-5">
-            <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
-              {getLocalizedCategory(post.category, locale)} • {post.date} {post.sourceName ? `• ${post.sourceName}` : ""}
-            </p>
-            <h2 className="mt-3 font-serif text-2xl font-bold text-[var(--primary)]">
-              {post.title}
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{post.excerpt}</p>
+          <Link
+            key={post.slug}
+            href={`/${locale}/posts/${post.slug}`}
+            className="kq-card overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow rounded-xl border border-[var(--border)]"
+          >
+            <div>
+              {post.featuredImageUrl && (
+                <div className="block overflow-hidden aspect-video border-b border-[var(--border)]/40">
+                  <img
+                    src={post.featuredImageUrl}
+                    alt={post.title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+              )}
+              <div className="p-5">
+                <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
+                  {getLocalizedCategory(post.category, locale)} • {post.date} {post.sourceName ? `• ${post.sourceName}` : ""}
+                </p>
+                <h2 className="mt-3 font-serif text-2xl font-bold text-[var(--primary)]">
+                  {post.title}
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{post.excerpt}</p>
+              </div>
+            </div>
           </Link>
         ))}
       </div>
