@@ -123,7 +123,7 @@ export function CategoryFilterList({
                   </Link>
                 )}
                 <div className="p-4 pb-0">
-                  <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
+                  <div className="flex items-center flex-wrap gap-2 justify-between text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
                     <span>{getSourceName(post)}</span>
                     <div className="flex items-center gap-1.5">
                       {post.subCategory && isTech && (
