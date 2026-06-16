@@ -110,6 +110,7 @@ export default async function PostPage({
     "@type": "NewsArticle",
     "headline": post.title,
     "description": post.excerpt,
+    "image": post.featuredImageUrl ? [post.featuredImageUrl] : ["https://kannadaquiz.in/icon.svg"],
     "datePublished": post.date,
     "dateModified": post.date,
     "author": {
