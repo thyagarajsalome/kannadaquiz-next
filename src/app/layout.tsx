@@ -31,6 +31,15 @@ export const metadata: Metadata = {
   verification: {
     google: "of_pRvg6YQBwtKsdlZhbUOEOOn24aY4eUfvzr0AtpRo",
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+    },
+  },
   alternates: {
     canonical: "/kn",
     languages: {

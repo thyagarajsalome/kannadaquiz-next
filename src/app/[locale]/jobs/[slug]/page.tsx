@@ -50,8 +50,35 @@ export default async function JobPage({
     notFound();
   }
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    "title": job.title,
+    "description": job.body || `${job.organization} job opening`,
+    "datePosted": new Date().toISOString().slice(0, 10),
+    "validThrough": job.deadline,
+    "hiringOrganization": {
+      "@type": "Organization",
+      "name": job.organization,
+      "logo": "https://kannadaquiz.in/icon.svg"
+    },
+    "jobLocation": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Karnataka",
+        "addressRegion": "KA",
+        "addressCountry": "IN"
+      }
+    }
+  };
+
   return (
     <article className="kq-container max-w-3xl py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Back Link at the Top */}
       <div className="mb-6">
         <Link
