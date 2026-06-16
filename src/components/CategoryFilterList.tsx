@@ -109,34 +109,46 @@ export function CategoryFilterList({
           {filteredPosts.map((post) => (
             <article
               key={post.slug}
-              className="kq-card p-4 flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 rounded-xl border border-[var(--border)]"
+              className="kq-card overflow-hidden flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 rounded-xl border border-[var(--border)]"
             >
               <div>
-                <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
-                  <span>{getSourceName(post)}</span>
-                  <div className="flex items-center gap-1.5">
-                    {post.subCategory && isTech && (
-                      <span className="bg-[var(--surface-soft)] text-[10px] text-[var(--muted)] px-2 py-0.5 rounded-md border border-[var(--border)]">
-                        {
-                          subCategories.find((s) => s.key === post.subCategory)
-                            ?.label || post.subCategory
-                        }
-                      </span>
-                    )}
-                    <span>•</span>
-                    <time>{post.date}</time>
+                {post.featuredImageUrl && (
+                  <Link href={`/${locale}/posts/${post.slug}`} className="block overflow-hidden aspect-video border-b border-[var(--border)]/40 hover:opacity-95 transition-opacity">
+                    <img
+                      src={post.featuredImageUrl}
+                      alt={post.title}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </Link>
+                )}
+                <div className="p-4 pb-0">
+                  <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
+                    <span>{getSourceName(post)}</span>
+                    <div className="flex items-center gap-1.5">
+                      {post.subCategory && isTech && (
+                        <span className="bg-[var(--surface-soft)] text-[10px] text-[var(--muted)] px-2 py-0.5 rounded-md border border-[var(--border)]">
+                          {
+                            subCategories.find((s) => s.key === post.subCategory)
+                              ?.label || post.subCategory
+                          }
+                        </span>
+                      )}
+                      <span>•</span>
+                      <time>{post.date}</time>
+                    </div>
                   </div>
+                  <Link href={`/${locale}/posts/${post.slug}`} className="group">
+                    <h2 className="mt-2.5 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2 leading-relaxed">
+                      {post.title}
+                    </h2>
+                  </Link>
+                  <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
+                    {post.excerpt}
+                  </p>
                 </div>
-                <Link href={`/${locale}/posts/${post.slug}`} className="group">
-                  <h2 className="mt-2.5 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2 leading-relaxed">
-                    {post.title}
-                  </h2>
-                </Link>
-                <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
-                  {post.excerpt}
-                </p>
               </div>
-              <div className="mt-4 pt-3 border-t border-[var(--border)] flex items-center justify-between">
+              <div className="mt-4 p-4 pt-3 border-t border-[var(--border)] flex items-center justify-between">
                 <Link
                   href={`/${locale}/posts/${post.slug}`}
                   className="text-xs font-bold text-[var(--secondary)] hover:underline flex items-center gap-1"
