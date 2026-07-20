@@ -83,6 +83,7 @@ const FEEDS = [
   { name: "Google News International", url: "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "Government Schemes", url: "https://news.google.com/rss/search?q=karnataka+government+schemes+OR+yojana&hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "Sports News", url: "https://news.google.com/rss/search?q=sports+news+india+OR+cricket&hl=en-IN&gl=IN&ceid=IN:en" },
+  { name: "Football News", url: "https://news.google.com/rss/search?q=football+news+OR+fifa+OR+uefa+OR+premier+league+OR+isl&hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "Technology & AI News", url: "https://news.google.com/rss/search?q=artificial+intelligence+OR+cybersecurity+OR+software+development+OR+computer+basics+OR+tech+careers&hl=en-IN&gl=IN&ceid=IN:en" }
 ];
 

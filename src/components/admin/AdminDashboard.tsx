@@ -541,13 +541,82 @@ export function AdminDashboard() {
     }
   }
 
+  async function compressToWebp(file: File, maxWidth = 900, quality = 0.75): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            reject(new Error("Failed to get 2D canvas context"));
+            return;
+          }
+
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                resolve(blob);
+              } else {
+                reject(new Error("Blob conversion failed"));
+              }
+            },
+            "image/webp",
+            quality
+          );
+        };
+        img.onerror = (err) => reject(err);
+        img.src = event.target?.result as string;
+      };
+      reader.onerror = (err) => reject(err);
+      reader.readAsDataURL(file);
+    });
+  }
+
   async function uploadImage(file: File, fileSlug: string): Promise<string> {
     if (!firebaseStorage) return "";
-    const cleanFileName = file.name.replace(/[^a-zA-Z0-9.]/g, "_");
+
+    let uploadData: Blob | File = file;
+    let fileName = file.name;
+
+    try {
+      console.log(`Compressing original image (${(file.size / 1024).toFixed(1)} KB) to optimized WebP...`);
+      const compressedBlob = await compressToWebp(file, 900, 0.75);
+      uploadData = compressedBlob;
+      
+      const dotIndex = file.name.lastIndexOf('.');
+      const baseName = dotIndex !== -1 ? file.name.substring(0, dotIndex) : file.name;
+      fileName = `${baseName}.webp`;
+      
+      console.log(`Successfully compressed. New size: ${(compressedBlob.size / 1024).toFixed(1)} KB`);
+    } catch (compressionError) {
+      console.warn("Image compression failed, uploading original file:", compressionError);
+    }
+
+    const cleanFileName = fileName.replace(/[^a-zA-Z0-9.]/g, "_");
     const uniqueId = Date.now();
     const storagePath = `public/${kind}/${fileSlug}-${uniqueId}-${cleanFileName}`;
     const fileRef = ref(firebaseStorage, storagePath);
-    await uploadBytes(fileRef, file);
+
+    const metadata = {
+      contentType: "image/webp",
+      cacheControl: "public, max-age=31536000",
+    };
+
+    await uploadBytes(fileRef, uploadData, metadata);
     return getDownloadURL(fileRef);
   }
 
