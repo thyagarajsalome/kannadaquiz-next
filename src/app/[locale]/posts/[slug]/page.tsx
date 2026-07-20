@@ -231,7 +231,9 @@ export default async function PostPage({
         {post.sourceUrl ? (
           <div className="mt-6 border-t border-[var(--border)] pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-[var(--muted)]">
             <span>
-              {locale === "kn" ? "ಮೂಲ ಮಾಹಿತಿ: " : "Source: "}
+              {post.category === "Home Design"
+                ? (locale === "kn" ? "ಹೆಚ್ಚಿನ ವಿವರಗಳು: " : "More Info: ")
+                : (locale === "kn" ? "ಮೂಲ ಮಾಹಿತಿ: " : "Source: ")}
               <span className="font-semibold text-[var(--foreground)]">
                 {getSourceName(post)}
               </span>
@@ -242,7 +244,9 @@ export default async function PostPage({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 font-semibold text-[var(--secondary)] hover:underline"
             >
-              {locale === "kn" ? "ಮೂಲ ಲೇಖನ ಓದಿ ➔" : "Read Original Article ➔"}
+              {post.category === "Home Design"
+                ? (locale === "kn" ? "ವೆಬ್‌ಸೈಟ್‌ಗೆ ಭೇಟಿ ನೀಡಿ ➔" : "Visit Website ➔")
+                : (locale === "kn" ? "ಮೂಲ ಲೇಖನ ಓದಿ ➔" : "Read Original Article ➔")}
             </a>
           </div>
         ) : null}

@@ -73,6 +73,8 @@ export function AdminDashboard() {
   const [category, setCategory] = useState("General");
   const [organization, setOrganization] = useState("");
   const [deadline, setDeadline] = useState("");
+  const [sourceUrl, setSourceUrl] = useState("");
+  const [sourceName, setSourceName] = useState("");
   
   // Quiz specific states
   const [exam, setExam] = useState("KPSC");
@@ -661,6 +663,8 @@ export function AdminDashboard() {
       setCategory(String(data.category ?? "General"));
       setOrganization(String(data.organization ?? ""));
       setDeadline(String(data.deadline ?? ""));
+      setSourceUrl(String(data.sourceUrl ?? ""));
+      setSourceName(String(data.sourceName ?? ""));
       setImageUrl(String(data.featuredImageUrl ?? ""));
       setImageFile(null); // Reset new file input
 
@@ -711,6 +715,8 @@ export function AdminDashboard() {
     setCategory("General");
     setOrganization("");
     setDeadline("");
+    setSourceUrl("");
+    setSourceName("");
 
     setExam("KPSC");
     setSubject("");
@@ -849,6 +855,8 @@ export function AdminDashboard() {
             category: category.trim(),
             featuredImageUrl: finalImageUrl || "",
             isManual: true,
+            sourceUrl: sourceUrl.trim() || "",
+            sourceName: sourceName.trim() || "",
           }, { merge: true });
         }
 
@@ -920,6 +928,8 @@ export function AdminDashboard() {
             body: body.trim(),
             category: category.trim(),
             isManual: true,
+            sourceUrl: sourceUrl.trim() || "",
+            sourceName: sourceName.trim() || "",
           });
         }
 
@@ -976,6 +986,8 @@ export function AdminDashboard() {
       setBody("");
       setOrganization("");
       setDeadline("");
+      setSourceUrl("");
+      setSourceName("");
       setExam("KPSC");
       setSubject("");
       setDifficulty("Easy");
@@ -1336,6 +1348,39 @@ export function AdminDashboard() {
                 className="mt-2 min-h-44 w-full rounded-md border border-[var(--border)] px-3 py-2"
               />
             </label>
+          ) : null}
+
+          {kind === "posts" ? (
+            <div className="mt-5 p-4 border border-[var(--border)] rounded-md bg-[var(--surface-soft)] shadow-sm">
+              <h4 className="text-sm font-bold text-[var(--primary)] mb-3 flex items-center gap-1.5 select-none">
+                <span className="text-base">🔗</span> External Reference Link (Optional)
+              </h4>
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="block text-sm font-semibold text-[var(--primary)]">
+                  External Link URL
+                  <input
+                    type="url"
+                    placeholder="e.g. https://architect.com/project-listing"
+                    value={sourceUrl}
+                    onChange={(event) => setSourceUrl(event.target.value)}
+                    className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2 bg-white font-normal"
+                  />
+                </label>
+                <label className="block text-sm font-semibold text-[var(--primary)]">
+                  Link Label / Website Name
+                  <input
+                    type="text"
+                    placeholder="e.g. Visit Architectural Site, View Floor Plan"
+                    value={sourceName}
+                    onChange={(event) => setSourceName(event.target.value)}
+                    className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2 bg-white font-normal"
+                  />
+                </label>
+              </div>
+              <p className="mt-2.5 text-xs text-[var(--muted)] leading-relaxed">
+                Provide these details so users can easily visit the given external site (e.g., real estate portfolios, interior design services, or product promotions).
+              </p>
+            </div>
           ) : null}
 
           {kind === "quizzes" ? (
