@@ -48,6 +48,8 @@ type PublishedItem = {
   locale?: string;
   status?: string;
   isManual?: boolean;
+  category?: string;
+  updatedAt?: string;
 };
 
 const kindLabels: Record<ContentKind, string> = {
@@ -90,6 +92,9 @@ export function AdminDashboard() {
 
   const [message, setMessage] = useState("");
   const [items, setItems] = useState<PublishedItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("All");
+  const [selectedLocaleFilter, setSelectedLocaleFilter] = useState("All");
   const [saving, setSaving] = useState(false);
 
   // Telemetry & Stats states
@@ -290,7 +295,7 @@ export function AdminDashboard() {
     }
 
     try {
-      const docsQuery = query(collection(firestore, firestoreCollections[nextKind]), limit(25));
+      const docsQuery = query(collection(firestore, firestoreCollections[nextKind]), limit(250));
       const snapshot = await getDocs(docsQuery);
       const nextItems = snapshot.docs
         .map((doc) => {
@@ -302,6 +307,7 @@ export function AdminDashboard() {
             locale: typeof data.locale === "string" ? data.locale : undefined,
             status: typeof data.status === "string" ? data.status : undefined,
             isManual: data.isManual === true,
+            category: typeof data.category === "string" ? data.category : "General",
             updatedAt:
               typeof data.updatedAt === "string"
                 ? data.updatedAt
@@ -311,8 +317,7 @@ export function AdminDashboard() {
           };
         })
         .filter((item) => item.status === "published" || item.status === "draft")
-        .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
-        .slice(0, 15);
+        .sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
 
       setItems(nextItems);
     } catch (error) {
@@ -1433,66 +1438,156 @@ export function AdminDashboard() {
         </form>
 
         <aside className="kq-card p-5">
-          <h2 className="font-serif text-2xl font-bold text-[var(--primary)]">Latest Content</h2>
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-between items-center border-b border-[var(--border)] pb-2">
+              <h2 className="font-serif text-2xl font-bold text-[var(--primary)]">Published & Draft Content</h2>
+              <span className="text-xs bg-[var(--surface-soft)] text-[var(--muted)] border border-[var(--border)] px-2.5 py-1 rounded-full font-bold">
+                Pool Size: {items.length}
+              </span>
+            </div>
+
+            {/* Filter & Search Bar Controls */}
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 bg-[var(--surface-soft)] p-4 rounded-lg border border-[var(--border)]/60">
+              <div className="flex flex-col">
+                <label className="text-xs font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1.5">Search Title or Slug</label>
+                <input
+                  type="text"
+                  placeholder="Type to search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="rounded-md border border-[var(--border)] px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
+                />
+              </div>
+
+              {kind === "posts" && (
+                <div className="flex flex-col">
+                  <label className="text-xs font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1.5">Filter Category</label>
+                  <select
+                    value={selectedCategoryFilter}
+                    onChange={(e) => setSelectedCategoryFilter(e.target.value)}
+                    className="rounded-md border border-[var(--border)] px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
+                  >
+                    <option value="All">All Categories</option>
+                    <option value="General">General News</option>
+                    <option value="Karnataka">Karnataka News</option>
+                    <option value="National">National News</option>
+                    <option value="International">International News</option>
+                    <option value="Jobs">Jobs & Careers</option>
+                    <option value="Current Affairs">Current Affairs</option>
+                    <option value="Agriculture">Agriculture Info</option>
+                    <option value="College Guide">College & Education Guide</option>
+                    <option value="Government Schemes">Government Schemes</option>
+                    <option value="Heritage & Tourism">Heritage & Tourism</option>
+                    <option value="Sports News">Sports News</option>
+                    <option value="Movies">Movies & Cinema</option>
+                  </select>
+                </div>
+              )}
+
+              <div className="flex flex-col">
+                <label className="text-xs font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1.5">Filter Language</label>
+                <select
+                  value={selectedLocaleFilter}
+                  onChange={(e) => setSelectedLocaleFilter(e.target.value)}
+                  className="rounded-md border border-[var(--border)] px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
+                >
+                  <option value="All">All Languages</option>
+                  <option value="kn">Kannada (kn)</option>
+                  <option value="en">English (en)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           <div className="mt-4 grid gap-3">
-            {items.length ? (
-              items.map((item) => (
-                <article key={item.id} className="rounded-md border border-[var(--border)] p-3 flex justify-between items-start gap-4">
-                  <div>
-                    <p className="font-bold text-[var(--primary)] flex flex-wrap gap-1.5 items-center">
-                      <span>{item.title}</span>
-                      {item.status === "draft" && (
-                        <span className="inline-block rounded bg-amber-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-amber-800 border border-amber-200">
-                          Draft
-                        </span>
-                      )}
-                      {(kind === "posts" || kind === "jobs") && (
-                        item.isManual ? (
-                          <span className="inline-block rounded bg-emerald-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-emerald-800 border border-emerald-200">
-                            Manual
-                          </span>
-                        ) : (
-                          <span className="inline-block rounded bg-violet-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-violet-800 border border-violet-200">
-                            Auto
-                          </span>
-                        )
-                      )}
+            {(() => {
+              const filteredItems = items.filter((item) => {
+                const titleMatch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                   (item.slug || "").toLowerCase().includes(searchQuery.toLowerCase());
+                
+                let categoryMatch = true;
+                if (selectedCategoryFilter !== "All" && kind === "posts") {
+                  categoryMatch = (item.category || "").toLowerCase() === selectedCategoryFilter.toLowerCase();
+                }
+                
+                let localeMatch = true;
+                if (selectedLocaleFilter !== "All") {
+                  localeMatch = (item.locale || "").toLowerCase() === selectedLocaleFilter.toLowerCase();
+                }
+                
+                return titleMatch && categoryMatch && localeMatch;
+              });
+
+              if (filteredItems.length) {
+                return (
+                  <>
+                    <p className="text-xs text-[var(--muted)] font-semibold px-1 mb-1">
+                      Showing {filteredItems.length} of {items.length} records
                     </p>
-                    <p className="mt-1 text-xs text-[var(--muted)]">
-                      {item.locale ?? "n/a"} {item.slug ? `• ${item.slug}` : ""}
-                    </p>
-                  </div>
-                  <div className="flex gap-2 shrink-0 items-center">
-                    {(kind === "posts" || kind === "jobs") && !item.isManual && (
-                      <button
-                        type="button"
-                        onClick={() => handleVerifyItem(item.id)}
-                        className="text-xs text-emerald-600 font-bold hover:underline cursor-pointer"
-                        title="Mark as human reviewed & manual equivalent"
-                      >
-                        Verify
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => handleEditInit(item.id)}
-                      className="text-xs text-[var(--primary)] font-bold hover:underline cursor-pointer"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(item.id)}
-                      className="text-xs text-[var(--secondary)] font-bold hover:underline cursor-pointer"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </article>
-              ))
-            ) : (
-              <p className="text-sm leading-6 text-[var(--muted)]">No published records found.</p>
-            )}
+                    {filteredItems.map((item) => (
+                      <article key={item.id} className="rounded-md border border-[var(--border)] p-3 flex justify-between items-start gap-4 hover:bg-slate-50 transition-colors">
+                        <div>
+                          <p className="font-bold text-[var(--primary)] flex flex-wrap gap-1.5 items-center">
+                            <span>{item.title}</span>
+                            {item.status === "draft" && (
+                              <span className="inline-block rounded bg-amber-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-amber-800 border border-amber-200">
+                                Draft
+                              </span>
+                            )}
+                            {(kind === "posts" || kind === "jobs") && (
+                              item.isManual ? (
+                                <span className="inline-block rounded bg-emerald-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-emerald-800 border border-emerald-200">
+                                  Manual
+                                </span>
+                              ) : (
+                                <span className="inline-block rounded bg-violet-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-violet-800 border border-violet-200">
+                                  Auto
+                                </span>
+                              )
+                            )}
+                          </p>
+                          <p className="mt-1 text-xs text-[var(--muted)]">
+                            {item.locale ?? "n/a"} {item.category ? `• ${item.category}` : ""} {item.slug ? `• ${item.slug}` : ""}
+                          </p>
+                        </div>
+                        <div className="flex gap-2 shrink-0 items-center">
+                          {(kind === "posts" || kind === "jobs") && !item.isManual && (
+                            <button
+                              type="button"
+                              onClick={() => handleVerifyItem(item.id)}
+                              className="text-xs text-emerald-600 font-bold hover:underline cursor-pointer"
+                              title="Mark as human reviewed & manual equivalent"
+                            >
+                              Verify
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => handleEditInit(item.id)}
+                            className="text-xs text-[var(--primary)] font-bold hover:underline cursor-pointer"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(item.id)}
+                            className="text-xs text-[var(--secondary)] font-bold hover:underline cursor-pointer"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </article>
+                    ))}
+                  </>
+                );
+              }
+
+              return (
+                <p className="text-sm leading-6 text-[var(--muted)] bg-[var(--surface-soft)] p-4 rounded-md text-center border border-dashed border-[var(--border)]">
+                  No records match your search or filter settings.
+                </p>
+              );
+            })()}
           </div>
         </aside>
       </div>
