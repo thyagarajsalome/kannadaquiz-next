@@ -1193,6 +1193,7 @@ export function AdminDashboard() {
                 <option value="Heritage & Tourism">Heritage & Tourism</option>
                 <option value="Sports News">Sports News</option>
                 <option value="Movies">Movies & Cinema</option>
+                <option value="Home Design">Home Design & Real Estate</option>
               </select>
             </label>
           ) : null}
@@ -1480,6 +1481,7 @@ export function AdminDashboard() {
                     <option value="Heritage & Tourism">Heritage & Tourism</option>
                     <option value="Sports News">Sports News</option>
                     <option value="Movies">Movies & Cinema</option>
+                    <option value="Home Design">Home Design & Real Estate</option>
                   </select>
                 </div>
               )}

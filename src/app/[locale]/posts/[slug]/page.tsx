@@ -95,6 +95,7 @@ const categoryTranslations: Record<string, Record<string, string>> = {
   tourism: { kn: "ಇತಿಹಾಸ ಮತ್ತು ಪ್ರವಾಸೋದ್ಯಮ", en: "Heritage & Tourism" },
   sports: { kn: "ಕ್ರೀಡಾ ಸುದ್ದಿ", en: "Sports News" },
   movies: { kn: "ಚಲನಚಿತ್ರ ಸುದ್ದಿ", en: "Movies & Cinema" },
+  "home-design": { kn: "ಮನೆ ವಿನ್ಯಾಸ ಮತ್ತು ರಿಯಲ್ ಎಸ್ಟೇಟ್", en: "Home Design & Real Estate" },
   general: { kn: "ಸಾಮಾನ್ಯ ಸುದ್ದಿ", en: "General News" }
 };
 
@@ -103,6 +104,7 @@ function getCategorySlug(category: string): string {
   if (norm.includes("karnataka")) return "karnataka";
   if (norm.includes("international")) return "international";
   if (norm.includes("movie") || norm.includes("cinema") || norm.includes("film") || norm.includes("sandalwood")) return "movies";
+  if (norm.includes("home") || norm.includes("design") || norm.includes("interior") || norm.includes("plan") || norm.includes("real estate") || norm.includes("estate") || norm.includes("promotion")) return "home-design";
   if (norm.includes("national") || norm.includes("affair") || norm.includes("current") || norm.includes("general")) return "national";
   if (norm.includes("job") || norm.includes("kpsc") || norm.includes("exam") || norm.includes("career")) return "jobs";
   if (norm.includes("agriculture") || norm.includes("krishi") || norm.includes("farm")) return "agriculture";

@@ -147,6 +147,7 @@ export async function getPublicPostsByCategory(
     sports: ["Sports News", "Sports"],
     technology: ["Technology"],
     movies: ["Movies", "Cinema", "Film"],
+    "home-design": ["Home Design", "Real Estate", "Interior", "House Plans", "Promotion", "Services"],
   };
 
   const allowedCategories = categoryNamesMap[categoryKey.toLowerCase()] || [categoryKey];
