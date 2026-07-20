@@ -83,6 +83,9 @@ export function Header({ locale }: { locale: Locale }) {
               <Link href={`/${locale}/category/sports`} className="block px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ಕ್ರೀಡೆ" : "Sports"}
               </Link>
+              <Link href={`/${locale}/category/movies`} className="block px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+                {locale === "kn" ? "ಚಲನಚಿತ್ರಗಳು" : "Movies & Cinema"}
+              </Link>
               <Link href={`/${locale}/category/agriculture`} className="block px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ಕೃಷಿ" : "Agriculture"}
               </Link>
@@ -150,6 +153,9 @@ export function Header({ locale }: { locale: Locale }) {
           </Link>
           <Link href={`/${locale}/category/sports`} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಕ್ರೀಡೆ" : "Sports"}
+          </Link>
+          <Link href={`/${locale}/category/movies`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಚಲನಚಿತ್ರಗಳು" : "Movies"}
           </Link>
           <Link href={`/${locale}/category/agriculture`} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಕೃಷಿ" : "Krishi"}

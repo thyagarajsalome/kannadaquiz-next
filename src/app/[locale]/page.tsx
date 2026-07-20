@@ -80,6 +80,7 @@ const categoryTranslations: Record<string, Record<string, string>> = {
   agriculture: { kn: "ಕೃಷಿ ಮಾಹಿತಿ", en: "Agriculture Info" },
   education: { kn: "ಶಿಕ್ಷಣ ಮತ್ತು ಕಾಲೇಜು ಮಾರ್ಗದರ್ಶಿ", en: "Education & College Guide" },
   technology: { kn: "ಕಂಪ್ಯೂಟರ್ & ತಂತ್ರಜ್ಞಾನ", en: "Computer & Tech" },
+  movies: { kn: "ಚಲನಚಿತ್ರ ಸುದ್ದಿ", en: "Movies & Cinema" },
   general: { kn: "ಸಾಮಾನ್ಯ ಸುದ್ದಿ", en: "General News" }
 };
 
@@ -88,6 +89,9 @@ function getLocalizedCategory(category: string, locale: string): string {
   if (norm.includes("karnataka")) return categoryTranslations.karnataka[locale] || category;
   if (norm.includes("international")) return categoryTranslations.international[locale] || category;
   if (norm.includes("national")) return categoryTranslations.national[locale] || category;
+  if (norm.includes("movie") || norm.includes("cinema") || norm.includes("film") || norm.includes("sandalwood")) {
+    return categoryTranslations.movies[locale] || category;
+  }
   if (norm.includes("job") || norm.includes("kpsc") || norm.includes("exam") || norm.includes("career")) {
     return categoryTranslations.jobs[locale] || category;
   }

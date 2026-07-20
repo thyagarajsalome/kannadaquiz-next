@@ -146,6 +146,7 @@ export async function getPublicPostsByCategory(
     tourism: ["Heritage & Tourism", "Tourism"],
     sports: ["Sports News", "Sports"],
     technology: ["Technology"],
+    movies: ["Movies", "Cinema", "Film"],
   };
 
   const allowedCategories = categoryNamesMap[categoryKey.toLowerCase()] || [categoryKey];
