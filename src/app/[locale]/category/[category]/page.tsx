@@ -160,6 +160,16 @@ export async function generateMetadata({
       ? `ಕನ್ನಡದಲ್ಲೇ ಓದಿ: ${catTitle} ಕುರಿತಾದ ಪ್ರಮುಖ ವಿಶ್ಲೇಷಣೆಗಳು, ಮುಖ್ಯಾಂಶಗಳು ಮತ್ತು ಸರಳ ಸುದ್ದಿ ಸಾರಾಂಶಗಳು.`
       : `Read in English & Kannada: Latest news summaries, exam-focused updates, and analysis on ${catTitle}.`,
     keywords: keywordsMap[matchedKey]?.[locale] || [],
+    robots: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+      },
+    },
     alternates: {
       canonical: `/${locale}/category/${category}`,
       languages: {
