@@ -1554,7 +1554,34 @@ export function AdminDashboard() {
                 
                 let categoryMatch = true;
                 if (selectedCategoryFilter !== "All" && kind === "posts") {
-                  categoryMatch = (item.category || "").toLowerCase() === selectedCategoryFilter.toLowerCase();
+                  const filterKey = selectedCategoryFilter.toLowerCase().trim();
+                  const itemCategory = (item.category || "").toLowerCase().trim();
+                  
+                  // Define synonyms and mapping groups for robust matching
+                  const categoryGroups: Record<string, string[]> = {
+                    general: ["general", "general news", "ಸಾಮಾನ್ಯ"],
+                    karnataka: ["karnataka", "karnataka news", "ಕರ್ನಾಟಕ", "ಕರ್ನಾಟಕ ಸುದ್ದಿ"],
+                    national: ["national", "national news", "ರಾಷ್ಟ್ರೀಯ", "ರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ"],
+                    international: ["international", "international news", "ಅಂತರರಾಷ್ಟ್ರೀಯ", "ಅಂತರರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ"],
+                    jobs: ["jobs", "jobs & careers", "kpsc", "exam notifications", "ಉದ್ಯೋಗಗಳು", "ಉದ್ಯೋಗ"],
+                    "current affairs": ["current affairs", "ಚಾಲ್ತಿ ವಿದ್ಯಮಾನಗಳು"],
+                    agriculture: ["agriculture", "agriculture info", "ಕೃಷಿ"],
+                    "college guide": ["college guide", "education", "education & college guide", "college & education guide", "ಶಿಕ್ಷಣ"],
+                    "government schemes": ["government schemes", "schemes", "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು"],
+                    "heritage & tourism": ["heritage & tourism", "tourism", "ಪ್ರವಾಸೋದ್ಯಮ"],
+                    "sports news": ["sports news", "sports", "ಕ್ರೀಡೆ"],
+                    movies: ["movies", "movies & cinema", "cinema", "film", "ಚಲನಚಿತ್ರ"],
+                    "home design": ["home design", "real estate", "interior", "house plans", "promotion", "services", "home design & real estate", "ಮನೆ ವಿನ್ಯಾಸ ಮತ್ತು ರಿಯಲ್ ಎಸ್ಟೇಟ್"],
+                  };
+
+                  const groupSynonyms = categoryGroups[filterKey] || [filterKey];
+                  
+                  // Matches if:
+                  // 1. Exact or near match of any synonym inside the item category (or vice versa)
+                  // 2. The item category contains the filter key or vice versa
+                  categoryMatch = groupSynonyms.some(syn => itemCategory.includes(syn) || syn.includes(itemCategory)) ||
+                                  itemCategory.includes(filterKey) ||
+                                  filterKey.includes(itemCategory);
                 }
                 
                 let localeMatch = true;
