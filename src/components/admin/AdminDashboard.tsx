@@ -1921,8 +1921,19 @@ function readFirebaseError(error: unknown) {
   if (typeof error === "object" && error && "code" in error && "message" in error) {
     const code = String((error as { code?: unknown }).code ?? "unknown");
     const message = String((error as { message?: unknown }).message ?? "Unknown Firebase error");
+    
+    if (code === "auth/invalid-credential" || code === "auth/wrong-password" || code === "auth/user-not-found") {
+      return "Incorrect email or password. Please verify your administrator credentials.";
+    }
+    if (code === "auth/too-many-requests") {
+      return "Too many failed login attempts. Please try again later.";
+    }
+    if (code === "storage/unauthorized" || code === "storage/retry-limit-exceeded" || message.includes("unauthorized") || message.includes("permission-denied")) {
+      return "Permission Denied: You do not have authorization to upload files or modify this resource. If you recently registered or had permissions updated, please log out and sign back in to refresh your administrative access token.";
+    }
+    
     return `${code}: ${message}`;
   }
 
-  return "Unexpected error while saving to Firestore.";
+  return "An unexpected error occurred. Please try again.";
 }
