@@ -6,7 +6,7 @@ import { CategoryFilterList } from "@/components/CategoryFilterList";
 export const revalidate = 300;
 
 export function generateStaticParams() {
-  const categories = ["karnataka", "national", "international", "jobs", "agriculture", "education", "schemes", "tourism", "sports", "technology", "movies"];
+  const categories = ["karnataka", "national", "international", "jobs", "agriculture", "education", "schemes", "tourism", "sports", "technology", "movies", "home-design"];
   const params: { locale: string; category: string }[] = [];
   
   // Create paths for both locales and all standard categories
@@ -31,6 +31,7 @@ const categoryTranslations: Record<string, Record<string, string>> = {
   sports: { kn: "ಕ್ರೀಡಾ ಸುದ್ದಿ", en: "Sports News" },
   technology: { kn: "ಕಂಪ್ಯೂಟರ್ ಮತ್ತು ತಂತ್ರಜ್ಞಾನ", en: "Computer & Technology" },
   movies: { kn: "ಚಲನಚಿತ್ರ ಸುದ್ದಿ", en: "Movies & Cinema" },
+  "home-design": { kn: "ಮನೆ ವಿನ್ಯಾಸ ಮತ್ತು ರಿಯಲ್ ಎಸ್ಟೇಟ್", en: "Home Design & Real Estate" },
   general: { kn: "ಸಾಮಾನ್ಯ ಸುದ್ದಿ", en: "General News" }
 };
 
@@ -58,7 +59,14 @@ const categorySynonyms: Record<string, string> = {
   film: "movies",
   sandalwood: "movies",
   bollywood: "movies",
-  hollywood: "movies"
+  hollywood: "movies",
+  home: "home-design",
+  design: "home-design",
+  interior: "home-design",
+  plan: "home-design",
+  estate: "home-design",
+  realestate: "home-design",
+  promotion: "home-design"
 };
 
 export function resolveCategoryKey(category: string): string {
@@ -143,6 +151,10 @@ export async function generateMetadata({
     technology: {
       kn: ["ಕಂಪ್ಯೂಟರ್ ತಂತ್ರಜ್ಞಾನ", "ಆರ್ಟಿಫಿಶಿಯಲ್ ಇಂಟೆಲಿಜೆನ್ಸ್", "ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ", "ಸೈಬರ್ ಸೆಕ್ಯುರಿಟಿ", "ಸಾಫ್ಟ್‌ವೇರ್", "ತಂತ್ರಜ್ಞಾನ ಸುದ್ದಿ"],
       en: ["Computer Technology", "Artificial Intelligence", "AI News", "Cybersecurity", "Software Development", "Tech News"]
+    },
+    "home-design": {
+      kn: ["ಮನೆ ವಿನ್ಯಾಸ", "ಒಳಾಂಗಣ ವಿನ್ಯಾಸ", "ಮನೆ ಪ್ಲಾನ್", "ರಿಯಲ್ ಎಸ್ಟೇಟ್ ಕರ್ನಾಟಕ", "ಮನೆ ಕಟ್ಟುವ ನಕ್ಷೆ", "ಇಂಟೀರಿಯರ್ ಡಿಸೈನ್", "ಮನೆ ಕಟ್ಟುವ ಮಾಹಿತಿ"],
+      en: ["Home Design Ideas", "Interior Design Karnataka", "House Plans", "Real Estate Bangalore", "Floor Plans", "Interior Decoration", "Building Promotion", "Service Promotion"]
     },
     general: {
       kn: ["ಸಾಮಾನ್ಯ ಸುದ್ದಿ", "ಕನ್ನಡ ಕ್ವಿಜ್", "ಕನ್ನಡ ವಾರ್ತೆಗಳು", "ಸಾಮಾನ್ಯ ಜ್ಞಾನ"],

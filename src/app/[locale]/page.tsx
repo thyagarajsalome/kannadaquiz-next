@@ -81,6 +81,7 @@ const categoryTranslations: Record<string, Record<string, string>> = {
   education: { kn: "ಶಿಕ್ಷಣ ಮತ್ತು ಕಾಲೇಜು ಮಾರ್ಗದರ್ಶಿ", en: "Education & College Guide" },
   technology: { kn: "ಕಂಪ್ಯೂಟರ್ & ತಂತ್ರಜ್ಞಾನ", en: "Computer & Tech" },
   movies: { kn: "ಚಲನಚಿತ್ರ ಸುದ್ದಿ", en: "Movies & Cinema" },
+  "home-design": { kn: "ಮನೆ ವಿನ್ಯಾಸ ಮತ್ತು ರಿಯಲ್ ಎಸ್ಟೇಟ್", en: "Home Design & Real Estate" },
   general: { kn: "ಸಾಮಾನ್ಯ ಸುದ್ದಿ", en: "General News" }
 };
 
@@ -91,6 +92,9 @@ function getLocalizedCategory(category: string, locale: string): string {
   if (norm.includes("national")) return categoryTranslations.national[locale] || category;
   if (norm.includes("movie") || norm.includes("cinema") || norm.includes("film") || norm.includes("sandalwood")) {
     return categoryTranslations.movies[locale] || category;
+  }
+  if (norm.includes("home") || norm.includes("design") || norm.includes("interior") || norm.includes("plan") || norm.includes("real estate") || norm.includes("estate") || norm.includes("promotion")) {
+    return categoryTranslations["home-design"][locale] || category;
   }
   if (norm.includes("job") || norm.includes("kpsc") || norm.includes("exam") || norm.includes("career")) {
     return categoryTranslations.jobs[locale] || category;
@@ -184,6 +188,13 @@ const categoriesInfo = [
     en: "Heritage",
     icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />`,
     color: "text-orange-755 bg-orange-50 hover:bg-orange-100 hover:border-orange-300"
+  },
+  {
+    key: "home-design",
+    kn: "ಮನೆ ವಿನ್ಯಾಸ",
+    en: "Home Design",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />`,
+    color: "text-emerald-755 bg-emerald-50 hover:bg-emerald-100 hover:border-emerald-300"
   },
   {
     key: "sports",
