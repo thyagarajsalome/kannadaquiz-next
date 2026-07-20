@@ -45,6 +45,16 @@ export async function generateMetadata({
     title: `${post.title} | KannadaQuiz`,
     description: post.excerpt,
     keywords: [...baseKeywords, ...titleWords],
+    robots: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+      },
+    },
     alternates: {
       canonical: `/${locale}/posts/${post.slug}`,
       languages: {
