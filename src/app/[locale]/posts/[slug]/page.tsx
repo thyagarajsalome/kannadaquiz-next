@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { isLocale, type Locale } from "@/lib/locales";
 import { getPublicPostBySlug } from "@/lib/public-content";
 import { MiniQuizPlayer } from "@/components/MiniQuizPlayer";
@@ -18,7 +18,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: rawLocale, slug } = await params;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
-  const post = await getPublicPostBySlug(locale, slug);
+  let post = await getPublicPostBySlug(locale, slug);
+
+  if (!post) {
+    const alternativeLocale: Locale = locale === "kn" ? "en" : "kn";
+    post = await getPublicPostBySlug(alternativeLocale, slug);
+  }
 
   if (!post) {
     return {};
@@ -141,6 +146,12 @@ export default async function PostPage({
   const post = await getPublicPostBySlug(locale, slug);
 
   if (!post) {
+    // Try fallback locale and redirect if found
+    const alternativeLocale: Locale = locale === "kn" ? "en" : "kn";
+    const fallbackPost = await getPublicPostBySlug(alternativeLocale, slug);
+    if (fallbackPost) {
+      redirect(`/${alternativeLocale}/posts/${slug}`);
+    }
     notFound();
   }
 
