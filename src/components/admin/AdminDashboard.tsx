@@ -297,8 +297,26 @@ export function AdminDashboard() {
     }
 
     try {
-      const docsQuery = query(collection(firestore, firestoreCollections[nextKind]), limit(250));
-      const snapshot = await getDocs(docsQuery);
+      let snapshot;
+      try {
+        // Fetch up to 600 items ordered by the most recently updated first.
+        // This guarantees that newly published or modified drafts are always fetched.
+        const docsQuery = query(
+          collection(firestore, firestoreCollections[nextKind]),
+          orderBy("updatedAt", "desc"),
+          limit(600)
+        );
+        snapshot = await getDocs(docsQuery);
+      } catch (indexError) {
+        console.warn("Index not found or sorting failed, falling back to unordered fetch:", indexError);
+        // Fallback to fetch up to 600 items without sorting at the database level.
+        const docsQuery = query(
+          collection(firestore, firestoreCollections[nextKind]),
+          limit(600)
+        );
+        snapshot = await getDocs(docsQuery);
+      }
+
       const nextItems = snapshot.docs
         .map((doc) => {
           const data = doc.data();
