@@ -6,7 +6,7 @@ import { CategoryFilterList } from "@/components/CategoryFilterList";
 export const revalidate = 300;
 
 export function generateStaticParams() {
-  const categories = ["karnataka", "national", "international", "jobs", "agriculture", "education", "schemes", "tourism", "sports", "technology"];
+  const categories = ["karnataka", "national", "international", "jobs", "agriculture", "education", "schemes", "tourism", "sports", "technology", "movies"];
   const params: { locale: string; category: string }[] = [];
   
   // Create paths for both locales and all standard categories
@@ -30,6 +30,7 @@ const categoryTranslations: Record<string, Record<string, string>> = {
   tourism: { kn: "ಇತಿಹಾಸ ಮತ್ತು ಪ್ರವಾಸೋದ್ಯಮ", en: "Heritage & Tourism" },
   sports: { kn: "ಕ್ರೀಡಾ ಸುದ್ದಿ", en: "Sports News" },
   technology: { kn: "ಕಂಪ್ಯೂಟರ್ ಮತ್ತು ತಂತ್ರಜ್ಞಾನ", en: "Computer & Technology" },
+  movies: { kn: "ಚಲನಚಿತ್ರ ಸುದ್ದಿ", en: "Movies & Cinema" },
   general: { kn: "ಸಾಮಾನ್ಯ ಸುದ್ದಿ", en: "General News" }
 };
 
@@ -51,7 +52,13 @@ const categorySynonyms: Record<string, string> = {
   tech: "technology",
   computer: "technology",
   ai: "technology",
-  intelligence: "technology"
+  intelligence: "technology",
+  movie: "movies",
+  cinema: "movies",
+  film: "movies",
+  sandalwood: "movies",
+  bollywood: "movies",
+  hollywood: "movies"
 };
 
 export function resolveCategoryKey(category: string): string {

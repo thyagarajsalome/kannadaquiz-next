@@ -1187,6 +1187,7 @@ export function AdminDashboard() {
                 <option value="Government Schemes">Government Schemes</option>
                 <option value="Heritage & Tourism">Heritage & Tourism</option>
                 <option value="Sports News">Sports News</option>
+                <option value="Movies">Movies & Cinema</option>
               </select>
             </label>
           ) : null}
