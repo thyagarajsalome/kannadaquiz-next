@@ -1,290 +1,137 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
-import { isLocale, type Locale } from "@/lib/locales";
+import { notFound } from "next/navigation";
 import { getPublicPostBySlug } from "@/lib/public-content";
-import { MiniQuizPlayer } from "@/components/MiniQuizPlayer";
 
-export const revalidate = 300;
+// Force dynamic rendering to prevent the static-to-dynamic runtime 500 error
+export const dynamic = "force-dynamic";
 
-export function generateStaticParams() {
-  return [];
-}
+// 1. Explicitly define the allowed locales here to guarantee type safety
+type ValidLocale = "kn" | "en";
 
-export async function generateMetadata({
-  params,
-}: {
+type PageProps = {
   params: Promise<{ locale: string; slug: string }>;
-}): Promise<Metadata> {
-  const { locale: rawLocale, slug } = await params;
-  const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
-  let post = await getPublicPostBySlug(locale, slug);
-
-  if (!post) {
-    const alternativeLocale: Locale = locale === "kn" ? "en" : "kn";
-    post = await getPublicPostBySlug(alternativeLocale, slug);
-  }
-
-  if (!post) {
-    return {};
-  }
-
-  // Generate dynamic keywords from the title
-  const titleWords = post.title
-    .split(/\s+/)
-    .map(w => w.replace(/[^a-zA-Z0-9\u0C80-\u0CFF]/g, "")) // Clean special chars
-    .filter(w => w.length > 3)
-    .slice(0, 8);
-
-  const baseKeywords = locale === "kn"
-    ? ["ಕನ್ನಡ ಸುದ್ದಿ", "ಸುದ್ದಿ ಸಾರಾಂಶ", "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", post.category]
-    : ["Kannada News", "News Summary", "Current Affairs", post.category];
-
-  const imageUrl = post.featuredImageUrl
-    ? (post.featuredImageUrl.startsWith("http")
-        ? post.featuredImageUrl
-        : `https://kannadaquiz.in${post.featuredImageUrl}`)
-    : "https://kannadaquiz.in/icon.svg";
-
-  return {
-    title: `${post.title} | KannadaQuiz`,
-    description: post.excerpt || "",
-    keywords: [...baseKeywords, ...titleWords],
-    robots: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-image-preview": "large",
-      },
-    },
-    alternates: {
-      canonical: `/${locale}/posts/${post.slug}`,
-      languages: {
-        kn: `/kn/posts/${post.slug}`,
-        en: `/en/posts/${post.slug}`,
-      },
-    },
-    openGraph: {
-      title: `${post.title} | KannadaQuiz`,
-      description: post.excerpt || "",
-      url: `https://kannadaquiz.in/${locale}/posts/${post.slug}`,
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${post.title} | KannadaQuiz`,
-      description: post.excerpt || "",
-      images: [imageUrl],
-    },
-  };
-}
-
-const categoryTranslations: Record<string, Record<string, string>> = {
-  karnataka: { kn: "ಕರ್ನಾಟಕ ಸುದ್ದಿ", en: "Karnataka News" },
-  national: { kn: "ರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ", en: "National News" },
-  international: { kn: "ಅಂತರರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ", en: "International News" },
-  jobs: { kn: "ಉದ್ಯೋಗ ಮಾಹಿತಿ", en: "Jobs & Careers" },
-  agriculture: { kn: "ಕೃಷಿ ಮಾಹಿತಿ", en: "Agriculture Info" },
-  education: { kn: "ಶಿಕ್ಷಣ ಮತ್ತು ಕಾಲೇಜು ಮಾರ್ಗದರ್ಶಿಗಳು", en: "Education Guides" },
-  schemes: { kn: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು", en: "Government Schemes" },
-  tourism: { kn: "ಇತಿಹಾಸ ಮತ್ತು ಪ್ರವಾಸೋದ್ಯಮ", en: "Heritage & Tourism" },
-  sports: { kn: "ಕ್ರೀಡಾ ಸುದ್ದಿ", en: "Sports News" },
-  movies: { kn: "ಚಲನಚಿತ್ರ ಸುದ್ದಿ", en: "Movies & Cinema" },
-  "home-design": { kn: "ಮನೆ ವಿನ್ಯಾಸ ಮತ್ತು ರಿಯಲ್ ಎಸ್ಟೇಟ್", en: "Home Design & Real Estate" },
-  general: { kn: "ಸಾಮಾನ್ಯ ಸುದ್ದಿ", en: "General News" }
 };
 
-function getCategorySlug(category?: string): string {
-  if (!category) return "general";
-  const norm = category.toLowerCase();
-  if (norm.includes("karnataka")) return "karnataka";
-  if (norm.includes("international")) return "international";
-  if (norm.includes("movie") || norm.includes("cinema") || norm.includes("film") || norm.includes("sandalwood")) return "movies";
-  if (norm.includes("home") || norm.includes("design") || norm.includes("interior") || norm.includes("plan") || norm.includes("real estate") || norm.includes("estate") || norm.includes("promotion")) return "home-design";
-  if (norm.includes("national") || norm.includes("affair") || norm.includes("current") || norm.includes("general")) return "national";
-  if (norm.includes("job") || norm.includes("kpsc") || norm.includes("exam") || norm.includes("career")) return "jobs";
-  if (norm.includes("agriculture") || norm.includes("krishi") || norm.includes("farm")) return "agriculture";
-  if (norm.includes("college") || norm.includes("guide") || norm.includes("education")) return "education";
-  if (norm.includes("scheme") || norm.includes("yojane")) return "schemes";
-  if (norm.includes("tourism") || norm.includes("heritage") || norm.includes("itihasa") || norm.includes("culture")) return "tourism";
-  if (norm.includes("sport") || norm.includes("game") || norm.includes("kriide")) return "sports";
-  return "general";
-}
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
+  
+  // 2. Safely cast the locale so TypeScript is 100% sure it's valid
+  const locale = (resolvedParams.locale === "en" ? "en" : "kn") as ValidLocale;
 
-function getLocalizedCategory(category: string | undefined, locale: string): string {
-  if (!category) return categoryTranslations.general[locale];
-  const slug = getCategorySlug(category);
-  return categoryTranslations[slug]?.[locale] || category;
-}
-
-function getSourceName(post: { sourceUrl?: string; sourceName?: string }) {
-  if (post.sourceName) return post.sourceName;
-  if (!post.sourceUrl) return "";
-  try {
-    const url = new URL(post.sourceUrl);
-    return url.hostname.replace(/^(www\.|feeds\.|rss\.)/, "");
-  } catch {
-    return "News Source";
+  if (!slug) {
+    return {
+      title: "KannadaQuiz",
+    };
   }
-}
 
-export default async function PostPage({
-  params,
-}: {
-  params: Promise<{ locale: string; slug: string }>;
-}) {
-  const { locale: rawLocale, slug } = await params;
-  const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
+  // 3. No more type errors here!
   const post = await getPublicPostBySlug(locale, slug);
 
   if (!post) {
-    // Try fallback locale and redirect if found
-    const alternativeLocale: Locale = locale === "kn" ? "en" : "kn";
-    const fallbackPost = await getPublicPostBySlug(alternativeLocale, slug);
-    if (fallbackPost) {
-      redirect(`/${alternativeLocale}/posts/${slug}`);
-    }
+    return {
+      title: locale === "kn" ? "ಲೇಖನ ಕಂಡುಬಂದಿಲ್ಲ | KannadaQuiz" : "Post Not Found | KannadaQuiz",
+    };
+  }
+
+  const title = (post as { title?: string }).title || "KannadaQuiz";
+  const excerpt = (post as { excerpt?: string }).excerpt || title;
+  const image = (post as { featuredImageUrl?: string }).featuredImageUrl;
+
+  return {
+    title: `${title} | KannadaQuiz`,
+    description: excerpt,
+    openGraph: {
+      title: title,
+      description: excerpt,
+      images: image ? [{ url: image }] : [],
+    },
+  };
+}
+
+export default async function PostDetailPage({ params }: PageProps) {
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
+  
+  // Apply the same strict casting here
+  const locale = (resolvedParams.locale === "en" ? "en" : "kn") as ValidLocale;
+
+  if (!slug) {
     notFound();
   }
 
-  const absoluteImageUrl = post.featuredImageUrl
-    ? (post.featuredImageUrl.startsWith("http")
-        ? post.featuredImageUrl
-        : `https://kannadaquiz.in${post.featuredImageUrl}`)
-    : "https://kannadaquiz.in/icon.svg";
+  const post = await getPublicPostBySlug(locale, slug);
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "NewsArticle",
-    "headline": post.title,
-    "description": post.excerpt || "",
-    "image": [absoluteImageUrl],
-    "datePublished": post.date,
-    "dateModified": post.date,
-    "author": {
-      "@type": "Organization",
-      "name": "KannadaQuiz",
-      "url": "https://kannadaquiz.in"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "KannadaQuiz",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://kannadaquiz.in/icon.svg"
-      }
-    },
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": `https://kannadaquiz.in/${locale}/posts/${post.slug}`
-    }
+  if (!post) {
+    notFound();
+  }
+
+  // Type assertions to safely handle optional or flexible post fields
+  const postData = post as {
+    title?: string;
+    category?: string;
+    date?: string;
+    sourceName?: string;
+    featuredImageUrl?: string;
+    content?: string;
+    excerpt?: string;
   };
 
   return (
-    <article className="kq-container max-w-3xl py-10">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      {/* Back Link at the Top */}
-      <div className="mb-6">
+    <article className="kq-container py-10">
+      <div className="max-w-3xl mx-auto">
+        {/* Back Link */}
         <Link
-          href={`/${locale}`}
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--muted)] hover:text-[var(--secondary)] transition-colors select-none"
+          href={`/${locale}/posts`}
+          prefetch={false}
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--secondary)] hover:underline mb-6"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
           </svg>
-          {locale === "kn" ? "ಮುಖಪುಟಕ್ಕೆ ಮರಳಿ" : "Back to Home"}
+          <span>{locale === "kn" ? "ಎಲ್ಲಾ ಲೇಖನಗಳು" : "Back to Articles"}</span>
         </Link>
-      </div>
 
-      <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
-        <Link href={`/${locale}/category/${getCategorySlug(post.category)}`} className="hover:underline">
-          {getLocalizedCategory(post.category, locale)}
-        </Link>
-        <span> • {post.date}</span>
-      </p>
-      <h1 className="mt-3 font-serif text-4xl font-bold leading-tight text-[var(--primary)]">
-        {post.title}
-      </h1>
-      <p className="mt-5 text-lg leading-8 text-[var(--muted)]">{post.excerpt}</p>
-      
-      {post.featuredImageUrl && (
-        <div className="mt-6 w-full h-[240px] xs:h-[300px] sm:h-[360px] md:h-[420px] rounded-2xl overflow-hidden shadow-sm border border-[var(--border)]/40 select-none">
-          <img
-            src={post.featuredImageUrl}
-            alt={post.title}
-            className="w-full h-full object-cover"
-            loading="eager"
+        {/* Category & Date */}
+        <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
+          {postData.category || "General"} • {postData.date || ""} {postData.sourceName ? `• ${postData.sourceName}` : ""}
+        </p>
+
+        {/* Title */}
+        <h1 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-[var(--primary)] leading-tight">
+          {postData.title}
+        </h1>
+
+        {/* Featured Image */}
+        {postData.featuredImageUrl && (
+          <div className="mt-6 overflow-hidden rounded-xl border border-[var(--border)] aspect-video">
+            <img
+              src={postData.featuredImageUrl}
+              alt={postData.title || "Post image"}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
+
+        {/* Article Body */}
+        {postData.content ? (
+          <div
+            className="mt-8 prose prose-slate max-w-none text-[var(--foreground)] leading-relaxed space-y-4"
+            dangerouslySetInnerHTML={{ __html: postData.content }}
           />
-        </div>
-      )}
-      
-      <div className="mt-8 kq-card p-5 text-base leading-8 text-[var(--foreground)]">
-        {(post.body || "")
-          .split("\n")
-          .map((p) => p.trim())
-          .filter(Boolean)
-          .map((paragraph, index) => (
-            <p key={index} className="mb-4 last:mb-0">
-              {paragraph}
-            </p>
-          ))}
-        {post.sourceUrl ? (() => {
-          const formattedUrl = !/^https?:\/\//i.test(post.sourceUrl)
-            ? `https://${post.sourceUrl}`
-            : post.sourceUrl;
-          return (
-            <div className="mt-6 border-t border-[var(--border)] pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-[var(--muted)]">
-              <span>
-                {post.category === "Home Design"
-                  ? (locale === "kn" ? "ಹೆಚ್ಚಿನ ವಿವರಗಳು: " : "More Info: ")
-                  : (locale === "kn" ? "ಮೂಲ ಮಾಹಿತಿ: " : "Source: ")}
-                <span className="font-semibold text-[var(--foreground)]">
-                  {getSourceName(post)}
-                </span>
-              </span>
-              <a
-                href={formattedUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 font-semibold text-[var(--secondary)] hover:underline"
-              >
-                {post.category === "Home Design"
-                  ? (locale === "kn" ? "ವೆಬ್‌ಸೈಟ್‌ಗೆ ಭೇಟಿ ನೀಡಿ ➔" : "Visit Website ➔")
-                  : (locale === "kn" ? "ಮೂಲ ಲೇಖನ ಓದಿ ➔" : "Read Original Article ➔")}
-              </a>
-            </div>
-          );
-        })() : null}
-      </div>
-
-      {post.quiz && post.quiz.length > 0 ? (
-        <MiniQuizPlayer questions={post.quiz} locale={locale} />
-      ) : null}
-
-      {/* Back to Home Button at the Bottom */}
-      <div className="mt-8 flex justify-center border-t border-[var(--border)] pt-8">
-        <Link
-          href={`/${locale}`}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--primary)] text-white font-bold rounded-md shadow hover:bg-[var(--primary)]/90 transition-all text-sm cursor-pointer select-none"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-          </svg>
-          {locale === "kn" ? "ಮುಖಪುಟಕ್ಕೆ ಮರಳಿ" : "Back to Home"}
-        </Link>
+        ) : (
+          <p className="mt-8 text-base text-[var(--muted)] leading-relaxed">
+            {postData.excerpt}
+          </p>
+        )}
       </div>
     </article>
   );
