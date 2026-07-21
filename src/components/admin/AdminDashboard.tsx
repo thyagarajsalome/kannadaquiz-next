@@ -103,6 +103,8 @@ export function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<"content" | "telemetry">("content");
   const [syncLogs, setSyncLogs] = useState<any[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
+  const [cleaningDb, setCleaningDb] = useState(false);
+  const [cleanMessage, setCleanMessage] = useState("");
   const [stats, setStats] = useState({
     posts: 0,
     manualPosts: 0,
@@ -793,6 +795,76 @@ export function AdminDashboard() {
       setMessage(readFirebaseError(error));
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleCleanAutomatedContent() {
+    if (!firestore) return;
+
+    const confirm = window.confirm(
+      "⚠️ WARNING: This will permanently and irreversibly delete all automated RSS/translated articles and jobs from your Firestore database.\n\nAre you absolutely sure you want to proceed?"
+    );
+    if (!confirm) return;
+
+    setCleaningDb(true);
+    setCleanMessage("Initializing database cleanup...");
+
+    try {
+      let postsDeleted = 0;
+      let jobsDeleted = 0;
+
+      // 1. Clean posts
+      setCleanMessage("Scanning posts collection for automated articles...");
+      const postsSnapshot = await getDocs(
+        collection(firestore, firestoreCollections.posts)
+      );
+      
+      const automatedPosts = postsSnapshot.docs.filter(
+        (docSnap) => docSnap.data().isManual !== true
+      );
+
+      if (automatedPosts.length > 0) {
+        setCleanMessage(`Found ${automatedPosts.length} automated posts. Deleting...`);
+        for (const docSnap of automatedPosts) {
+          await deleteDoc(doc(firestore, firestoreCollections.posts, docSnap.id));
+          postsDeleted++;
+          if (postsDeleted % 10 === 0 || postsDeleted === automatedPosts.length) {
+            setCleanMessage(`Deleting posts: ${postsDeleted}/${automatedPosts.length}...`);
+          }
+        }
+      }
+
+      // 2. Clean jobs
+      setCleanMessage("Scanning jobs collection for automated job alerts...");
+      const jobsSnapshot = await getDocs(
+        collection(firestore, firestoreCollections.jobs)
+      );
+      
+      const automatedJobs = jobsSnapshot.docs.filter(
+        (docSnap) => docSnap.data().isManual !== true
+      );
+
+      if (automatedJobs.length > 0) {
+        setCleanMessage(`Found ${automatedJobs.length} automated jobs. Deleting...`);
+        for (const docSnap of automatedJobs) {
+          await deleteDoc(doc(firestore, firestoreCollections.jobs, docSnap.id));
+          jobsDeleted++;
+          if (jobsDeleted % 10 === 0 || jobsDeleted === automatedJobs.length) {
+            setCleanMessage(`Deleting jobs: ${jobsDeleted}/${automatedJobs.length}...`);
+          }
+        }
+      }
+
+      setCleanMessage(
+        `🎉 Cleanup complete! Successfully deleted ${postsDeleted} automated posts and ${jobsDeleted} automated jobs from Firestore.`
+      );
+      void loadStats();
+      void loadItems(kind);
+    } catch (error: any) {
+      console.error("Cleanup failed:", error);
+      setCleanMessage(`❌ Error during cleanup: ${error.message || error}`);
+    } finally {
+      setCleaningDb(false);
     }
   }
 
@@ -1685,6 +1757,36 @@ export function AdminDashboard() {
       </div>
       ) : (
         <div className="mt-8 grid gap-6">
+          {/* Database Maintenance and Cleanup Panel */}
+          <div className="kq-card p-6 border border-amber-200 bg-amber-50/45 rounded-xl">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div>
+                <h3 className="font-serif text-xl font-bold text-amber-900 flex items-center gap-2">
+                  <svg className="w-6 h-6 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  Clean Database & Remove Automated Content
+                </h3>
+                <p className="text-xs text-amber-800 mt-1 leading-relaxed">
+                  Permanently delete all synced RSS articles and automated job alerts from your Firestore database to keep your platform 100% manually curated.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleCleanAutomatedContent}
+                disabled={cleaningDb}
+                className="rounded-md bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-5 py-2.5 shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed select-none cursor-pointer"
+              >
+                {cleaningDb ? "Cleaning Database..." : "Clean Database Now"}
+              </button>
+            </div>
+            {cleanMessage && (
+              <div className="mt-4 p-3 bg-white border border-amber-200 rounded-md text-xs font-mono text-amber-900 whitespace-pre-wrap leading-relaxed shadow-inner">
+                {cleanMessage}
+              </div>
+            )}
+          </div>
+
           {/* Stats Cards Grid */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="kq-card p-5 flex flex-col justify-between hover:shadow-sm transition-all border border-[var(--border)]">
