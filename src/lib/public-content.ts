@@ -206,29 +206,41 @@ async function querySingleBySlug(collectionId: string, slug: string, locale: Loc
             where: {
               compositeFilter: {
                 op: "AND",
-                filters: [
-                  {
-                    fieldFilter: {
-                      field: { fieldPath: "status" },
-                      op: "EQUAL",
-                      value: { stringValue: "published" },
+                filters: (() => {
+                  const f: any[] = [
+                    {
+                      fieldFilter: {
+                        field: { fieldPath: "status" },
+                        op: "EQUAL",
+                        value: { stringValue: "published" },
+                      },
                     },
-                  },
-                  {
-                    fieldFilter: {
-                      field: { fieldPath: "slug" },
-                      op: "EQUAL",
-                      value: { stringValue: slug },
+                    {
+                      fieldFilter: {
+                        field: { fieldPath: "slug" },
+                        op: "EQUAL",
+                        value: { stringValue: slug },
+                      },
                     },
-                  },
-                  {
-                    fieldFilter: {
-                      field: { fieldPath: "locale" },
-                      op: "EQUAL",
-                      value: { stringValue: locale },
+                    {
+                      fieldFilter: {
+                        field: { fieldPath: "locale" },
+                        op: "EQUAL",
+                        value: { stringValue: locale },
+                      },
                     },
-                  },
-                ],
+                  ];
+                  if (collectionId === "posts" || collectionId === "jobs") {
+                    f.push({
+                      fieldFilter: {
+                        field: { fieldPath: "isManual" },
+                        op: "EQUAL",
+                        value: { booleanValue: true },
+                      },
+                    });
+                  }
+                  return f;
+                })(),
               },
             },
             limit: 1,
@@ -312,22 +324,34 @@ async function queryPublishedByLocale(collectionId: string, locale: Locale, limi
             where: {
               compositeFilter: {
                 op: "AND",
-                filters: [
-                  {
-                    fieldFilter: {
-                      field: { fieldPath: "status" },
-                      op: "EQUAL",
-                      value: { stringValue: "published" },
+                filters: (() => {
+                  const f: any[] = [
+                    {
+                      fieldFilter: {
+                        field: { fieldPath: "status" },
+                        op: "EQUAL",
+                        value: { stringValue: "published" },
+                      },
                     },
-                  },
-                  {
-                    fieldFilter: {
-                      field: { fieldPath: "locale" },
-                      op: "EQUAL",
-                      value: { stringValue: locale },
+                    {
+                      fieldFilter: {
+                        field: { fieldPath: "locale" },
+                        op: "EQUAL",
+                        value: { stringValue: locale },
+                      },
                     },
-                  },
-                ],
+                  ];
+                  if (collectionId === "posts" || collectionId === "jobs") {
+                    f.push({
+                      fieldFilter: {
+                        field: { fieldPath: "isManual" },
+                        op: "EQUAL",
+                        value: { booleanValue: true },
+                      },
+                    });
+                  }
+                  return f;
+                })(),
               },
             },
             limit: limitCount,
@@ -374,33 +398,45 @@ async function queryPublishedByLocaleAndCategory(
             where: {
               compositeFilter: {
                 op: "AND",
-                filters: [
-                  {
-                    fieldFilter: {
-                      field: { fieldPath: "status" },
-                      op: "EQUAL",
-                      value: { stringValue: "published" },
+                filters: (() => {
+                  const f: any[] = [
+                    {
+                      fieldFilter: {
+                        field: { fieldPath: "status" },
+                        op: "EQUAL",
+                        value: { stringValue: "published" },
+                      },
                     },
-                  },
-                  {
-                    fieldFilter: {
-                      field: { fieldPath: "locale" },
-                      op: "EQUAL",
-                      value: { stringValue: locale },
+                    {
+                      fieldFilter: {
+                        field: { fieldPath: "locale" },
+                        op: "EQUAL",
+                        value: { stringValue: locale },
+                      },
                     },
-                  },
-                  {
-                    fieldFilter: {
-                      field: { fieldPath: "category" },
-                      op: "IN",
-                      value: {
-                        arrayValue: {
-                          values: categories.map((cat) => ({ stringValue: cat })),
+                    {
+                      fieldFilter: {
+                        field: { fieldPath: "category" },
+                        op: "IN",
+                        value: {
+                          arrayValue: {
+                            values: categories.map((cat) => ({ stringValue: cat })),
+                          },
                         },
                       },
                     },
-                  },
-                ],
+                  ];
+                  if (collectionId === "posts" || collectionId === "jobs") {
+                    f.push({
+                      fieldFilter: {
+                        field: { fieldPath: "isManual" },
+                        op: "EQUAL",
+                        value: { booleanValue: true },
+                      },
+                    });
+                  }
+                  return f;
+                })(),
               },
             },
             limit: limitCount,
