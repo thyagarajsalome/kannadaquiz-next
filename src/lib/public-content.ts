@@ -253,7 +253,7 @@ async function querySingleBySlug(collectionId: string, slug: string, locale: Loc
             limit: 1,
           },
         }),
-        cache: "no-store",
+        next: { revalidate: revalidateSeconds },
       },
     );
 
