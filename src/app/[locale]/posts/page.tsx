@@ -1,126 +1,133 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { siteText } from "@/data/content";
+import { notFound } from "next/navigation";
 import { isLocale, type Locale } from "@/lib/locales";
-import { getPublicPosts } from "@/lib/public-content";
+import { getPublicPostBySlug } from "@/lib/public-content";
 
+// Force dynamic rendering to prevent the static-to-dynamic runtime 500 error
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale: rawLocale } = await params;
+type PageProps = {
+  params: Promise<{ locale: string; slug: string }> | { locale: string; slug: string };
+};
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const resolvedParams = await Promise.resolve(params);
+  const rawLocale = resolvedParams?.locale;
+  const slug = resolvedParams?.slug;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
 
+  if (!slug) {
+    return {
+      title: "KannadaQuiz",
+    };
+  }
+
+  const post = await getPublicPostBySlug(slug, locale);
+
+  if (!post) {
+    return {
+      title: locale === "kn" ? "ಲೇಖನ ಕಂಡುಬಂದಿಲ್ಲ | KannadaQuiz" : "Post Not Found | KannadaQuiz",
+    };
+  }
+
+  const title = (post as { title?: string }).title || "KannadaQuiz";
+  const excerpt = (post as { excerpt?: string }).excerpt || title;
+  const image = (post as { featuredImageUrl?: string }).featuredImageUrl;
+
   return {
-    title:
-      locale === "kn"
-        ? "ಖಾತೆ ಲೇಖನಗಳು ಮತ್ತು ದಿನನಿತ್ಯದ ಸುದ್ದಿಗಳು | KannadaQuiz"
-        : "Study Articles & Daily News | KannadaQuiz",
-    description:
-      locale === "kn"
-        ? "ಕರ್ನಾಟಕ ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳಿಗೆ ಉಪಯುಕ್ತವಾದ ಇತ್ತೀಚಿನ ಸುದ್ದಿಗಳು, ವಿವರವಾದ ವಿಶ್ಲೇಷಣೆ ಮತ್ತು ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳ ಲೇಖನಗಳು."
-        : "Latest study articles, news analysis, and current affairs updates for Karnataka competitive exams.",
-    keywords:
-      locale === "kn"
-        ? [
-            "ಕನ್ನಡ ಲೇಖನಗಳು",
-            "ಕೆಪಿಎಸ್‌ಸಿ ಅಧ್ಯಯನ ಸಾಮಗ್ರಿ",
-            "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು",
-            "ಎಫ್‌ಡಿಎ ಎಸ್‌ಡಿಎ ಲೇಖನ",
-          ]
-        : [
-            "Kannada Articles",
-            "KPSC Study Materials",
-            "Current Affairs Articles",
-            "Exams Preparation",
-          ],
+    title: `${title} | KannadaQuiz`,
+    description: excerpt,
+    openGraph: {
+      title: title,
+      description: excerpt,
+      images: image ? [{ url: image }] : [],
+    },
   };
 }
 
-const categoryTranslations: Record<string, Record<string, string>> = {
-  karnataka: { kn: "ಕರ್ನಾಟಕ ಸುದ್ದಿ", en: "Karnataka News" },
-  national: { kn: "ರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ", en: "National News" },
-  international: { kn: "ಅಂತರರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ", en: "International News" },
-  jobs: { kn: "ಉದ್ಯೋಗ ಮಾಹಿತಿ", en: "Jobs & Careers" },
-  kpsc: { kn: "ಪರೀಕ್ಷಾ ವಿವರಗಳು", en: "Exams & Education" },
-  current_affairs: { kn: "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", en: "Current Affairs" },
-  general: { kn: "ಸಾಮಾನ್ಯ", en: "General" },
-};
-
-function getLocalizedCategory(category: string, locale: string): string {
-  const norm = category.toLowerCase();
-  if (norm.includes("karnataka"))
-    return categoryTranslations.karnataka[locale] || category;
-  if (norm.includes("international"))
-    return categoryTranslations.international[locale] || category;
-  if (norm.includes("national"))
-    return categoryTranslations.national[locale] || category;
-  if (
-    norm.includes("job") ||
-    norm.includes("kpsc") ||
-    norm.includes("exam") ||
-    norm.includes("career")
-  ) {
-    return categoryTranslations.jobs[locale] || category;
-  }
-  if (norm.includes("affair") || norm.includes("current")) {
-    return categoryTranslations.current_affairs[locale] || category;
-  }
-  return categoryTranslations.general[locale] || category;
-}
-
-export default async function PostsPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale: rawLocale } = await params;
+export default async function PostDetailPage({ params }: PageProps) {
+  const resolvedParams = await Promise.resolve(params);
+  const rawLocale = resolvedParams?.locale;
+  const slug = resolvedParams?.slug;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
-  const posts = await getPublicPosts(locale);
+
+  if (!slug) {
+    notFound();
+  }
+
+  const post = await getPublicPostBySlug(slug, locale);
+
+  if (!post) {
+    notFound();
+  }
+
+  // Type assertions to safely handle optional or flexible post fields
+  const postData = post as {
+    title?: string;
+    category?: string;
+    date?: string;
+    sourceName?: string;
+    featuredImageUrl?: string;
+    content?: string;
+    excerpt?: string;
+  };
 
   return (
-    <section className="kq-container py-10">
-      <h1 className="font-serif text-4xl font-bold text-[var(--primary)]">
-        {siteText[locale].posts}
-      </h1>
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
-        {posts.map((post) => (
-          <Link
-            key={post.slug}
-            href={`/${locale}/posts/${post.slug}`}
-            prefetch={false}
-            className="kq-card overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow rounded-xl border border-[var(--border)]"
+    <article className="kq-container py-10">
+      <div className="max-w-3xl mx-auto">
+        {/* Back Link */}
+        <Link
+          href={`/${locale}/posts`}
+          prefetch={false}
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--secondary)] hover:underline mb-6"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <div>
-              {post.featuredImageUrl && (
-                <div className="block overflow-hidden aspect-video border-b border-[var(--border)]/40">
-                  <img
-                    src={post.featuredImageUrl}
-                    alt={post.title}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
-              )}
-              <div className="p-5">
-                <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
-                  {getLocalizedCategory(post.category, locale)} • {post.date}{" "}
-                  {post.sourceName ? `• ${post.sourceName}` : ""}
-                </p>
-                <h2 className="mt-3 font-serif text-2xl font-bold text-[var(--primary)]">
-                  {post.title}
-                </h2>
-                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                  {post.excerpt}
-                </p>
-              </div>
-            </div>
-          </Link>
-        ))}
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+          </svg>
+          <span>{locale === "kn" ? "ಎಲ್ಲಾ ಲೇಖನಗಳು" : "Back to Articles"}</span>
+        </Link>
+
+        {/* Category & Date */}
+        <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
+          {postData.category || "General"} • {postData.date || ""} {postData.sourceName ? `• ${postData.sourceName}` : ""}
+        </p>
+
+        {/* Title */}
+        <h1 className="mt-3 font-serif text-3xl md:text-4xl font-bold text-[var(--primary)] leading-tight">
+          {postData.title}
+        </h1>
+
+        {/* Featured Image */}
+        {postData.featuredImageUrl && (
+          <div className="mt-6 overflow-hidden rounded-xl border border-[var(--border)] aspect-video">
+            <img
+              src={postData.featuredImageUrl}
+              alt={postData.title || "Post image"}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
+
+        {/* Article Body */}
+        {postData.content ? (
+          <div
+            className="mt-8 prose prose-slate max-w-none text-[var(--foreground)] leading-relaxed space-y-4"
+            dangerouslySetInnerHTML={{ __html: postData.content }}
+          />
+        ) : (
+          <p className="mt-8 text-base text-[var(--muted)] leading-relaxed">
+            {postData.excerpt}
+          </p>
+        )}
       </div>
-    </section>
+    </article>
   );
 }
