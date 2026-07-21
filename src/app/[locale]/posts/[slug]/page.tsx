@@ -239,28 +239,33 @@ export default async function PostPage({
               {paragraph}
             </p>
           ))}
-        {post.sourceUrl ? (
-          <div className="mt-6 border-t border-[var(--border)] pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-[var(--muted)]">
-            <span>
-              {post.category === "Home Design"
-                ? (locale === "kn" ? "ಹೆಚ್ಚಿನ ವಿವರಗಳು: " : "More Info: ")
-                : (locale === "kn" ? "ಮೂಲ ಮಾಹಿತಿ: " : "Source: ")}
-              <span className="font-semibold text-[var(--foreground)]">
-                {getSourceName(post)}
+        {post.sourceUrl ? (() => {
+          const formattedUrl = !/^https?:\/\//i.test(post.sourceUrl)
+            ? `https://${post.sourceUrl}`
+            : post.sourceUrl;
+          return (
+            <div className="mt-6 border-t border-[var(--border)] pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-[var(--muted)]">
+              <span>
+                {post.category === "Home Design"
+                  ? (locale === "kn" ? "ಹೆಚ್ಚಿನ ವಿವರಗಳು: " : "More Info: ")
+                  : (locale === "kn" ? "ಮೂಲ ಮಾಹಿತಿ: " : "Source: ")}
+                <span className="font-semibold text-[var(--foreground)]">
+                  {getSourceName(post)}
+                </span>
               </span>
-            </span>
-            <a
-              href={post.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-semibold text-[var(--secondary)] hover:underline"
-            >
-              {post.category === "Home Design"
-                ? (locale === "kn" ? "ವೆಬ್‌ಸೈಟ್‌ಗೆ ಭೇಟಿ ನೀಡಿ ➔" : "Visit Website ➔")
-                : (locale === "kn" ? "ಮೂಲ ಲೇಖನ ಓದಿ ➔" : "Read Original Article ➔")}
-            </a>
-          </div>
-        ) : null}
+              <a
+                href={formattedUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 font-semibold text-[var(--secondary)] hover:underline"
+              >
+                {post.category === "Home Design"
+                  ? (locale === "kn" ? "ವೆಬ್‌ಸೈಟ್‌ಗೆ ಭೇಟಿ ನೀಡಿ ➔" : "Visit Website ➔")
+                  : (locale === "kn" ? "ಮೂಲ ಲೇಖನ ಓದಿ ➔" : "Read Original Article ➔")}
+              </a>
+            </div>
+          );
+        })() : null}
       </div>
 
       {post.quiz && post.quiz.length > 0 ? (
