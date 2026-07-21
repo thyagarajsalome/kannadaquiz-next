@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { QuizPlayer } from "@/components/QuizPlayer";
 import { quizzes } from "@/data/content";
 import { isLocale, locales, type Locale } from "@/lib/locales";
@@ -18,7 +18,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: rawLocale, slug } = await params;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
-  const quiz = await getPublicQuizBySlug(locale, slug);
+  let quiz = await getPublicQuizBySlug(locale, slug);
+
+  if (!quiz) {
+    const alternativeLocale: Locale = locale === "kn" ? "en" : "kn";
+    quiz = await getPublicQuizBySlug(alternativeLocale, slug);
+  }
 
   if (!quiz) {
     return {};
@@ -52,6 +57,12 @@ export default async function QuizDetailPage({
   const quiz = await getPublicQuizBySlug(locale, slug);
 
   if (!quiz) {
+    // Try fallback locale and redirect if found
+    const alternativeLocale: Locale = locale === "kn" ? "en" : "kn";
+    const fallbackQuiz = await getPublicQuizBySlug(alternativeLocale, slug);
+    if (fallbackQuiz) {
+      redirect(`/${alternativeLocale}/quizzes/${slug}`);
+    }
     notFound();
   }
 
