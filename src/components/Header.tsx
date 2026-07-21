@@ -7,12 +7,13 @@ export function Header({ locale }: { locale: Locale }) {
   return (
     <header className="bg-white md:border-b md:border-[var(--border)]">
       <div className="kq-container flex min-h-16 items-center justify-between gap-6">
-        <Link href={`/${locale}`} className="flex items-center">
+        <Link href={`/${locale}`} prefetch={false} className="flex items-center">
           <Logo />
         </Link>
         <nav className="hidden items-center gap-3 lg:gap-4 xl:gap-6 text-xs lg:text-sm font-semibold text-[var(--muted)] md:flex">
           <Link
             href={`/${locale}`}
+            prefetch={false}
             className="hover:text-[var(--secondary)] flex items-center gap-1 text-[var(--muted)] transition-colors whitespace-nowrap"
             title={locale === "kn" ? "ಮುಖಪುಟ" : "Home"}
           >
@@ -22,23 +23,24 @@ export function Header({ locale }: { locale: Locale }) {
           </Link>
           <Link
             href={`/${locale}/quizzes`}
+            prefetch={false}
             className="rounded border border-[var(--secondary)] bg-[var(--secondary)] px-3 py-1.5 text-[11px] font-extrabold uppercase text-white hover:bg-[var(--secondary)]/90 hover:border-[var(--secondary)]/90 transition-all shadow-sm select-none whitespace-nowrap"
           >
             {locale === "kn" ? "ಅಭ್ಯಾಸ ಕ್ವಿಜ್‌ಗಳು" : "Practice Quizzes"}
           </Link>
-          <Link href={`/${locale}/category/karnataka`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
+          <Link href={`/${locale}/category/karnataka`} prefetch={false} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
             {locale === "kn" ? "ಕರ್ನಾಟಕ" : "Karnataka"}
           </Link>
-          <Link href={`/${locale}/syllabus`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
+          <Link href={`/${locale}/syllabus`} prefetch={false} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
             {locale === "kn" ? "ಪಠ್ಯಕ್ರಮ" : "Syllabus"}
           </Link>
-          <Link href={`/${locale}/category/technology`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
+          <Link href={`/${locale}/category/technology`} prefetch={false} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
             {locale === "kn" ? "ತಂತ್ರಜ್ಞಾನ" : "Tech & AI"}
           </Link>
-          <Link href={`/${locale}/category/home-design`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
+          <Link href={`/${locale}/category/home-design`} prefetch={false} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
             {locale === "kn" ? "ಮನೆ ವಿನ್ಯಾಸ" : "Home Design"}
           </Link>
-          <Link href={`/${locale}/category/movies`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
+          <Link href={`/${locale}/category/movies`} prefetch={false} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
             {locale === "kn" ? "ಚಲನಚಿತ್ರಗಳು" : "Movies"}
           </Link>
           {/* Dropdown Menu for More Categories */}
@@ -50,19 +52,19 @@ export function Header({ locale }: { locale: Locale }) {
               </svg>
             </button>
             <div className="absolute left-0 mt-0 hidden group-hover:block bg-white border border-[var(--border)] rounded-lg shadow-lg py-2 min-w-[200px] z-50">
-              <Link href={`/${locale}/category/education`} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+              <Link href={`/${locale}/category/education`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ಶೈಕ್ಷಣಿಕ ಮಾರ್ಗದರ್ಶಿ" : "Education Guide"}
               </Link>
-              <Link href={`/${locale}/category/agriculture`} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+              <Link href={`/${locale}/category/agriculture`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ಕೃಷಿ ಮಾಹಿತಿ" : "Agriculture Info"}
               </Link>
-              <Link href={`/${locale}/category/schemes`} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+              <Link href={`/${locale}/category/schemes`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು" : "Government Schemes"}
               </Link>
-              <Link href={`/${locale}/category/tourism`} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+              <Link href={`/${locale}/category/tourism`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ಇತಿಹಾಸ ಮತ್ತು ಪ್ರವಾಸೋದ್ಯಮ" : "Heritage & Tourism"}
               </Link>
-              <Link href={`/${locale}/category/sports`} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+              <Link href={`/${locale}/category/sports`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ಕ್ರೀಡಾ ಸುದ್ದಿ" : "Sports News"}
               </Link>
             </div>
@@ -76,43 +78,44 @@ export function Header({ locale }: { locale: Locale }) {
       {/* Mobile Category Scrollbar */}
       <div className="border-b border-[var(--border)] bg-[var(--surface-soft)] md:hidden py-2.5 overflow-x-auto whitespace-nowrap">
         <div className="kq-container flex gap-5 text-xs font-bold uppercase tracking-wider text-[var(--muted)] items-center">
-          <Link href={`/${locale}`} className="hover:text-[var(--secondary)]">
+          <Link href={`/${locale}`} prefetch={false} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಮುಖಪುಟ" : "Home"}
           </Link>
           <Link
             href={`/${locale}/quizzes`}
+            prefetch={false}
             className="bg-[var(--secondary)] text-white px-2 py-0.5 rounded text-[10px] font-extrabold select-none"
           >
             {locale === "kn" ? "ಕ್ವಿಜ್‌ಗಳು" : "Quizzes"}
           </Link>
-          <Link href={`/${locale}/syllabus`} className="hover:text-[var(--secondary)]">
+          <Link href={`/${locale}/syllabus`} prefetch={false} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಪಠ್ಯಕ್ರಮ" : "Syllabus"}
           </Link>
-          <Link href={`/${locale}/category/karnataka`} className="hover:text-[var(--secondary)]">
+          <Link href={`/${locale}/category/karnataka`} prefetch={false} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಕರ್ನಾಟಕ" : "Karnataka"}
           </Link>
-          <Link href={`/${locale}/category/technology`} className="hover:text-[var(--secondary)] shrink-0">
+          <Link href={`/${locale}/category/technology`} prefetch={false} className="hover:text-[var(--secondary)] shrink-0">
             {locale === "kn" ? "ತಂತ್ರಜ್ಞಾನ" : "Technology"}
           </Link>
-          <Link href={`/${locale}/category/home-design`} className="hover:text-[var(--secondary)]">
+          <Link href={`/${locale}/category/home-design`} prefetch={false} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಮನೆ ವಿನ್ಯಾಸ" : "Home Design"}
           </Link>
-          <Link href={`/${locale}/category/movies`} className="hover:text-[var(--secondary)]">
+          <Link href={`/${locale}/category/movies`} prefetch={false} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಚಿತ್ರಗಳು" : "Movies"}
           </Link>
-          <Link href={`/${locale}/category/education`} className="hover:text-[var(--secondary)]">
+          <Link href={`/${locale}/category/education`} prefetch={false} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಶೈಕ್ಷಣಿಕ" : "Education"}
           </Link>
-          <Link href={`/${locale}/category/agriculture`} className="hover:text-[var(--secondary)]">
+          <Link href={`/${locale}/category/agriculture`} prefetch={false} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಕೃಷಿ" : "Agriculture"}
           </Link>
-          <Link href={`/${locale}/category/schemes`} className="hover:text-[var(--secondary)]">
+          <Link href={`/${locale}/category/schemes`} prefetch={false} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಯೋಜನೆಗಳು" : "Schemes"}
           </Link>
-          <Link href={`/${locale}/category/tourism`} className="hover:text-[var(--secondary)]">
+          <Link href={`/${locale}/category/tourism`} prefetch={false} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಪ್ರವಾಸೋದ್ಯಮ" : "Tourism"}
           </Link>
-          <Link href={`/${locale}/category/sports`} className="hover:text-[var(--secondary)]">
+          <Link href={`/${locale}/category/sports`} prefetch={false} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಕ್ರೀಡೆ" : "Sports"}
           </Link>
         </div>
