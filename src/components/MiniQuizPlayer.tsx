@@ -35,7 +35,7 @@ export function MiniQuizPlayer({ questions, locale }: MiniQuizPlayerProps) {
       </div>
 
       <div className="space-y-6">
-        {questions.map((q, qIdx) => {
+        {questions.filter(Boolean).map((q, qIdx) => {
           const selectedOption = answers[qIdx];
           const isAnswered = selectedOption !== undefined;
 
@@ -47,7 +47,7 @@ export function MiniQuizPlayer({ questions, locale }: MiniQuizPlayerProps) {
               </h4>
 
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                {q.options.map((opt, oIdx) => {
+                {(q.options || []).map((opt, oIdx) => {
                   const isSelected = selectedOption === oIdx;
                   const isCorrect = oIdx === q.correctOptionIndex;
                   const isWrong = isSelected && !isCorrect;
