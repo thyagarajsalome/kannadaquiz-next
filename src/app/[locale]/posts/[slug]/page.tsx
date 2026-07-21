@@ -48,7 +48,7 @@ export async function generateMetadata({
 
   return {
     title: `${post.title} | KannadaQuiz`,
-    description: post.excerpt,
+    description: post.excerpt || "",
     keywords: [...baseKeywords, ...titleWords],
     robots: {
       index: true,
@@ -69,7 +69,7 @@ export async function generateMetadata({
     },
     openGraph: {
       title: `${post.title} | KannadaQuiz`,
-      description: post.excerpt,
+      description: post.excerpt || "",
       url: `https://kannadaquiz.in/${locale}/posts/${post.slug}`,
       images: [
         {
@@ -83,7 +83,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: `${post.title} | KannadaQuiz`,
-      description: post.excerpt,
+      description: post.excerpt || "",
       images: [imageUrl],
     },
   };
@@ -104,7 +104,8 @@ const categoryTranslations: Record<string, Record<string, string>> = {
   general: { kn: "ಸಾಮಾನ್ಯ ಸುದ್ದಿ", en: "General News" }
 };
 
-function getCategorySlug(category: string): string {
+function getCategorySlug(category?: string): string {
+  if (!category) return "general";
   const norm = category.toLowerCase();
   if (norm.includes("karnataka")) return "karnataka";
   if (norm.includes("international")) return "international";
@@ -117,10 +118,11 @@ function getCategorySlug(category: string): string {
   if (norm.includes("scheme") || norm.includes("yojane")) return "schemes";
   if (norm.includes("tourism") || norm.includes("heritage") || norm.includes("itihasa") || norm.includes("culture")) return "tourism";
   if (norm.includes("sport") || norm.includes("game") || norm.includes("kriide")) return "sports";
-  return "national";
+  return "general";
 }
 
-function getLocalizedCategory(category: string, locale: string): string {
+function getLocalizedCategory(category: string | undefined, locale: string): string {
+  if (!category) return categoryTranslations.general[locale];
   const slug = getCategorySlug(category);
   return categoryTranslations[slug]?.[locale] || category;
 }
@@ -165,7 +167,7 @@ export default async function PostPage({
     "@context": "https://schema.org",
     "@type": "NewsArticle",
     "headline": post.title,
-    "description": post.excerpt,
+    "description": post.excerpt || "",
     "image": [absoluteImageUrl],
     "datePublished": post.date,
     "dateModified": post.date,
@@ -230,7 +232,7 @@ export default async function PostPage({
       )}
       
       <div className="mt-8 kq-card p-5 text-base leading-8 text-[var(--foreground)]">
-        {post.body
+        {(post.body || "")
           .split("\n")
           .map((p) => p.trim())
           .filter(Boolean)

@@ -29,17 +29,17 @@ export function Header({ locale }: { locale: Locale }) {
           <Link href={`/${locale}/category/karnataka`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
             {locale === "kn" ? "ಕರ್ನಾಟಕ" : "Karnataka"}
           </Link>
-          <Link href={`/${locale}/category/national`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
-            {locale === "kn" ? "ರಾಷ್ಟ್ರೀಯ" : "National"}
-          </Link>
-          <Link href={`/${locale}/category/international`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
-            {locale === "kn" ? "ಅಂತರರಾಷ್ಟ್ರೀಯ" : "International"}
-          </Link>
-          <Link href={`/${locale}/category/jobs`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
-            {locale === "kn" ? "ಉದ್ಯೋಗಗಳು" : "Jobs"}
-          </Link>
           <Link href={`/${locale}/syllabus`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
             {locale === "kn" ? "ಪಠ್ಯಕ್ರಮ" : "Syllabus"}
+          </Link>
+          <Link href={`/${locale}/category/technology`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
+            {locale === "kn" ? "ತಂತ್ರಜ್ಞಾನ" : "Tech & AI"}
+          </Link>
+          <Link href={`/${locale}/category/home-design`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
+            {locale === "kn" ? "ಮನೆ ವಿನ್ಯಾಸ" : "Home Design"}
+          </Link>
+          <Link href={`/${locale}/category/movies`} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
+            {locale === "kn" ? "ಚಲನಚಿತ್ರಗಳು" : "Movies"}
           </Link>
           {/* Dropdown Menu for More Categories */}
           <div className="relative group">
@@ -50,11 +50,20 @@ export function Header({ locale }: { locale: Locale }) {
               </svg>
             </button>
             <div className="absolute left-0 mt-0 hidden group-hover:block bg-white border border-[var(--border)] rounded-lg shadow-lg py-2 min-w-[200px] z-50">
-              <Link href={`/${locale}/category/technology`} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
-                {locale === "kn" ? "ತಂತ್ರಜ್ಞಾನ" : "Technology & AI"}
-              </Link>
               <Link href={`/${locale}/category/education`} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
-                {locale === "kn" ? "ಶೈಕ್ಷಣಿಕ" : "Education Guide"}
+                {locale === "kn" ? "ಶೈಕ್ಷಣಿಕ ಮಾರ್ಗದರ್ಶಿ" : "Education Guide"}
+              </Link>
+              <Link href={`/${locale}/category/agriculture`} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+                {locale === "kn" ? "ಕೃಷಿ ಮಾಹಿತಿ" : "Agriculture Info"}
+              </Link>
+              <Link href={`/${locale}/category/schemes`} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+                {locale === "kn" ? "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು" : "Government Schemes"}
+              </Link>
+              <Link href={`/${locale}/category/tourism`} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+                {locale === "kn" ? "ಇತಿಹಾಸ ಮತ್ತು ಪ್ರವಾಸೋದ್ಯಮ" : "Heritage & Tourism"}
+              </Link>
+              <Link href={`/${locale}/category/sports`} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+                {locale === "kn" ? "ಕ್ರೀಡಾ ಸುದ್ದಿ" : "Sports News"}
               </Link>
             </div>
           </div>
@@ -82,20 +91,29 @@ export function Header({ locale }: { locale: Locale }) {
           <Link href={`/${locale}/category/karnataka`} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಕರ್ನಾಟಕ" : "Karnataka"}
           </Link>
-          <Link href={`/${locale}/category/national`} className="hover:text-[var(--secondary)]">
-            {locale === "kn" ? "ರಾಷ್ಟ್ರೀಯ" : "National"}
-          </Link>
-          <Link href={`/${locale}/category/international`} className="hover:text-[var(--secondary)]">
-            {locale === "kn" ? "ಅಂತರರಾಷ್ಟ್ರೀಯ" : "International"}
-          </Link>
-          <Link href={`/${locale}/category/jobs`} className="hover:text-[var(--secondary)]">
-            {locale === "kn" ? "ಉದ್ಯೋಗಗಳು" : "Jobs"}
-          </Link>
           <Link href={`/${locale}/category/technology`} className="hover:text-[var(--secondary)] shrink-0">
             {locale === "kn" ? "ತಂತ್ರಜ್ಞಾನ" : "Technology"}
           </Link>
+          <Link href={`/${locale}/category/home-design`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಮನೆ ವಿನ್ಯಾಸ" : "Home Design"}
+          </Link>
+          <Link href={`/${locale}/category/movies`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಚಿತ್ರಗಳು" : "Movies"}
+          </Link>
           <Link href={`/${locale}/category/education`} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಶೈಕ್ಷಣಿಕ" : "Education"}
+          </Link>
+          <Link href={`/${locale}/category/agriculture`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಕೃಷಿ" : "Agriculture"}
+          </Link>
+          <Link href={`/${locale}/category/schemes`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಯೋಜನೆಗಳು" : "Schemes"}
+          </Link>
+          <Link href={`/${locale}/category/tourism`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಪ್ರವಾಸೋದ್ಯಮ" : "Tourism"}
+          </Link>
+          <Link href={`/${locale}/category/sports`} className="hover:text-[var(--secondary)]">
+            {locale === "kn" ? "ಕ್ರೀಡೆ" : "Sports"}
           </Link>
         </div>
       </div>

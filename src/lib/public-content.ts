@@ -1,8 +1,15 @@
 import { currentAffairs, jobs, posts, quizzes } from "@/data/content";
 import type { Locale } from "@/lib/locales";
 
-const firestoreProjectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-const firestoreApiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+function getEnv(val: string | undefined, fallback: string): string {
+  if (!val || val === "undefined" || val === "null" || val.trim() === "") {
+    return fallback;
+  }
+  return val;
+}
+
+const firestoreProjectId = getEnv(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID, "kannadaquiz-fc21b");
+const firestoreApiKey = getEnv(process.env.NEXT_PUBLIC_FIREBASE_API_KEY, "AIzaSyC07b-JG7h-lkTFi4m96fB_He-LeBmus7A");
 const revalidateSeconds = 300;
 
 type FirestoreValue = {
@@ -481,7 +488,9 @@ function toPublicPost(doc: FirestoreDocument): PublicPost | null {
     featuredImageUrl: typeof data.featuredImageUrl === "string" ? data.featuredImageUrl : undefined,
     sourceUrl: typeof data.sourceUrl === "string" ? data.sourceUrl : undefined,
     sourceName: typeof data.sourceName === "string" ? data.sourceName : undefined,
-    quiz: Array.isArray(data.quiz) ? (data.quiz as MiniQuizQuestion[]) : undefined,
+    quiz: Array.isArray(data.quiz)
+      ? (data.quiz as MiniQuizQuestion[]).filter((q) => q && typeof q === "object" && typeof q.question === "string")
+      : undefined,
     subCategory: typeof data.subCategory === "string" ? data.subCategory : "",
   };
 }
