@@ -51,6 +51,17 @@ function getLocalizedCategory(category: string | undefined, locale: string): str
   return categoryTranslations[slug]?.[locale] || category;
 }
 
+function getSourceName(post: { sourceUrl?: string; sourceName?: string }) {
+  if (post.sourceName) return post.sourceName;
+  if (!post.sourceUrl) return "";
+  try {
+    const url = new URL(post.sourceUrl);
+    return url.hostname.replace(/^(www\.|feeds\.|rss\.)/, "");
+  } catch {
+    return "External Link";
+  }
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
@@ -161,6 +172,34 @@ export default async function PostDetailPage({ params }: PageProps) {
                 {paragraph}
               </p>
             ))}
+
+          {post.sourceUrl ? (() => {
+            const formattedUrl = !/^https?:\/\//i.test(post.sourceUrl)
+              ? `https://${post.sourceUrl}`
+              : post.sourceUrl;
+            return (
+              <div className="mt-6 border-t border-[var(--border)] pt-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-[var(--muted)]">
+                <span>
+                  {post.category && getCategorySlug(post.category) === "home-design"
+                    ? (locale === "kn" ? "ಹೆಚ್ಚಿನ ವಿವರಗಳು ಮತ್ತು ಸೇವೆಗಳು: " : "Product Details & Services: ")
+                    : (locale === "kn" ? "ಮೂಲ ಮಾಹಿತಿ: " : "Source Details: ")}
+                  <span className="font-bold text-[var(--foreground)]">
+                    {getSourceName(post)}
+                  </span>
+                </span>
+                <a
+                  href={formattedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-bold text-[var(--secondary)] hover:underline"
+                >
+                  {post.category && getCategorySlug(post.category) === "home-design"
+                    ? (locale === "kn" ? "ವೆಬ್‌ಸೈಟ್‌ಗೆ ಭೇಟಿ ನೀಡಿ ➔" : "Visit Website ➔")
+                    : (locale === "kn" ? "ಮೂಲ ಲೇಖನ ಓದಿ ➔" : "Read Original Article ➔")}
+                </a>
+              </div>
+            );
+          })() : null}
         </div>
 
         {/* Mini Quiz Player (if attached) */}
