@@ -1,14 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { siteText } from "@/data/content";
+import { HeroSlider } from "@/components/HeroSlider";
 import { isLocale, locales, type Locale } from "@/lib/locales";
-import { getPublicCurrentAffairs, getPublicPosts, getPublicQuizzes, getPublicPostsByCategory, type PublicPost } from "@/lib/public-content";
+import { getPublicCurrentAffairs, getPublicPosts, getPublicQuizzes, getPublicPostsByCategory, getPublicPostBySlug, type PublicPost } from "@/lib/public-content";
 
 export const revalidate = 300;
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
+
+// DEVELOPER FEATURE: Pin/Feature custom articles of your choice onto the Homepage!
+// Simply copy and paste the Firestore article slugs into this array to highlight them.
+const FEATURED_POST_SLUGS: Record<Locale, string[]> = {
+  kn: [
+    "house-construction-cost-estimation-guide-kannada", // Selected article 1
+    "ind-vs-afg-versatile-kl-rahul-key-to-indias-2027-odi-world-cup-plans---the-times-of-india" // Selected article 2
+  ],
+  en: [
+    "how-trumps-white-house-ballroom-plan-has-doubled-in-size-and-cost-over-a-year", // Selected article 1
+    "ind-vs-afg-versatile-kl-rahul-key-to-indias-2027-odi-world-cup-plans---the-times-of-india" // Selected article 2
+  ]
+};
 
 const trendingTopics: Record<string, { name: string; url: string }[]> = {
   kn: [
@@ -125,6 +139,7 @@ const sectionTitles: Record<string, Record<Locale, string>> = {
   technology: { kn: "ಕಂಪ್ಯೂಟರ್ ಮತ್ತು ತಂತ್ರಜ್ಞಾನ (Technology & AI)", en: "Computer & Technology (AI)" },
   movies: { kn: "ಚಲನಚಿತ್ರ ಸುದ್ದಿ ಮತ್ತು ಸಿನಿಮಾ", en: "Movies & Cinema Updates" },
   "home-design": { kn: "ಮನೆ ವಿನ್ಯಾಸ ಮತ್ತು ಗೃಹಾಲಂಕಾರ", en: "Home Design & Interior Trends" },
+  international: { kn: "ಅಂತರರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ ಮುಖ್ಯಾಂಶಗಳು", en: "International News Highlights" },
 };
 
 const categoriesInfo = [
@@ -151,6 +166,14 @@ const categoriesInfo = [
     icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />`,
     color: "text-red-755 bg-red-50 hover:bg-red-100 hover:border-red-300",
     url: "category/karnataka"
+  },
+  {
+    key: "international",
+    kn: "ಅಂತರರಾಷ್ಟ್ರೀಯ",
+    en: "International",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />`,
+    color: "text-indigo-755 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-300",
+    url: "category/international"
   },
   {
     key: "technology",
@@ -286,12 +309,25 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     getPublicPostsByCategory(locale, "technology", 3),
   ]);
 
-  const heroPost = posts[0] || null;
-  const recentHeadlines = posts.slice(1, 5);
+  // Fetch the custom featured articles based on the developer-controlled configuration slugs
+  const featuredSlugs = FEATURED_POST_SLUGS[locale] || [];
+  const fetchedFeatured = await Promise.all(
+    featuredSlugs.map(slug => getPublicPostBySlug(locale, slug))
+  );
+  // Cleanly filter out any invalid/missing posts
+  const featuredPosts = fetchedFeatured.filter((p): p is PublicPost => Boolean(p)).slice(0, 2);
+
+  // Filter out the highlighted/featured articles from the standard recent feed to prevent duplicate visual entries on the page
+  const featuredSlugsSet = new Set(featuredPosts.map(p => p.slug));
+  const standardPosts = posts.filter(p => !featuredSlugsSet.has(p.slug));
+
+  const heroPost = standardPosts[0] || posts[0] || null;
+  const recentHeadlines = standardPosts.slice(1, 5);
 
   const getCategoryKey = (cat: string) => {
     const c = cat.toLowerCase();
     if (c.includes("karnataka")) return "karnataka";
+    if (c.includes("international")) return "international";
     if (c.includes("agriculture") || c.includes("krishi") || c.includes("farm")) return "agriculture";
     if (c.includes("college") || c.includes("guide") || c.includes("education")) return "education";
     if (c.includes("scheme") || c.includes("yojane")) return "schemes";
@@ -304,6 +340,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   };
 
   const karnatakaPosts = posts.filter(p => getCategoryKey(p.category) === "karnataka").slice(0, 3);
+  const internationalPosts = posts.filter(p => getCategoryKey(p.category) === "international").slice(0, 3);
   const agriculturePosts = posts.filter(p => getCategoryKey(p.category) === "agriculture").slice(0, 3);
   const educationPosts = posts.filter(p => getCategoryKey(p.category) === "education").slice(0, 3);
   const schemesPosts = posts.filter(p => getCategoryKey(p.category) === "schemes").slice(0, 3);
@@ -430,13 +467,91 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
+      {/* 1e. Pinned/Featured Articles Section (Developer Feature) */}
+      {featuredPosts.length > 0 && (
+        <section className="py-8 bg-gradient-to-b from-white to-[var(--surface-soft)] border-b border-[var(--border)]">
+          <div className="kq-container">
+            {/* Header */}
+            <div className="flex items-center gap-2 border-b-2 border-[var(--secondary)] pb-2 mb-6">
+              <svg className="w-6 h-6 text-[var(--secondary)] shrink-0 animate-pulse" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              <h3 className="font-serif text-2xl font-black text-[var(--primary)]">
+                {locale === "kn" ? "ವೇದಿಕೆಯ ಆಯ್ದ ಪ್ರಮುಖ ಲೇಖನಗಳು (Highlights)" : "Featured Highlights"}
+              </h3>
+            </div>
+
+            {/* Grid */}
+            <div className="grid gap-6 md:grid-cols-2">
+              {featuredPosts.map((post) => (
+                <div 
+                  key={post.slug}
+                  className="group relative overflow-hidden bg-white border border-[var(--border)] hover:border-[var(--secondary)] rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent pointer-events-none"></div>
+                  
+                  <div>
+                    {post.featuredImageUrl && (
+                      <Link href={`/${locale}/posts/${post.slug}`} className="block overflow-hidden aspect-[21/9] border-b border-[var(--border)]/45 relative">
+                        <img
+                          src={post.featuredImageUrl}
+                          alt={post.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <span className="absolute top-3 left-3 bg-amber-500 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full shadow-sm tracking-widest">
+                          {locale === "kn" ? "⭐ ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ" : "⭐ FEATURED"}
+                        </span>
+                      </Link>
+                    )}
+                    
+                    <div className="p-5 md:p-6 pb-0">
+                      <div className="flex items-center flex-wrap gap-2 text-xs font-extrabold uppercase tracking-wider text-[var(--secondary)]">
+                        <span>{getLocalizedCategory(post.category, locale)}</span>
+                        <span>•</span>
+                        <span>{getSourceName(post)}</span>
+                        <span>•</span>
+                        <time>{post.date}</time>
+                      </div>
+                      
+                      <Link href={`/${locale}/posts/${post.slug}`} className="block mt-2">
+                        <h4 className="font-serif text-xl font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors leading-snug line-clamp-2">
+                          {post.title}
+                        </h4>
+                      </Link>
+                      
+                      <p className="mt-3 text-sm leading-relaxed text-[var(--muted)] line-clamp-3">
+                        {post.excerpt || post.body}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-5 md:p-6 pt-4 border-t border-[var(--border)]/60 bg-[var(--surface-soft)]/20 mt-4">
+                    <Link 
+                      href={`/${locale}/posts/${post.slug}`} 
+                      className="inline-flex items-center gap-1.5 text-sm font-extrabold text-[var(--secondary)] hover:underline"
+                    >
+                      <span>{sectionTitles.readMore[locale]}</span>
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
  
       {/* 2. Main Headline Hero Section */}
       <section className="py-8 bg-[var(--surface)] border-b border-[var(--border)]">
         <div className="kq-container">
           <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
-            {/* Left Column: Big Hero Story */}
-            {heroPost ? (
+            {/* Left Column: Big Hero Story / Interactive Slider */}
+            {featuredPosts.length > 0 ? (
+              <HeroSlider
+                posts={featuredPosts}
+                locale={locale}
+                readMoreText={sectionTitles.readMore[locale]}
+              />
+            ) : heroPost ? (
               <div className="flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-[var(--border)] pb-8 lg:pb-0 lg:pr-8">
                 <div>
                   <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--secondary)]">
@@ -608,10 +723,27 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 ))}
               </div>
             </div>
+          )}          {/* International News Section */}
+          {internationalPosts.length > 0 && (
+            <div>
+              <div className="flex items-center justify-between border-b-2 border-[var(--secondary)] pb-2 mb-5">
+                <h3 className="font-serif text-2xl font-bold text-[var(--primary)] flex items-center gap-2">
+                  <span className="w-3 h-6 bg-[var(--secondary)] inline-block"></span>
+                  {sectionTitles.international[locale]}
+                </h3>
+              </div>
+              <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+                {internationalPosts.map((post) => (
+                  <PostGridCard
+                    key={post.slug}
+                    post={post}
+                    locale={locale}
+                    readMoreText={sectionTitles.readMore[locale]}
+                  />
+                ))}
+              </div>
+            </div>
           )}
-
-
-
           {/* Agriculture News Section */}
           {agriculturePosts.length > 0 && (
             <div>
