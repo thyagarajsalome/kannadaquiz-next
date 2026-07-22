@@ -55,6 +55,7 @@ export type PublicPost = {
   sourceName?: string;
   quiz?: MiniQuizQuestion[];
   subCategory?: string;
+  isFeatured?: boolean;
 };
 
 export type PublicJob = {
@@ -492,6 +493,7 @@ function toPublicPost(doc: FirestoreDocument): PublicPost | null {
       ? (data.quiz as MiniQuizQuestion[]).filter((q) => q && typeof q === "object" && typeof q.question === "string")
       : undefined,
     subCategory: typeof data.subCategory === "string" ? data.subCategory : "",
+    isFeatured: typeof data.isFeatured === "boolean" ? data.isFeatured : false,
   };
 }
 
