@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getPublicPostBySlug, type PublicPost } from "@/lib/public-content";
 import { MiniQuizPlayer } from "@/components/MiniQuizPlayer";
 
@@ -73,7 +73,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const post = await getPublicPostBySlug(locale, slug);
+  let post = await getPublicPostBySlug(locale, slug);
+
+  if (!post) {
+    const altLocale = locale === "en" ? "kn" : "en";
+    post = await getPublicPostBySlug(altLocale, slug) || undefined;
+  }
 
   if (!post) {
     return {
@@ -104,6 +109,12 @@ export default async function PostDetailPage({ params }: PageProps) {
   const post = await getPublicPostBySlug(locale, slug);
 
   if (!post) {
+    // Check if the post exists in the alternative locale
+    const altLocale = locale === "en" ? "kn" : "en";
+    const altPost = await getPublicPostBySlug(altLocale, slug);
+    if (altPost) {
+      redirect(`/${altLocale}/posts/${slug}`);
+    }
     notFound();
   }
 

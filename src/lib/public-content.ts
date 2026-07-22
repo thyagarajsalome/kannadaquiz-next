@@ -406,6 +406,37 @@ async function queryPublishedByLocale(collectionId: string, locale: Locale, limi
         },
         body: JSON.stringify({
           structuredQuery: {
+            select: {
+              fields: (() => {
+                const baseFields = [
+                  { fieldPath: "title" },
+                  { fieldPath: "slug" },
+                  { fieldPath: "locale" },
+                  { fieldPath: "publishedAt" },
+                  { fieldPath: "updatedAt" },
+                  { fieldPath: "isManual" },
+                ];
+                if (collectionId === "posts") {
+                  return [
+                    ...baseFields,
+                    { fieldPath: "category" },
+                    { fieldPath: "excerpt" },
+                    { fieldPath: "featuredImageUrl" },
+                    { fieldPath: "isFeatured" },
+                    { fieldPath: "sourceUrl" },
+                    { fieldPath: "sourceName" },
+                  ];
+                }
+                if (collectionId === "jobs") {
+                  return [
+                    ...baseFields,
+                    { fieldPath: "organization" },
+                    { fieldPath: "deadline" },
+                  ];
+                }
+                return baseFields;
+              })()
+            },
             from: [{ collectionId }],
             where: {
               compositeFilter: {
@@ -480,6 +511,37 @@ async function queryPublishedByLocaleAndCategory(
         },
         body: JSON.stringify({
           structuredQuery: {
+            select: {
+              fields: (() => {
+                const baseFields = [
+                  { fieldPath: "title" },
+                  { fieldPath: "slug" },
+                  { fieldPath: "locale" },
+                  { fieldPath: "publishedAt" },
+                  { fieldPath: "updatedAt" },
+                  { fieldPath: "isManual" },
+                ];
+                if (collectionId === "posts") {
+                  return [
+                    ...baseFields,
+                    { fieldPath: "category" },
+                    { fieldPath: "excerpt" },
+                    { fieldPath: "featuredImageUrl" },
+                    { fieldPath: "isFeatured" },
+                    { fieldPath: "sourceUrl" },
+                    { fieldPath: "sourceName" },
+                  ];
+                }
+                if (collectionId === "jobs") {
+                  return [
+                    ...baseFields,
+                    { fieldPath: "organization" },
+                    { fieldPath: "deadline" },
+                  ];
+                }
+                return baseFields;
+              })()
+            },
             from: [{ collectionId }],
             where: {
               compositeFilter: {
