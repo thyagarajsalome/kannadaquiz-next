@@ -3,7 +3,7 @@ import Link from "next/link";
 import { siteText } from "@/data/content";
 import { HeroSlider } from "@/components/HeroSlider";
 import { isLocale, locales, type Locale } from "@/lib/locales";
-import { getPublicCurrentAffairs, getPublicPosts, getPublicQuizzes, getPublicPostsByCategory, getPublicPostBySlug, type PublicPost } from "@/lib/public-content";
+import { getPublicCurrentAffairs, getPublicPosts, getPublicQuizzes, getPublicPostsByCategory, getPublicPostBySlug, getPublicFeaturedPosts, type PublicPost } from "@/lib/public-content";
 
 export const revalidate = 300;
 
@@ -302,15 +302,16 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
   const text = siteText[locale];
   
-  const [currentAffairs, posts, quizzes, technologyPosts] = await Promise.all([
+  const [currentAffairs, posts, quizzes, technologyPosts, dbFeaturedPosts] = await Promise.all([
     getPublicCurrentAffairs(locale, 8),
     getPublicPosts(locale, 45),
     getPublicQuizzes(locale, 4),
     getPublicPostsByCategory(locale, "technology", 3),
+    getPublicFeaturedPosts(locale, 5),
   ]);
 
   // 1. Find all manually featured posts from our database (where isFeatured === true)
-  const manuallyFeatured = posts.filter(p => p.isFeatured === true);
+  const manuallyFeatured = dbFeaturedPosts;
 
   // 2. Select featured posts (manually featured takes priority, fallback to latest standard posts if none or only 1 is selected)
   let featuredPosts: PublicPost[] = [...manuallyFeatured];
