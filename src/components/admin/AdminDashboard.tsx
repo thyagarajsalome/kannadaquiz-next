@@ -75,6 +75,7 @@ export function AdminDashboard() {
   const [deadline, setDeadline] = useState("");
   const [sourceUrl, setSourceUrl] = useState("");
   const [sourceName, setSourceName] = useState("");
+  const [isFeaturedPost, setIsFeaturedPost] = useState(false);
   
   // Quiz specific states
   const [exam, setExam] = useState("KPSC");
@@ -686,6 +687,7 @@ export function AdminDashboard() {
       setSourceUrl(String(data.sourceUrl ?? ""));
       setSourceName(String(data.sourceName ?? ""));
       setImageUrl(String(data.featuredImageUrl ?? ""));
+      setIsFeaturedPost(Boolean(data.isFeatured ?? false));
       setImageFile(null); // Reset new file input
 
       if (kind === "quizzes") {
@@ -737,6 +739,7 @@ export function AdminDashboard() {
     setDeadline("");
     setSourceUrl("");
     setSourceName("");
+    setIsFeaturedPost(false);
 
     setExam("KPSC");
     setSubject("");
@@ -947,6 +950,7 @@ export function AdminDashboard() {
             isManual: true,
             sourceUrl: sourceUrl.trim() || "",
             sourceName: sourceName.trim() || "",
+            isFeatured: isFeaturedPost,
           }, { merge: true });
         }
 
@@ -1020,6 +1024,7 @@ export function AdminDashboard() {
             isManual: true,
             sourceUrl: sourceUrl.trim() || "",
             sourceName: sourceName.trim() || "",
+            isFeatured: isFeaturedPost,
           });
         }
 
@@ -1078,6 +1083,7 @@ export function AdminDashboard() {
       setDeadline("");
       setSourceUrl("");
       setSourceName("");
+      setIsFeaturedPost(false);
       setExam("KPSC");
       setSubject("");
       setDifficulty("Easy");
@@ -1470,6 +1476,31 @@ export function AdminDashboard() {
               <p className="mt-2.5 text-xs text-[var(--muted)] leading-relaxed">
                 Provide these details so users can easily visit the given external site (e.g., real estate portfolios, interior design services, or product promotions).
               </p>
+            </div>
+          ) : null}
+
+          {kind === "posts" ? (
+            <div className="mt-5 p-4 border border-[var(--border)] rounded-md bg-[var(--surface-soft)] shadow-sm">
+              <h4 className="text-sm font-bold text-[var(--primary)] mb-3 flex items-center gap-1.5 select-none">
+                <span className="text-base">⭐</span> Homepage Highlights / Pinned Story
+              </h4>
+              <label className="flex items-center gap-3 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  id="pinToHighlightsCheckbox"
+                  checked={isFeaturedPost}
+                  onChange={(event) => setIsFeaturedPost(event.target.checked)}
+                  className="w-5 h-5 rounded text-[var(--secondary)] border-[var(--border)] focus:ring-[var(--secondary)] cursor-pointer"
+                />
+                <div>
+                  <span className="text-sm font-semibold text-[var(--primary)]">
+                    Pin to Homepage Slider (Highlights)
+                  </span>
+                  <p className="text-xs text-[var(--muted)] leading-relaxed mt-0.5">
+                    Check this box to highlight/pin this article in the sliding hero section at the top of the homepage. If checked, this article will appear in the slider carousel.
+                  </p>
+                </div>
+              </label>
             </div>
           ) : null}
 

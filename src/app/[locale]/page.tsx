@@ -309,13 +309,23 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     getPublicPostsByCategory(locale, "technology", 3),
   ]);
 
-  // Fetch the custom featured articles based on the developer-controlled configuration slugs
-  const featuredSlugs = FEATURED_POST_SLUGS[locale] || [];
-  const fetchedFeatured = await Promise.all(
-    featuredSlugs.map(slug => getPublicPostBySlug(locale, slug))
-  );
-  // Cleanly filter out any invalid/missing posts
-  const featuredPosts = fetchedFeatured.filter((p): p is PublicPost => Boolean(p)).slice(0, 2);
+  // 1. Find all manually featured posts from our database (where isFeatured === true)
+  const manuallyFeatured = posts.filter(p => p.isFeatured === true);
+
+  // 2. Select featured posts (manually featured takes priority, fallback to latest standard posts if none or only 1 is selected)
+  let featuredPosts: PublicPost[] = [...manuallyFeatured];
+
+  if (featuredPosts.length < 2) {
+    const remainingCount = 2 - featuredPosts.length;
+    const featuredSlugsSet = new Set(featuredPosts.map(p => p.slug));
+    const latestFallback = posts
+      .filter(p => !featuredSlugsSet.has(p.slug))
+      .slice(0, remainingCount);
+    featuredPosts = [...featuredPosts, ...latestFallback];
+  }
+
+  // Cleanly limit to exactly 2 featured posts
+  featuredPosts = featuredPosts.slice(0, 2);
 
   // Filter out the highlighted/featured articles from the standard recent feed to prevent duplicate visual entries on the page
   const featuredSlugsSet = new Set(featuredPosts.map(p => p.slug));
@@ -339,15 +349,27 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     return "general";
   };
 
-  const karnatakaPosts = posts.filter(p => getCategoryKey(p.category) === "karnataka").slice(0, 3);
-  const internationalPosts = posts.filter(p => getCategoryKey(p.category) === "international").slice(0, 3);
-  const agriculturePosts = posts.filter(p => getCategoryKey(p.category) === "agriculture").slice(0, 3);
-  const educationPosts = posts.filter(p => getCategoryKey(p.category) === "education").slice(0, 3);
-  const schemesPosts = posts.filter(p => getCategoryKey(p.category) === "schemes").slice(0, 3);
-  const tourismPosts = posts.filter(p => getCategoryKey(p.category) === "tourism").slice(0, 3);
-  const sportsPosts = posts.filter(p => getCategoryKey(p.category) === "sports").slice(0, 3);
-  const moviesPosts = posts.filter(p => getCategoryKey(p.category) === "movies").slice(0, 3);
-  const homeDesignPosts = posts.filter(p => getCategoryKey(p.category) === "home-design").slice(0, 3);
+  // 3. Track all posts displayed in the top folds to guarantee absolute zero repetition on the homepage
+  const displayedSlugsSet = new Set<string>();
+  featuredPosts.forEach(p => displayedSlugsSet.add(p.slug));
+  if (heroPost) {
+    displayedSlugsSet.add(heroPost.slug);
+  }
+  recentHeadlines.forEach(p => displayedSlugsSet.add(p.slug));
+
+  // Exclude already displayed posts from bottom categorized rows
+  const remainingPostsForCategories = posts.filter(p => !displayedSlugsSet.has(p.slug));
+
+  const karnatakaPosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "karnataka").slice(0, 3);
+  const internationalPosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "international").slice(0, 3);
+  const agriculturePosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "agriculture").slice(0, 3);
+  const educationPosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "education").slice(0, 3);
+  const schemesPosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "schemes").slice(0, 3);
+  const tourismPosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "tourism").slice(0, 3);
+  const sportsPosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "sports").slice(0, 3);
+  const moviesPosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "movies").slice(0, 3);
+  const homeDesignPosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "home-design").slice(0, 3);
+  const cleanTechnologyPosts = technologyPosts.filter(p => !displayedSlugsSet.has(p.slug)).slice(0, 3);
 
   return (
     <>
@@ -855,7 +877,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           )}
 
           {/* Computer & Technology Section */}
-          {technologyPosts.length > 0 && (
+          {cleanTechnologyPosts.length > 0 && (
             <div>
               <div className="flex items-center justify-between border-b-2 border-[var(--secondary)] pb-2 mb-5">
                 <h3 className="font-serif text-2xl font-bold text-[var(--primary)] flex items-center gap-2">
@@ -864,7 +886,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </h3>
               </div>
               <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-                {technologyPosts.map((post) => (
+                {cleanTechnologyPosts.map((post) => (
                   <PostGridCard
                     key={post.slug}
                     post={post}
