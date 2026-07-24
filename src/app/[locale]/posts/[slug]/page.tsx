@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { getPublicPostBySlug, type PublicPost } from "@/lib/public-content";
 import { MiniQuizPlayer } from "@/components/MiniQuizPlayer";
 
@@ -63,38 +63,45 @@ function getSourceName(post: { sourceUrl?: string; sourceName?: string }) {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const resolvedParams = await params;
-  const slug = resolvedParams.slug;
-  const locale = (resolvedParams.locale === "en" ? "en" : "kn") as ValidLocale;
+  try {
+    const resolvedParams = await params;
+    const slug = resolvedParams.slug;
+    const locale = (resolvedParams.locale === "en" ? "en" : "kn") as ValidLocale;
 
-  if (!slug) {
+    if (!slug) {
+      return {
+        title: "KannadaQuiz",
+      };
+    }
+
+    let post = await getPublicPostBySlug(locale, slug);
+
+    if (!post) {
+      const altLocale = locale === "en" ? "kn" : "en";
+      post = (await getPublicPostBySlug(altLocale, slug)) || undefined;
+    }
+
+    if (!post) {
+      return {
+        title: locale === "kn" ? "ಸುದ್ದಿ | KannadaQuiz" : "Posts | KannadaQuiz",
+      };
+    }
+
+    return {
+      title: `${post.title} | KannadaQuiz`,
+      description: post.excerpt || post.title,
+      openGraph: {
+        title: post.title,
+        description: post.excerpt || post.title,
+        images: post.featuredImageUrl ? [{ url: post.featuredImageUrl }] : [],
+      },
+    };
+  } catch (error) {
+    console.error("Metadata fetch error:", error);
     return {
       title: "KannadaQuiz",
     };
   }
-
-  let post = await getPublicPostBySlug(locale, slug);
-
-  if (!post) {
-    const altLocale = locale === "en" ? "kn" : "en";
-    post = await getPublicPostBySlug(altLocale, slug) || undefined;
-  }
-
-  if (!post) {
-    return {
-      title: locale === "kn" ? "ಲೇಖನ ಕಂಡುಬಂದಿಲ್ಲ | KannadaQuiz" : "Post Not Found | KannadaQuiz",
-    };
-  }
-
-  return {
-    title: `${post.title} | KannadaQuiz`,
-    description: post.excerpt || post.title,
-    openGraph: {
-      title: post.title,
-      description: post.excerpt || post.title,
-      images: post.featuredImageUrl ? [{ url: post.featuredImageUrl }] : [],
-    },
-  };
 }
 
 export default async function PostDetailPage({ params }: PageProps) {
@@ -103,19 +110,31 @@ export default async function PostDetailPage({ params }: PageProps) {
   const locale = (resolvedParams.locale === "en" ? "en" : "kn") as ValidLocale;
 
   if (!slug) {
-    notFound();
+    redirect(`/${locale}/posts`);
   }
 
-  const post = await getPublicPostBySlug(locale, slug);
+  let post: PublicPost | null = null;
 
-  if (!post) {
-    // Check if the post exists in the alternative locale
-    const altLocale = locale === "en" ? "kn" : "en";
-    const altPost = await getPublicPostBySlug(altLocale, slug);
-    if (altPost) {
-      redirect(`/${altLocale}/posts/${slug}`);
+  try {
+    post = (await getPublicPostBySlug(locale, slug)) ?? null;
+
+    if (!post) {
+      // Check if the post exists in the alternative locale
+      const altLocale = locale === "en" ? "kn" : "en";
+      const altPost = await getPublicPostBySlug(altLocale, slug);
+      if (altPost) {
+        redirect(`/${altLocale}/posts/${slug}`);
+      }
     }
-    notFound();
+  } catch (error) {
+    console.error(`Database error fetching post [${slug}]:`, error);
+    // Redirect on database/network error to avoid 500 Internal Server Error
+    redirect(`/${locale}/posts`);
+  }
+
+  // If the post is completely missing in both locales, redirect to main posts list
+  if (!post) {
+    redirect(`/${locale}/posts`);
   }
 
   return (
