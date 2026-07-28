@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Sans_Kannada, Public_Sans, Source_Serif_4 } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const publicSans = Public_Sans({
@@ -59,6 +60,8 @@ export const metadata: Metadata = {
   },
 };
 
+const gaId = process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "G-Z9CE3G37M9";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -69,7 +72,27 @@ export default function RootLayout({
       lang="kn"
       className={`${publicSans.variable} ${sourceSerif.variable} ${notoKannada.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        {gaId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaId}', {
+                  page_path: window.location.pathname,
+                });
+              `}
+            </Script>
+          </>
+        )}
+      </body>
     </html>
   );
 }
