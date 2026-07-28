@@ -40,9 +40,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const contentByLocale = await Promise.all(
     locales.map(async (locale) => ({
       locale,
-      quizzes: await getPublicQuizzes(locale, 500),
-      posts: await getPublicPosts(locale, 500),
-      jobs: await getPublicJobs(locale, 500),
+      quizzes: await getPublicQuizzes(locale, 2000),
+      posts: await getPublicPosts(locale, 2000),
+      jobs: await getPublicJobs(locale, 2000),
     })),
   );
 
