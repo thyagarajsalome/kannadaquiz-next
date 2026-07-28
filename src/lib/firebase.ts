@@ -1,9 +1,7 @@
-import { getApps, initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
-
-export const hasFirebaseConfig = true;
+import { getApps, initializeApp, FirebaseApp } from "firebase/app";
+import { getAuth, Auth } from "firebase/auth";
+import { getFirestore, Firestore } from "firebase/firestore";
+import { getStorage, FirebaseStorage } from "firebase/storage";
 
 function getEnv(val: string | undefined, fallback: string): string {
   if (!val || val === "undefined" || val === "null" || val.trim() === "") {
@@ -21,12 +19,25 @@ const firebaseConfig = {
   appId: getEnv(process.env.NEXT_PUBLIC_FIREBASE_APP_ID, "1:270133744435:web:6a9e1b06eab5bc5bd6e446"),
 };
 
-export const firebaseApp = hasFirebaseConfig
-  ? getApps().length
-    ? getApps()[0]
-    : initializeApp(firebaseConfig)
-  : null;
+export const hasFirebaseConfig = Boolean(firebaseConfig.apiKey && firebaseConfig.projectId);
 
-export const firebaseAuth = firebaseApp ? getAuth(firebaseApp) : null;
-export const firestore = firebaseApp ? getFirestore(firebaseApp) : null;
-export const firebaseStorage = firebaseApp ? getStorage(firebaseApp) : null;
+let app: FirebaseApp | null = null;
+let auth: Auth | null = null;
+let db: Firestore | null = null;
+let storage: FirebaseStorage | null = null;
+
+try {
+  if (hasFirebaseConfig) {
+    app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+    storage = getStorage(app);
+  }
+} catch (err) {
+  console.warn("Firebase initialization skipped or failed, using local zero-cost fallbacks:", err);
+}
+
+export const firebaseApp = app;
+export const firebaseAuth = auth;
+export const firestore = db;
+export const firebaseStorage = storage;

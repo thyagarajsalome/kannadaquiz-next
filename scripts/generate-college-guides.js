@@ -1,3 +1,5 @@
+// Delay helper function
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const admin = require("firebase-admin");
 const path = require("path");
 const fs = require("fs");

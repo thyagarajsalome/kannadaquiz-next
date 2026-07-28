@@ -1,8 +1,20 @@
 import { redirect } from "next/navigation";
 import { isLocale, type Locale } from "@/lib/locales";
+import { getPublicJobs } from "@/lib/public-content";
 
-export function generateStaticParams() {
-  return [];
+export async function generateStaticParams() {
+  const knJobs = await getPublicJobs("kn", 500);
+  const enJobs = await getPublicJobs("en", 500);
+  const knParams = knJobs.map((j) => ({ locale: "kn", slug: j.slug }));
+  const enParams = enJobs.map((j) => ({ locale: "en", slug: j.slug }));
+  const combined = [...knParams, ...enParams];
+  if (combined.length === 0) {
+    return [
+      { locale: "kn", slug: "default-job" },
+      { locale: "en", slug: "default-job" },
+    ];
+  }
+  return combined;
 }
 
 export default async function JobPage({
