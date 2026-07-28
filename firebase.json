@@ -1,8 +1,53 @@
 {
-  "firestore": {
-    "rules": "firestore.rules"
-  },
-  "storage": {
-    "rules": "storage.rules"
+  "hosting": {
+    "public": "out",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "redirects": [
+      {
+        "regex": ".*\\.php$",
+        "destination": "/",
+        "type": 301
+      },
+      {
+        "source": "/wp-admin/:path*",
+        "destination": "/",
+        "type": 301
+      },
+      {
+        "source": "/enhancecp",
+        "destination": "/",
+        "type": 301
+      }
+    ],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "X-DNS-Prefetch-Control",
+            "value": "on"
+          }
+        ]
+      },
+      {
+        "source": "/.well-known/traffic-advice",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=86400, s-maxage=86400"
+          }
+        ]
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
   }
 }

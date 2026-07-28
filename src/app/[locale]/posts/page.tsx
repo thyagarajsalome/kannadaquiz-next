@@ -1,8 +1,10 @@
-import { isLocale, type Locale } from "@/lib/locales";
-import { getPublicPosts } from "@/lib/public-content"; // <-- Make sure this matches your actual fetch function
 import Link from "next/link";
+import { isLocale, locales, type Locale } from "@/lib/locales";
+import { getPublicPosts } from "@/lib/public-content";
 
-export const dynamic = "force-dynamic";
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
 type PageProps = {
   params: Promise<{ locale: string }>;

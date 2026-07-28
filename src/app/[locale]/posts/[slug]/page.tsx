@@ -1,11 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getPublicPostBySlug, type PublicPost } from "@/lib/public-content";
+import { getPublicPosts, getPublicPostBySlug, type PublicPost } from "@/lib/public-content";
 import { MiniQuizPlayer } from "@/components/MiniQuizPlayer";
 
-// Force dynamic rendering to prevent static bailout errors in production
-export const dynamic = "force-dynamic";
+export async function generateStaticParams() {
+  const knPosts = await getPublicPosts("kn", 500);
+  const enPosts = await getPublicPosts("en", 500);
+  const knParams = knPosts.map((post) => ({ locale: "kn", slug: post.slug }));
+  const enParams = enPosts.map((post) => ({ locale: "en", slug: post.slug }));
+  const combined = [...knParams, ...enParams];
+  if (combined.length === 0) {
+    return [{ locale: "kn", slug: "default-post" }, { locale: "en", slug: "default-post" }];
+  }
+  return combined;
+}
 
 type ValidLocale = "kn" | "en";
 

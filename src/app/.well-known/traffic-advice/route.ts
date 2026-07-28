@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-static';
+
 export async function GET() {
   return new NextResponse(JSON.stringify([{ fraction: 1.0 }]), {
     status: 200,

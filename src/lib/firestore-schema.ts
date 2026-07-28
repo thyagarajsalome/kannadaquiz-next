@@ -13,13 +13,17 @@ export const firestoreCollections = {
 
 export type ContentStatus = "draft" | "published" | "archived";
 
+export type ContentSource = "firestore" | "cache" | "fallback";
+
 export type LocalizedContent = {
+  id?: string;
   locale: "kn" | "en";
   slug: string;
   title: string;
   status: ContentStatus;
-  publishedAt?: Date;
-  updatedAt?: Date;
+  publishedAt?: Date | string;
+  updatedAt?: Date | string;
+  _source?: ContentSource;
 };
 
 export type FirestorePost = LocalizedContent & {
@@ -41,6 +45,7 @@ export type FirestoreQuiz = LocalizedContent & {
 };
 
 export type FirestoreQuizQuestion = {
+  id?: string;
   quizId: string;
   question: string;
   options: string[];
@@ -55,3 +60,4 @@ export type FirestoreJob = LocalizedContent & {
   body: string;
   applyUrl?: string;
 };
+

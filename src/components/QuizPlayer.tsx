@@ -37,19 +37,33 @@ export function QuizPlayer({ quiz, locale }: { quiz: PublicQuiz; locale: Locale 
   }, [submitted, currentUser, attemptSaved]);
 
   async function saveQuizAttempt() {
-    if (!firestore || !currentUser) return;
-    try {
-      await addDoc(collection(firestore, "quizAttempts"), {
-        userId: currentUser.uid,
-        quizId: quiz.id,
-        quizTitle: quiz.title,
-        score: score,
-        totalQuestions: quiz.questions.length,
-        completedAt: serverTimestamp(),
-      });
-    } catch (error) {
-      console.error("Error logging quiz attempt:", error);
+    const attemptData = {
+      quizId: quiz.id,
+      quizTitle: quiz.title,
+      score: score,
+      totalQuestions: quiz.questions.length,
+      completedAt: new Date().toISOString(),
+    };
+
+    if (firestore && currentUser) {
+      try {
+        await addDoc(collection(firestore, "quizAttempts"), {
+          ...attemptData,
+          userId: currentUser.uid,
+          completedAt: serverTimestamp(),
+        });
+        return;
+      } catch (error) {
+        console.warn("Firestore quiz attempt save failed, storing locally:", error);
+      }
     }
+
+    // Zero-cost local storage fallback
+    try {
+      const existing = JSON.parse(localStorage.getItem("kq_quiz_attempts") || "[]");
+      existing.push(attemptData);
+      localStorage.setItem("kq_quiz_attempts", JSON.stringify(existing));
+    } catch {}
   }
 
   return (

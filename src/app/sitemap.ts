@@ -4,6 +4,7 @@ import { getPublicJobs, getPublicPosts, getPublicQuizzes } from "@/lib/public-co
 
 const baseUrl = "https://kannadaquiz.in";
 
+export const dynamic = "force-static";
 export const revalidate = 3600; // Cache sitemap for 1 hour
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

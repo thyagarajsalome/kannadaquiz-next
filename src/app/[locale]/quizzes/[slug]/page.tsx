@@ -3,12 +3,18 @@ import { notFound, redirect } from "next/navigation";
 import { QuizPlayer } from "@/components/QuizPlayer";
 import { quizzes } from "@/data/content";
 import { isLocale, locales, type Locale } from "@/lib/locales";
-import { getPublicQuizBySlug } from "@/lib/public-content";
+import { getPublicQuizzes, getPublicQuizBySlug } from "@/lib/public-content";
 
-export const revalidate = 300;
-
-export function generateStaticParams() {
-  return [];
+export async function generateStaticParams() {
+  const knQuizzes = await getPublicQuizzes("kn", 500);
+  const enQuizzes = await getPublicQuizzes("en", 500);
+  const knParams = knQuizzes.map((q) => ({ locale: "kn", slug: q.slug }));
+  const enParams = enQuizzes.map((q) => ({ locale: "en", slug: q.slug }));
+  const combined = [...knParams, ...enParams];
+  if (combined.length === 0) {
+    return [{ locale: "kn", slug: "default-quiz" }, { locale: "en", slug: "default-quiz" }];
+  }
+  return combined;
 }
 
 export async function generateMetadata({

@@ -302,20 +302,20 @@ export function AdminDashboard() {
     try {
       let snapshot;
       try {
-        // Fetch up to 600 items ordered by the most recently updated first.
-        // This guarantees that newly published or modified drafts are always fetched.
+        // Fetch up to 100 items ordered by the most recently updated first.
+        // This guarantees that newly published or modified drafts are fetched without wasting Firestore reads.
         const docsQuery = query(
           collection(firestore, firestoreCollections[nextKind]),
           orderBy("updatedAt", "desc"),
-          limit(600)
+          limit(100)
         );
         snapshot = await getDocs(docsQuery);
       } catch (indexError) {
         console.warn("Index not found or sorting failed, falling back to unordered fetch:", indexError);
-        // Fallback to fetch up to 600 items without sorting at the database level.
+        // Fallback to fetch up to 100 items without sorting at the database level.
         const docsQuery = query(
           collection(firestore, firestoreCollections[nextKind]),
-          limit(600)
+          limit(100)
         );
         snapshot = await getDocs(docsQuery);
       }
@@ -400,10 +400,10 @@ export function AdminDashboard() {
     if (!firestore) return;
     try {
       const [postsSnap, jobsSnap, caSnap, quizzesSnap] = await Promise.all([
-        getDocs(query(collection(firestore, firestoreCollections.posts), limit(1000))),
-        getDocs(query(collection(firestore, firestoreCollections.jobs), limit(1000))),
-        getDocs(query(collection(firestore, firestoreCollections.currentAffairs), limit(1000))),
-        getDocs(query(collection(firestore, firestoreCollections.quizzes), limit(1000))),
+        getDocs(query(collection(firestore, firestoreCollections.posts), limit(100))),
+        getDocs(query(collection(firestore, firestoreCollections.jobs), limit(100))),
+        getDocs(query(collection(firestore, firestoreCollections.currentAffairs), limit(100))),
+        getDocs(query(collection(firestore, firestoreCollections.quizzes), limit(100))),
       ]);
 
       const manualPosts = postsSnap.docs.filter((d) => d.data().isManual === true).length;
