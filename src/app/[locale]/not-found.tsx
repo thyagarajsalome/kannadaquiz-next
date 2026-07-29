@@ -28,7 +28,7 @@ export default function NotFound() {
       </div>
 
       <Link
-        href="/kn"
+        href="/"
         className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--primary)] text-white font-bold rounded-lg shadow hover:bg-[var(--primary)]/90 transition-all text-sm cursor-pointer select-none"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
