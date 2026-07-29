@@ -263,7 +263,7 @@ function PostGridCard({ post, locale, readMoreText }: PostGridCardProps) {
     <div className="kq-card overflow-hidden flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 rounded-xl border border-[var(--border)]">
       <div>
         {post.featuredImageUrl && (
-          <Link href={`/${locale}/posts/${post.slug}`} className="block overflow-hidden aspect-video border-b border-[var(--border)]/40 hover:opacity-95 transition-opacity">
+          <Link href={`/${locale}/posts/${post.slug}`} prefetch={false} className="block overflow-hidden aspect-video border-b border-[var(--border)]/40 hover:opacity-95 transition-opacity">
             <img
               src={post.featuredImageUrl}
               alt={post.title}
@@ -278,7 +278,7 @@ function PostGridCard({ post, locale, readMoreText }: PostGridCardProps) {
             <span>•</span>
             <time>{post.date}</time>
           </div>
-          <Link href={`/${locale}/posts/${post.slug}`} className="group">
+          <Link href={`/${locale}/posts/${post.slug}`} prefetch={false} className="group">
             <h4 className="mt-2.5 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2 leading-relaxed">
               {post.title}
             </h4>
@@ -289,7 +289,7 @@ function PostGridCard({ post, locale, readMoreText }: PostGridCardProps) {
         </div>
       </div>
       <div className="mt-4 p-4 pt-3 border-t border-[var(--border)]">
-        <Link href={`/${locale}/posts/${post.slug}`} className="text-xs font-bold text-[var(--secondary)] hover:underline">
+        <Link href={`/${locale}/posts/${post.slug}`} prefetch={false} className="text-xs font-bold text-[var(--secondary)] hover:underline">
           {readMoreText}
         </Link>
       </div>

@@ -113,7 +113,7 @@ export function CategoryFilterList({
             >
               <div>
                 {post.featuredImageUrl && (
-                  <Link href={`/${locale}/posts/${post.slug}`} className="block overflow-hidden aspect-video border-b border-[var(--border)]/40 hover:opacity-95 transition-opacity">
+                  <Link href={`/${locale}/posts/${post.slug}`} prefetch={false} className="block overflow-hidden aspect-video border-b border-[var(--border)]/40 hover:opacity-95 transition-opacity">
                     <img
                       src={post.featuredImageUrl}
                       alt={post.title}
@@ -138,7 +138,7 @@ export function CategoryFilterList({
                       <time>{post.date}</time>
                     </div>
                   </div>
-                  <Link href={`/${locale}/posts/${post.slug}`} className="group">
+                  <Link href={`/${locale}/posts/${post.slug}`} prefetch={false} className="group">
                     <h2 className="mt-2.5 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2 leading-relaxed">
                       {post.title}
                     </h2>
@@ -151,6 +151,7 @@ export function CategoryFilterList({
               <div className="mt-4 p-4 pt-3 border-t border-[var(--border)] flex items-center justify-between">
                 <Link
                   href={`/${locale}/posts/${post.slug}`}
+                  prefetch={false}
                   className="text-xs font-bold text-[var(--secondary)] hover:underline flex items-center gap-1"
                 >
                   {locale === "kn" ? "ಹೆಚ್ಚಿನ ಮಾಹಿತಿ ➔" : "Read More ➔"}
