@@ -119,6 +119,7 @@ export default async function PostDetailPage({ params }: PageProps) {
   const locale = (resolvedParams.locale === "en" ? "en" : "kn") as ValidLocale;
 
   let post: PublicPost | null = null;
+  let redirectUrl = "";
 
   try {
     post = (await getPublicPostBySlug(locale, slug)) ?? null;
@@ -128,11 +129,15 @@ export default async function PostDetailPage({ params }: PageProps) {
       const altLocale = locale === "en" ? "kn" : "en";
       const altPost = await getPublicPostBySlug(altLocale, slug);
       if (altPost) {
-        redirect(`/${altLocale}/posts/${slug}`);
+        redirectUrl = `/${altLocale}/posts/${slug}`;
       }
     }
   } catch (error) {
     console.error(`Database error fetching post [${slug}]:`, error);
+  }
+
+  if (redirectUrl) {
+    redirect(redirectUrl);
   }
 
   if (!post) {
