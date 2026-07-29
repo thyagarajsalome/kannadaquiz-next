@@ -264,11 +264,57 @@ export default async function PostDetailPage({ params }: PageProps) {
             .split("\n")
             .map((p) => p.trim())
             .filter(Boolean)
-            .map((paragraph, index) => (
-              <p key={index} className="mb-5 last:mb-0">
-                {paragraph}
-              </p>
-            ))}
+            .map((paragraph, index) => {
+              const urlRegex = /(https?:\/\/[^\s<]+)/g;
+              const parts = paragraph.split(urlRegex);
+              return (
+                <p key={index} className="mb-5 last:mb-0">
+                  {parts.map((part, idx) => {
+                    if (/^https?:\/\//i.test(part)) {
+                      const isInternal = part.includes("kannadaquiz.in") || part.startsWith("/");
+                      if (isInternal) {
+                        try {
+                          const urlObj = new URL(part);
+                          return (
+                            <Link
+                              key={idx}
+                              href={urlObj.pathname}
+                              className="text-[var(--secondary)] font-bold hover:underline break-all"
+                            >
+                              {part}
+                            </Link>
+                          );
+                        } catch {
+                          return (
+                            <a
+                              key={idx}
+                              href={part}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[var(--secondary)] font-bold hover:underline break-all"
+                            >
+                              {part}
+                            </a>
+                          );
+                        }
+                      }
+                      return (
+                        <a
+                          key={idx}
+                          href={part}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[var(--secondary)] font-bold hover:underline break-all"
+                        >
+                          {part}
+                        </a>
+                      );
+                    }
+                    return part;
+                  })}
+                </p>
+              );
+            })}
 
           {post.sourceUrl ? (() => {
             const formattedUrl = !/^https?:\/\//i.test(post.sourceUrl)

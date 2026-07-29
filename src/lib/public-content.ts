@@ -148,26 +148,39 @@ export async function getPublicFeaturedPosts(locale: Locale, count = 10): Promis
 export async function getPublicPostsByCategory(
   locale: Locale,
   categoryKey: string,
-  count = 20
+  count = 50
 ): Promise<PublicPost[]> {
   const categoryNamesMap: Record<string, string[]> = {
-    karnataka: ["Karnataka", "ಕರ್ನಾಟಕ"],
-    national: ["National", "National News"],
-    international: ["International", "International News"],
-    jobs: ["Jobs", "KPSC", "Exam Notifications"],
-    agriculture: ["Agriculture", "Agriculture Info"],
-    education: ["College Guide", "Education", "Education & College Guide"],
-    schemes: ["Government Schemes", "Schemes"],
-    tourism: ["Heritage & Tourism", "Tourism"],
-    sports: ["Sports News", "Sports"],
-    technology: ["Technology"],
-    movies: ["Movies", "Cinema", "Film"],
-    "home-design": ["Home Design", "Real Estate", "Interior", "House Plans", "Promotion", "Services"],
+    karnataka: ["Karnataka", "Karnataka News", "ಕರ್ನಾಟಕ", "ಕರ್ನಾಟಕ ಸುದ್ದಿ"],
+    national: ["National", "National News", "ರಾಷ್ಟ್ರೀಯ", "ರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ"],
+    international: ["International", "International News", "ಅಂತರರಾಷ್ಟ್ರೀಯ", "ಅಂತರರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ"],
+    jobs: ["Jobs", "Jobs & Careers", "KPSC", "Exam Notifications", "ಉದ್ಯೋಗಗಳು", "ಉದ್ಯೋಗ"],
+    agriculture: ["Agriculture", "Agriculture Info", "ಕೃಷಿ", "ಕೃಷಿ ಮಾಹಿತಿ"],
+    education: ["College Guide", "Education", "Education & College Guide", "College & Education Guide", "ಶಿಕ್ಷಣ"],
+    schemes: ["Government Schemes", "Schemes", "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು"],
+    tourism: ["Heritage & Tourism", "Tourism", "ಇತಿಹಾಸ ಮತ್ತು ಪ್ರವಾಸೋದ್ಯಮ", "ಪ್ರವಾಸೋದ್ಯಮ"],
+    sports: ["Sports News", "Sports", "ಕ್ರೀಡಾ ಸುದ್ದಿ", "ಕ್ರೀಡೆ"],
+    technology: ["Technology", "Computer & Technology", "ತಂತ್ರಜ್ಞಾನ"],
+    movies: ["Movies", "Movies & Cinema", "Cinema", "Film", "ಚಲನಚಿತ್ರ"],
+    "home-design": ["Home Design", "Home Design & Real Estate", "Real Estate", "Interior", "House Plans", "Promotion", "Services", "ಮನೆ ವಿನ್ಯಾಸ ಮತ್ತು ರಿಯಲ್ ಎಸ್ಟೇಟ್", "home-design"],
+    general: ["General", "General News", "ಸಾಮಾನ್ಯ", "ಸಾಮಾನ್ಯ ಸುದ್ದಿ"],
   };
 
-  const allowedCategories = categoryNamesMap[categoryKey.toLowerCase()] || [categoryKey];
+  const normKey = categoryKey.toLowerCase();
+  const allowedCategories = categoryNamesMap[normKey] || [categoryKey];
   const remote = await queryPublishedByLocaleAndCategory("posts", locale, allowedCategories, count);
-  const mapped = remote.map(toPublicPost).filter((post): post is PublicPost => Boolean(post));
+  let mapped = remote.map(toPublicPost).filter((post): post is PublicPost => Boolean(post));
+
+  // Fallback: If strict category query returned no results, fetch recent published posts and filter client-side by category synonyms
+  if (mapped.length === 0) {
+    const allPosts = await getPublicPosts(locale, 200);
+    const keywords = allowedCategories.map(c => c.toLowerCase());
+    mapped = allPosts.filter(p => {
+      const pCat = (p.category || "").toLowerCase();
+      return keywords.some(kw => pCat.includes(kw) || kw.includes(pCat));
+    });
+  }
+
   return mapped;
 }
 
@@ -207,46 +220,37 @@ async function querySingleBySlug(collectionId: string, slug: string, locale: Loc
     return null;
   }
 
+  const decodedSlug = decodeURIComponent(slug).trim();
+
   try {
-    const response = await fetch(
+    // Attempt 1: Match by slug and locale
+    const response1 = await fetch(
       `https://firestore.googleapis.com/v1/projects/${firestoreProjectId}/databases/(default)/documents:runQuery?key=${firestoreApiKey}`,
       {
         method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
+        headers: { "content-type": "application/json" },
         body: JSON.stringify({
           structuredQuery: {
             from: [{ collectionId }],
             where: {
               compositeFilter: {
                 op: "AND",
-                filters: (() => {
-                  const f: any[] = [
-                    {
-                      fieldFilter: {
-                        field: { fieldPath: "status" },
-                        op: "EQUAL",
-                        value: { stringValue: "published" },
-                      },
+                filters: [
+                  {
+                    fieldFilter: {
+                      field: { fieldPath: "slug" },
+                      op: "EQUAL",
+                      value: { stringValue: decodedSlug },
                     },
-                    {
-                      fieldFilter: {
-                        field: { fieldPath: "slug" },
-                        op: "EQUAL",
-                        value: { stringValue: slug },
-                      },
+                  },
+                  {
+                    fieldFilter: {
+                      field: { fieldPath: "locale" },
+                      op: "EQUAL",
+                      value: { stringValue: locale },
                     },
-                    {
-                      fieldFilter: {
-                        field: { fieldPath: "locale" },
-                        op: "EQUAL",
-                        value: { stringValue: locale },
-                      },
-                    },
-                  ];
-                  return f;
-                })(),
+                  },
+                ],
               },
             },
             limit: 1,
@@ -256,16 +260,59 @@ async function querySingleBySlug(collectionId: string, slug: string, locale: Loc
       },
     );
 
-    if (!response.ok) {
-      return null;
+    if (response1.ok) {
+      const rows = (await response1.json()) as RunQueryRow[];
+      const doc = rows[0]?.document;
+      if (doc?.fields) return doc;
     }
 
-    const rows = (await response.json()) as RunQueryRow[];
-    const doc = rows[0]?.document;
-    return doc?.fields ? doc : null;
-  } catch {
-    return null;
+    // Attempt 2: Match by slug alone (in case locale field is missing or different)
+    const response2 = await fetch(
+      `https://firestore.googleapis.com/v1/projects/${firestoreProjectId}/databases/(default)/documents:runQuery?key=${firestoreApiKey}`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          structuredQuery: {
+            from: [{ collectionId }],
+            where: {
+              fieldFilter: {
+                field: { fieldPath: "slug" },
+                op: "EQUAL",
+                value: { stringValue: decodedSlug },
+              },
+            },
+            limit: 1,
+          },
+        }),
+        next: { revalidate: revalidateSeconds },
+      },
+    );
+
+    if (response2.ok) {
+      const rows = (await response2.json()) as RunQueryRow[];
+      const doc = rows[0]?.document;
+      if (doc?.fields) return doc;
+    }
+
+    // Attempt 3: Direct document lookup by Document ID
+    const directDocRes = await fetch(
+      `https://firestore.googleapis.com/v1/projects/${firestoreProjectId}/databases/(default)/documents/${collectionId}/${encodeURIComponent(decodedSlug)}?key=${firestoreApiKey}`,
+      {
+        method: "GET",
+        next: { revalidate: revalidateSeconds },
+      },
+    );
+
+    if (directDocRes.ok) {
+      const doc = (await directDocRes.json()) as FirestoreDocument;
+      if (doc?.fields) return doc;
+    }
+  } catch (error) {
+    console.error(`querySingleBySlug error for [${slug}]:`, error);
   }
+
+  return null;
 }
 
 async function queryPublished(collectionId: string, limitCount: number) {

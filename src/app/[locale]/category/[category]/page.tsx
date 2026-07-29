@@ -6,7 +6,7 @@ import { CategoryFilterList } from "@/components/CategoryFilterList";
 export const revalidate = 300;
 
 export function generateStaticParams() {
-  const categories = ["karnataka", "agriculture", "education", "schemes", "tourism", "sports", "technology", "movies", "home-design"];
+  const categories = ["karnataka", "national", "international", "jobs", "agriculture", "education", "schemes", "tourism", "sports", "technology", "movies", "home-design", "general", "current-affairs"];
   const params: { locale: string; category: string }[] = [];
   
   // Create paths for both locales and all standard categories
