@@ -31,6 +31,7 @@ import {
 } from "firebase/storage";
 import { firebaseAuth, firebaseStorage, firestore, hasFirebaseConfig } from "@/lib/firebase";
 import { firestoreCollections } from "@/lib/firestore-schema";
+import { ServicesInfrastructure } from "./ServicesInfrastructure";
 
 type ContentKind = "posts" | "jobs" | "currentAffairs" | "quizzes";
 
@@ -101,7 +102,7 @@ export function AdminDashboard() {
   const [saving, setSaving] = useState(false);
 
   // Telemetry & Stats states
-  const [activeTab, setActiveTab] = useState<"content" | "telemetry">("content");
+  const [activeTab, setActiveTab] = useState<"content" | "telemetry" | "infrastructure">("content");
   const [syncLogs, setSyncLogs] = useState<any[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
   const [cleaningDb, setCleaningDb] = useState(false);
@@ -1227,6 +1228,17 @@ export function AdminDashboard() {
         >
           Telemetry & Performance
         </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("infrastructure")}
+          className={`pb-2 text-sm font-bold px-1 transition-colors relative cursor-pointer ${
+            activeTab === "infrastructure"
+              ? "text-[var(--primary)] border-b-2 border-[var(--primary)] font-black"
+              : "text-[var(--muted)] hover:text-[var(--foreground)]"
+          }`}
+        >
+          Services & Infrastructure
+        </button>
       </div>
 
       {activeTab === "content" ? (
@@ -1786,7 +1798,7 @@ export function AdminDashboard() {
           </div>
         </aside>
       </div>
-      ) : (
+      ) : activeTab === "telemetry" ? (
         <div className="mt-8 grid gap-6">
           {/* Database Maintenance and Cleanup Panel */}
           <div className="kq-card p-6 border border-amber-200 bg-amber-50/45 rounded-xl">
@@ -1989,7 +2001,7 @@ export function AdminDashboard() {
             <div className="kq-card p-6 border border-[var(--border)] bg-white flex flex-col justify-between">
               <div>
                 <h3 className="font-serif text-lg font-bold text-[var(--primary)] font-bold">Google & SEO Compliance</h3>
-                <p className="text-xs text-[var(--muted)] mt-1">Status of your platform's publisher quality and monetization index</p>
+                <p className="text-xs text-[var(--muted)] mt-1">Status of your platform&apos;s publisher quality and monetization index</p>
                 
                 {/* Status Badge */}
                 <div className="mt-4 flex items-center gap-3">
@@ -2034,10 +2046,10 @@ export function AdminDashboard() {
                   {totalPosts === 0
                     ? "Upload some articles manually or run the RSS synchronization script to calculate your compliance status."
                     : manualPct >= 45 && manualPct <= 55
-                      ? "Excellent! Your site maintains a healthy 50% automated / 50% manual ratio. This satisfies Google's Helpful Content guidelines."
+                      ? "Excellent! Your site maintains a healthy 50% automated / 50% manual ratio. This satisfies Google&apos;s Helpful Content guidelines."
                       : manualPct > 55
                         ? `Good! You have a robust manual ratio of ${manualPct}%. Your site is in a very safe zone for SEO.`
-                        : `Warning: Automated content makes up ${autoPct}% of your articles. Google may flag your site for 'Low-value' content. Please manually upload some high-quality articles or guides.`}
+                        : `Warning: Automated content makes up ${autoPct}% of your articles. Google may flag your site for &quot;Low-value&quot; content. Please manually upload some high-quality articles or guides.`}
                 </p>
               </div>
 
@@ -2220,7 +2232,7 @@ export function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="mt-8 text-center text-xs text-[var(--muted)] py-12 border border-dashed border-[var(--border)] rounded">
-                    Click "Analyze" to audit the SEO parameters of any URL paths on your site.
+                    Click &quot;Analyze&quot; to audit the SEO parameters of any URL paths on your site.
                   </div>
                 )}
               </div>
@@ -2293,6 +2305,10 @@ export function AdminDashboard() {
               <div className="py-8 text-center text-sm text-[var(--muted)]">No execution telemetry logs found. Run the synchronization script to log stats.</div>
             )}
           </div>
+        </div>
+      ) : (
+        <div className="mt-8">
+          <ServicesInfrastructure stats={stats} hasFirebase={Boolean(canUseFirebase)} />
         </div>
       )}
     </AdminFrame>

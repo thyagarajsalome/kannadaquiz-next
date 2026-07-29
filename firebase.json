@@ -8,6 +8,11 @@
     ],
     "redirects": [
       {
+        "source": "/",
+        "destination": "/kn",
+        "type": 301
+      },
+      {
         "regex": ".*\\.php$",
         "destination": "/",
         "type": 301
