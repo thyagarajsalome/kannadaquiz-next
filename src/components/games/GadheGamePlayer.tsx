@@ -88,6 +88,20 @@ const proverbsData: ProverbData[] = [
   }
 ];
 
+// Scramble utility
+function scramble(array: string[]): string[] {
+  const copy = [...array];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  // Make sure it is not accidentally scrambled in correct order
+  if (JSON.stringify(copy) === JSON.stringify(array) && array.length > 1) {
+    return scramble(array);
+  }
+  return copy;
+}
+
 export function GadheGamePlayer({ locale }: { locale: Locale }) {
   const [gameState, setGameState] = useState<"start" | "playing" | "complete">("start");
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -101,20 +115,6 @@ export function GadheGamePlayer({ locale }: { locale: Locale }) {
   const timerInterval = useRef<NodeJS.Timeout | null>(null);
 
   const activeProverb = proverbsData[currentIdx];
-
-  // Scramble utility
-  const scramble = (array: string[]) => {
-    const copy = [...array];
-    for (let i = copy.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [copy[i], copy[j]] = [copy[j], copy[i]];
-    }
-    // Make sure it is not accidentally scrambled in correct order
-    if (JSON.stringify(copy) === JSON.stringify(array) && array.length > 1) {
-      return scramble(array);
-    }
-    return copy;
-  };
 
   const startGame = () => {
     setCurrentIdx(0);
