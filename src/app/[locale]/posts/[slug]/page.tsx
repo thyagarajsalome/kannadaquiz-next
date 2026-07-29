@@ -5,8 +5,8 @@ import { getPublicPosts, getPublicPostBySlug, type PublicPost } from "@/lib/publ
 import { MiniQuizPlayer } from "@/components/MiniQuizPlayer";
 
 export async function generateStaticParams() {
-  const knPosts = await getPublicPosts("kn", 500);
-  const enPosts = await getPublicPosts("en", 500);
+  const knPosts = await getPublicPosts("kn", 2000);
+  const enPosts = await getPublicPosts("en", 2000);
   const knParams = knPosts.map((post) => ({ locale: "kn", slug: post.slug }));
   const enParams = enPosts.map((post) => ({ locale: "en", slug: post.slug }));
   const combined = [...knParams, ...enParams];
