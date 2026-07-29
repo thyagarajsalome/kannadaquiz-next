@@ -313,6 +313,13 @@ async function querySingleBySlug(collectionId: string, slug: string, locale: Loc
                       value: { stringValue: locale },
                     },
                   },
+                  {
+                    fieldFilter: {
+                      field: { fieldPath: "status" },
+                      op: "EQUAL",
+                      value: { stringValue: "published" },
+                    },
+                  },
                 ],
               },
             },
@@ -339,10 +346,24 @@ async function querySingleBySlug(collectionId: string, slug: string, locale: Loc
           structuredQuery: {
             from: [{ collectionId }],
             where: {
-              fieldFilter: {
-                field: { fieldPath: "slug" },
-                op: "EQUAL",
-                value: { stringValue: decodedSlug },
+              compositeFilter: {
+                op: "AND",
+                filters: [
+                  {
+                    fieldFilter: {
+                      field: { fieldPath: "slug" },
+                      op: "EQUAL",
+                      value: { stringValue: decodedSlug },
+                    },
+                  },
+                  {
+                    fieldFilter: {
+                      field: { fieldPath: "status" },
+                      op: "EQUAL",
+                      value: { stringValue: "published" },
+                    },
+                  },
+                ],
               },
             },
             limit: 1,
