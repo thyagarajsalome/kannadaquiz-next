@@ -99,6 +99,8 @@ export function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("All");
   const [selectedLocaleFilter, setSelectedLocaleFilter] = useState("All");
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState("All");
+  const [selectedSourceFilter, setSelectedSourceFilter] = useState("All");
   const [saving, setSaving] = useState(false);
 
   // Telemetry & Stats states
@@ -231,6 +233,11 @@ export function AdminDashboard() {
   }, []);
 
   useEffect(() => {
+    setSelectedCategoryFilter("All");
+    setSelectedLocaleFilter("All");
+    setSelectedStatusFilter("All");
+    setSelectedSourceFilter("All");
+    setSearchQuery("");
     if (user) {
       void loadItems(kind);
     }
@@ -329,7 +336,7 @@ export function AdminDashboard() {
             title: String(data.title ?? data.headline ?? "Untitled"),
             slug: typeof data.slug === "string" ? data.slug : undefined,
             locale: typeof data.locale === "string" ? data.locale : undefined,
-            status: typeof data.status === "string" ? data.status : undefined,
+            status: typeof data.status === "string" && data.status ? data.status : "published",
             isManual: data.isManual === true,
             category: typeof data.category === "string" ? data.category : "General",
             updatedAt:
@@ -340,7 +347,7 @@ export function AdminDashboard() {
                   : "",
           };
         })
-        .filter((item) => item.status === "published" || item.status === "draft")
+        .filter((item) => !item.status || item.status === "published" || item.status === "draft")
         .sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
 
       setItems(nextItems);
@@ -1626,25 +1633,25 @@ export function AdminDashboard() {
             </div>
 
             {/* Filter & Search Bar Controls */}
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 bg-[var(--surface-soft)] p-4 rounded-lg border border-[var(--border)]/60">
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 bg-[var(--surface-soft)] p-4 rounded-lg border border-[var(--border)]/60">
               <div className="flex flex-col">
-                <label className="text-xs font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1.5">Search Title or Slug</label>
+                <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Search Title or Slug</label>
                 <input
                   type="text"
                   placeholder="Type to search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="rounded-md border border-[var(--border)] px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
+                  className="rounded-md border border-[var(--border)] px-3 py-1.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
                 />
               </div>
 
               {kind === "posts" && (
                 <div className="flex flex-col">
-                  <label className="text-xs font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1.5">Filter Category</label>
+                  <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Filter Category</label>
                   <select
                     value={selectedCategoryFilter}
                     onChange={(e) => setSelectedCategoryFilter(e.target.value)}
-                    className="rounded-md border border-[var(--border)] px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
+                    className="rounded-md border border-[var(--border)] px-3 py-1.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
                   >
                     <option value="All">All Categories</option>
                     <option value="General">General News</option>
@@ -1665,15 +1672,41 @@ export function AdminDashboard() {
               )}
 
               <div className="flex flex-col">
-                <label className="text-xs font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1.5">Filter Language</label>
+                <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Filter Status</label>
+                <select
+                  value={selectedStatusFilter}
+                  onChange={(e) => setSelectedStatusFilter(e.target.value)}
+                  className="rounded-md border border-[var(--border)] px-3 py-1.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
+                >
+                  <option value="All">All Statuses</option>
+                  <option value="published">Published Only</option>
+                  <option value="draft">Draft Only</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col">
+                <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Filter Language</label>
                 <select
                   value={selectedLocaleFilter}
                   onChange={(e) => setSelectedLocaleFilter(e.target.value)}
-                  className="rounded-md border border-[var(--border)] px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
+                  className="rounded-md border border-[var(--border)] px-3 py-1.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
                 >
                   <option value="All">All Languages</option>
                   <option value="kn">Kannada (kn)</option>
                   <option value="en">English (en)</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col">
+                <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Filter Source</label>
+                <select
+                  value={selectedSourceFilter}
+                  onChange={(e) => setSelectedSourceFilter(e.target.value)}
+                  className="rounded-md border border-[var(--border)] px-3 py-1.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
+                >
+                  <option value="All">All Sources (Manual & Auto)</option>
+                  <option value="Manual">Manual Posts Only</option>
+                  <option value="Auto">Auto-Synced Only</option>
                 </select>
               </div>
             </div>
@@ -1682,36 +1715,33 @@ export function AdminDashboard() {
           <div className="mt-4 grid gap-3">
             {(() => {
               const filteredItems = items.filter((item) => {
-                const titleMatch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                                   (item.slug || "").toLowerCase().includes(searchQuery.toLowerCase());
+                const search = searchQuery.toLowerCase().trim();
+                const titleMatch = !search || 
+                                   item.title.toLowerCase().includes(search) || 
+                                   (item.slug || "").toLowerCase().includes(search);
                 
                 let categoryMatch = true;
                 if (selectedCategoryFilter !== "All" && kind === "posts") {
                   const filterKey = selectedCategoryFilter.toLowerCase().trim();
                   const itemCategory = (item.category || "").toLowerCase().trim();
                   
-                  // Define synonyms and mapping groups for robust matching
                   const categoryGroups: Record<string, string[]> = {
                     general: ["general", "general news", "ಸಾಮಾನ್ಯ"],
-                    karnataka: ["karnataka", "karnataka news", "ಕರ್ನಾಟಕ", "ಕರ್ನಾಟಕ ಸುದ್ದಿ"],
-                    national: ["national", "national news", "ರಾಷ್ಟ್ರೀಯ", "ರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ"],
-                    international: ["international", "international news", "ಅಂತರರಾಷ್ಟ್ರೀಯ", "ಅಂತರರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ"],
-                    jobs: ["jobs", "jobs & careers", "kpsc", "exam notifications", "ಉದ್ಯೋಗಗಳು", "ಉದ್ಯೋಗ"],
-                    "current affairs": ["current affairs", "ಚಾಲ್ತಿ ವಿದ್ಯಮಾನಗಳು"],
+                    karnataka: ["karnataka", "karnataka news", "ಕರ್ನಾಟಕ"],
+                    national: ["national", "national news", "ರಾಷ್ಟ್ರೀಯ"],
+                    international: ["international", "international news", "ಅಂತರರಾಷ್ಟ್ರೀಯ"],
+                    jobs: ["jobs", "jobs & careers", "kpsc", "exam notifications", "ಉದ್ಯೋಗ"],
+                    "current affairs": ["current affairs", "ಚಾಲ್ತಿ"],
                     agriculture: ["agriculture", "agriculture info", "ಕೃಷಿ"],
                     "college guide": ["college guide", "education", "education & college guide", "college & education guide", "ಶಿಕ್ಷಣ"],
-                    "government schemes": ["government schemes", "schemes", "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು"],
-                    "heritage & tourism": ["heritage & tourism", "tourism", "ಪ್ರವಾಸೋದ್ಯಮ"],
+                    "government schemes": ["government schemes", "schemes", "ಯೋಜನೆ"],
+                    "heritage & tourism": ["heritage & tourism", "tourism", "ಪ್ರವಾಸ"],
                     "sports news": ["sports news", "sports", "ಕ್ರೀಡೆ"],
-                    movies: ["movies", "movies & cinema", "cinema", "film", "ಚಲನಚಿತ್ರ"],
-                    "home design": ["home design", "real estate", "interior", "house plans", "promotion", "services", "home design & real estate", "ಮನೆ ವಿನ್ಯಾಸ ಮತ್ತು ರಿಯಲ್ ಎಸ್ಟೇಟ್"],
+                    movies: ["movies", "movies & cinema", "cinema", "film", "ಚಿತ್ರ"],
+                    "home design": ["home design", "real estate", "interior", "house plans", "promotion", "services", "home design & real estate", "ವಿನ್ಯಾಸ"],
                   };
 
                   const groupSynonyms = categoryGroups[filterKey] || [filterKey];
-                  
-                  // Matches if:
-                  // 1. Exact or near match of any synonym inside the item category (or vice versa)
-                  // 2. The item category contains the filter key or vice versa
                   categoryMatch = groupSynonyms.some(syn => itemCategory.includes(syn) || syn.includes(itemCategory)) ||
                                   itemCategory.includes(filterKey) ||
                                   filterKey.includes(itemCategory);
@@ -1721,8 +1751,20 @@ export function AdminDashboard() {
                 if (selectedLocaleFilter !== "All") {
                   localeMatch = (item.locale || "").toLowerCase() === selectedLocaleFilter.toLowerCase();
                 }
+
+                let statusMatch = true;
+                if (selectedStatusFilter !== "All") {
+                  statusMatch = (item.status || "published").toLowerCase() === selectedStatusFilter.toLowerCase();
+                }
+
+                let sourceMatch = true;
+                if (selectedSourceFilter === "Manual") {
+                  sourceMatch = item.isManual === true;
+                } else if (selectedSourceFilter === "Auto") {
+                  sourceMatch = item.isManual !== true;
+                }
                 
-                return titleMatch && categoryMatch && localeMatch;
+                return titleMatch && categoryMatch && localeMatch && statusMatch && sourceMatch;
               });
 
               if (filteredItems.length) {
