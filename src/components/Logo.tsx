@@ -5,6 +5,8 @@ export function Logo({ className = "" }: { className?: string }) {
     <div className={`flex items-center gap-2.5 ${className}`}>
       {/* Icon Badge */}
       <svg
+        width="40"
+        height="40"
         viewBox="0 0 40 40"
         className="w-10 h-10 shrink-0"
         fill="none"

@@ -141,13 +141,71 @@ export default async function PostDetailPage({ params }: PageProps) {
     redirect(`/${locale}/posts`);
   }
 
-  // If the post is completely missing in both locales, redirect to main posts list
   if (!post) {
     redirect(`/${locale}/posts`);
   }
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: post.title,
+    description: post.excerpt || post.title,
+    image: post.featuredImageUrl ? [post.featuredImageUrl] : [],
+    datePublished: post.date,
+    author: {
+      "@type": "Organization",
+      name: "KannadaQuiz",
+      url: "https://kannadaquiz.in",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "KannadaQuiz",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://kannadaquiz.in/icon.svg",
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://kannadaquiz.in/${locale}/posts/${post.slug}`,
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: locale === "kn" ? "ಮುಖಪುಟ" : "Home",
+        item: `https://kannadaquiz.in/${locale}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: getLocalizedCategory(post.category, locale),
+        item: `https://kannadaquiz.in/${locale}/category/${getCategorySlug(post.category)}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: post.title,
+        item: `https://kannadaquiz.in/${locale}/posts/${post.slug}`,
+      },
+    ],
+  };
+
   return (
     <article className="kq-container py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <div className="max-w-3xl mx-auto">
         {/* Back Link */}
         <Link
