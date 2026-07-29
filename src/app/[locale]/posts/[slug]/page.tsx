@@ -118,10 +118,6 @@ export default async function PostDetailPage({ params }: PageProps) {
   const slug = resolvedParams.slug;
   const locale = (resolvedParams.locale === "en" ? "en" : "kn") as ValidLocale;
 
-  if (!slug) {
-    redirect(`/${locale}/posts`);
-  }
-
   let post: PublicPost | null = null;
 
   try {
@@ -137,12 +133,32 @@ export default async function PostDetailPage({ params }: PageProps) {
     }
   } catch (error) {
     console.error(`Database error fetching post [${slug}]:`, error);
-    // Redirect on database/network error to avoid 500 Internal Server Error
-    redirect(`/${locale}/posts`);
   }
 
   if (!post) {
-    redirect(`/${locale}/posts`);
+    return (
+      <main className="kq-container py-16 text-center">
+        <div className="max-w-md mx-auto kq-card p-8 rounded-2xl border border-[var(--border)] shadow-sm">
+          <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl">
+            📰
+          </div>
+          <h1 className="font-serif text-2xl font-bold text-[var(--primary)] mb-3">
+            {locale === "kn" ? "ಲೇಖನವನ್ನು ಹುಡುಕಲಾಗುತ್ತಿದೆ..." : "Article Loading or Moved"}
+          </h1>
+          <p className="text-sm text-[var(--muted)] leading-relaxed mb-6">
+            {locale === "kn"
+              ? "ನೀವು ವೀಕ್ಷಿಸುತ್ತಿರುವ ಲೇಖನವು ಅಪ್‌ಡೇಟ್ ಆಗುತ್ತಿದೆ ಅಥವಾ ಮುಖಪುಟದಲ್ಲಿದೆ. ಮುಖಪುಟಕ್ಕೆ ಹೋಗಿ ಇತ್ತೀಚಿನ ಸುದ್ದಿಗಳನ್ನು ವೀಕ್ಷಿಸಿ."
+              : "The requested article is being updated or has moved. Return to the home page to view the latest content."}
+          </p>
+          <Link
+            href={`/${locale}`}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[var(--secondary)] text-white font-extrabold text-sm hover:opacity-90 transition-opacity shadow-md"
+          >
+            <span>{locale === "kn" ? "ಮುಖಪುಟಕ್ಕೆ ಮರಳಿ ➔" : "Return to Home Page ➔"}</span>
+          </Link>
+        </div>
+      </main>
+    );
   }
 
   const articleJsonLd = {

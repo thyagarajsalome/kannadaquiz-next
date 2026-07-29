@@ -203,8 +203,71 @@ export async function getPublicCurrentAffairs(
   return mapped;
 }
 
-export async function getPublicPostBySlug(locale: Locale, slug: string) {
-  const doc = await querySingleBySlug("posts", slug, locale);
+export async function getPublicPostBySlug(locale: Locale, slug: string): Promise<PublicPost | undefined> {
+  const decodedSlug = decodeURIComponent(slug).trim();
+
+  // 1. Try posts collection by slug and locale
+  let doc = await querySingleBySlug("posts", decodedSlug, locale);
+
+  // 2. Try posts collection with raw slug
+  if (!doc && decodedSlug !== slug) {
+    doc = await querySingleBySlug("posts", slug, locale);
+  }
+
+  // 3. Try jobs collection
+  if (!doc) {
+    const jobDoc = (await querySingleBySlug("jobs", decodedSlug, locale)) || (await querySingleBySlug("jobs", slug, locale));
+    if (jobDoc) {
+      const job = toPublicJob(jobDoc);
+      if (job) {
+        return {
+          id: job.id,
+          slug: job.slug,
+          locale: job.locale,
+          title: job.title,
+          excerpt: `Organization: ${job.organization || "Govt"} | Deadline: ${job.deadline || "Open"}`,
+          body: job.body || `Job details for ${job.title}`,
+          category: "Jobs",
+          date: new Date().toISOString().slice(0, 10),
+        };
+      }
+    }
+  }
+
+  // 4. Try currentAffairs collection
+  if (!doc) {
+    const caDoc = (await querySingleBySlug("currentAffairs", decodedSlug, locale)) || (await querySingleBySlug("currentAffairs", slug, locale));
+    if (caDoc) {
+      const ca = toPublicCurrentAffair(caDoc);
+      if (ca) {
+        return {
+          id: ca.id,
+          slug: slug,
+          locale: ca.locale,
+          title: ca.headline,
+          excerpt: ca.headline,
+          body: ca.headline,
+          category: "Current Affairs",
+          date: ca.date,
+        };
+      }
+    }
+  }
+
+  // 5. Query recent posts from Firestore and match by slug or title slugification
+  if (!doc) {
+    const recentPosts = await getPublicPosts(locale, 200);
+    const match = recentPosts.find(p => p.slug === decodedSlug || p.slug === slug || p.id === decodedSlug || p.id === slug);
+    if (match) return match;
+  }
+
+  // 6. Fallback posts
+  if (!doc) {
+    const fallbacks = fallbackPosts(locale);
+    const match = fallbacks.find((p) => p.slug === decodedSlug || p.slug === slug);
+    if (match) return match;
+  }
+
   if (!doc) return undefined;
   return toPublicPost(doc) ?? undefined;
 }
