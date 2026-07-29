@@ -310,20 +310,20 @@ export function AdminDashboard() {
     try {
       let snapshot;
       try {
-        // Fetch up to 100 items ordered by the most recently updated first.
+        // Fetch up to 300 items ordered by the most recently updated first.
         // This guarantees that newly published or modified drafts are fetched without wasting Firestore reads.
         const docsQuery = query(
           collection(firestore, firestoreCollections[nextKind]),
           orderBy("updatedAt", "desc"),
-          limit(100)
+          limit(300)
         );
         snapshot = await getDocs(docsQuery);
       } catch (indexError) {
         console.warn("Index not found or sorting failed, falling back to unordered fetch:", indexError);
-        // Fallback to fetch up to 100 items without sorting at the database level.
+        // Fallback to fetch up to 300 items without sorting at the database level.
         const docsQuery = query(
           collection(firestore, firestoreCollections[nextKind]),
-          limit(100)
+          limit(300)
         );
         snapshot = await getDocs(docsQuery);
       }
@@ -1633,81 +1633,101 @@ export function AdminDashboard() {
             </div>
 
             {/* Filter & Search Bar Controls */}
-            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 bg-[var(--surface-soft)] p-4 rounded-lg border border-[var(--border)]/60">
-              <div className="flex flex-col">
-                <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Search Title or Slug</label>
-                <input
-                  type="text"
-                  placeholder="Type to search..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="rounded-md border border-[var(--border)] px-3 py-1.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
-                />
-              </div>
-
-              {kind === "posts" && (
+            <div className="bg-[var(--surface-soft)] p-4 rounded-lg border border-[var(--border)]/60 space-y-3">
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
                 <div className="flex flex-col">
-                  <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Filter Category</label>
+                  <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Search Title or Slug</label>
+                  <input
+                    type="text"
+                    placeholder="Type to search..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
+                  />
+                </div>
+
+                {kind === "posts" && (
+                  <div className="flex flex-col">
+                    <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Filter Category</label>
+                    <select
+                      value={selectedCategoryFilter}
+                      onChange={(e) => setSelectedCategoryFilter(e.target.value)}
+                      className="w-full truncate rounded-md border border-[var(--border)] px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)] cursor-pointer font-medium"
+                    >
+                      <option value="All">All Categories</option>
+                      <option value="General">General News</option>
+                      <option value="Karnataka">Karnataka News</option>
+                      <option value="National">National News</option>
+                      <option value="International">International News</option>
+                      <option value="Jobs">Jobs & Careers</option>
+                      <option value="Current Affairs">Current Affairs</option>
+                      <option value="Agriculture">Agriculture Info</option>
+                      <option value="College Guide">College & Education Guide</option>
+                      <option value="Government Schemes">Government Schemes</option>
+                      <option value="Heritage & Tourism">Heritage & Tourism</option>
+                      <option value="Sports News">Sports News</option>
+                      <option value="Movies">Movies & Cinema</option>
+                      <option value="Home Design">Home Design & Real Estate</option>
+                    </select>
+                  </div>
+                )}
+
+                <div className="flex flex-col">
+                  <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Filter Status</label>
                   <select
-                    value={selectedCategoryFilter}
-                    onChange={(e) => setSelectedCategoryFilter(e.target.value)}
-                    className="rounded-md border border-[var(--border)] px-3 py-1.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
+                    value={selectedStatusFilter}
+                    onChange={(e) => setSelectedStatusFilter(e.target.value)}
+                    className="w-full truncate rounded-md border border-[var(--border)] px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)] cursor-pointer font-medium"
                   >
-                    <option value="All">All Categories</option>
-                    <option value="General">General News</option>
-                    <option value="Karnataka">Karnataka News</option>
-                    <option value="National">National News</option>
-                    <option value="International">International News</option>
-                    <option value="Jobs">Jobs & Careers</option>
-                    <option value="Current Affairs">Current Affairs</option>
-                    <option value="Agriculture">Agriculture Info</option>
-                    <option value="College Guide">College & Education Guide</option>
-                    <option value="Government Schemes">Government Schemes</option>
-                    <option value="Heritage & Tourism">Heritage & Tourism</option>
-                    <option value="Sports News">Sports News</option>
-                    <option value="Movies">Movies & Cinema</option>
-                    <option value="Home Design">Home Design & Real Estate</option>
+                    <option value="All">All Statuses</option>
+                    <option value="published">Published Only</option>
+                    <option value="draft">Draft Only</option>
                   </select>
                 </div>
-              )}
 
-              <div className="flex flex-col">
-                <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Filter Status</label>
-                <select
-                  value={selectedStatusFilter}
-                  onChange={(e) => setSelectedStatusFilter(e.target.value)}
-                  className="rounded-md border border-[var(--border)] px-3 py-1.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
-                >
-                  <option value="All">All Statuses</option>
-                  <option value="published">Published Only</option>
-                  <option value="draft">Draft Only</option>
-                </select>
-              </div>
+                <div className="flex flex-col">
+                  <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Filter Language</label>
+                  <select
+                    value={selectedLocaleFilter}
+                    onChange={(e) => setSelectedLocaleFilter(e.target.value)}
+                    className="w-full truncate rounded-md border border-[var(--border)] px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)] cursor-pointer font-medium"
+                  >
+                    <option value="All">All Languages</option>
+                    <option value="kn">Kannada (kn)</option>
+                    <option value="en">English (en)</option>
+                  </select>
+                </div>
 
-              <div className="flex flex-col">
-                <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Filter Language</label>
-                <select
-                  value={selectedLocaleFilter}
-                  onChange={(e) => setSelectedLocaleFilter(e.target.value)}
-                  className="rounded-md border border-[var(--border)] px-3 py-1.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
-                >
-                  <option value="All">All Languages</option>
-                  <option value="kn">Kannada (kn)</option>
-                  <option value="en">English (en)</option>
-                </select>
-              </div>
+                <div className="flex flex-col">
+                  <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Filter Source</label>
+                  <select
+                    value={selectedSourceFilter}
+                    onChange={(e) => setSelectedSourceFilter(e.target.value)}
+                    className="w-full truncate rounded-md border border-[var(--border)] px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)] cursor-pointer font-medium"
+                  >
+                    <option value="All">All Sources (Manual & Auto)</option>
+                    <option value="Manual">Manual Posts Only</option>
+                    <option value="Auto">Auto-Synced Only</option>
+                  </select>
+                </div>
 
-              <div className="flex flex-col">
-                <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Filter Source</label>
-                <select
-                  value={selectedSourceFilter}
-                  onChange={(e) => setSelectedSourceFilter(e.target.value)}
-                  className="rounded-md border border-[var(--border)] px-3 py-1.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
-                >
-                  <option value="All">All Sources (Manual & Auto)</option>
-                  <option value="Manual">Manual Posts Only</option>
-                  <option value="Auto">Auto-Synced Only</option>
-                </select>
+                {(searchQuery || selectedCategoryFilter !== "All" || selectedStatusFilter !== "All" || selectedLocaleFilter !== "All" || selectedSourceFilter !== "All") && (
+                  <div className="flex flex-col justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery("");
+                        setSelectedCategoryFilter("All");
+                        setSelectedStatusFilter("All");
+                        setSelectedLocaleFilter("All");
+                        setSelectedSourceFilter("All");
+                      }}
+                      className="w-full py-2 px-3 text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-md transition-colors cursor-pointer text-center"
+                    >
+                      ✕ Reset Filters
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -1773,60 +1793,88 @@ export function AdminDashboard() {
                     <p className="text-xs text-[var(--muted)] font-semibold px-1 mb-1">
                       Showing {filteredItems.length} of {items.length} records
                     </p>
-                    {filteredItems.map((item) => (
-                      <article key={item.id} className="rounded-md border border-[var(--border)] p-3 flex justify-between items-start gap-4 hover:bg-slate-50 transition-colors">
-                        <div>
-                          <p className="font-bold text-[var(--primary)] flex flex-wrap gap-1.5 items-center">
-                            <span>{item.title}</span>
-                            {item.status === "draft" && (
-                              <span className="inline-block rounded bg-amber-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-amber-800 border border-amber-200">
-                                Draft
-                              </span>
-                            )}
-                            {(kind === "posts" || kind === "jobs") && (
-                              item.isManual ? (
-                                <span className="inline-block rounded bg-emerald-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-emerald-800 border border-emerald-200">
-                                  Manual
-                                </span>
+                    {filteredItems.map((item) => {
+                      const liveRoute = kind === "jobs" ? "jobs" : kind === "quizzes" ? "quizzes" : "posts";
+                      const itemLiveUrl = item.slug ? `/${item.locale || "kn"}/${liveRoute}/${item.slug}` : `/${item.locale || "kn"}`;
+
+                      return (
+                        <article key={item.id} className="rounded-md border border-[var(--border)] p-3 flex justify-between items-start gap-4 hover:bg-slate-50 transition-colors">
+                          <div>
+                            <p className="font-bold text-[var(--primary)] flex flex-wrap gap-1.5 items-center">
+                              {item.slug ? (
+                                <a
+                                  href={itemLiveUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="hover:text-[var(--secondary)] hover:underline flex items-center gap-1"
+                                  title="Click to view live page"
+                                >
+                                  {item.title}
+                                </a>
                               ) : (
-                                <span className="inline-block rounded bg-violet-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-violet-800 border border-violet-200">
-                                  Auto
+                                <span>{item.title}</span>
+                              )}
+                              {item.status === "draft" && (
+                                <span className="inline-block rounded bg-amber-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-amber-800 border border-amber-200">
+                                  Draft
                                 </span>
-                              )
+                              )}
+                              {(kind === "posts" || kind === "jobs") && (
+                                item.isManual ? (
+                                  <span className="inline-block rounded bg-emerald-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-emerald-800 border border-emerald-200">
+                                    Manual
+                                  </span>
+                                ) : (
+                                  <span className="inline-block rounded bg-violet-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-violet-800 border border-violet-200">
+                                    Auto
+                                  </span>
+                                )
+                              )}
+                            </p>
+                            <p className="mt-1 text-xs text-[var(--muted)]">
+                              {item.locale ?? "n/a"} {item.category ? `• ${item.category}` : ""} {item.slug ? `• ${item.slug}` : ""}
+                            </p>
+                          </div>
+                          <div className="flex gap-2 shrink-0 items-center">
+                            {item.slug && (
+                              <a
+                                href={itemLiveUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-blue-600 font-bold hover:underline flex items-center gap-0.5"
+                                title="Open public live page in new tab"
+                              >
+                                View Live ↗
+                              </a>
                             )}
-                          </p>
-                          <p className="mt-1 text-xs text-[var(--muted)]">
-                            {item.locale ?? "n/a"} {item.category ? `• ${item.category}` : ""} {item.slug ? `• ${item.slug}` : ""}
-                          </p>
-                        </div>
-                        <div className="flex gap-2 shrink-0 items-center">
-                          {(kind === "posts" || kind === "jobs") && !item.isManual && (
+                            {(kind === "posts" || kind === "jobs") && !item.isManual && (
+                              <button
+                                type="button"
+                                onClick={() => handleVerifyItem(item.id)}
+                                className="text-xs text-emerald-600 font-bold hover:underline cursor-pointer"
+                                title="Mark as human reviewed & manual equivalent"
+                              >
+                                Verify
+                              </button>
+                            )}
                             <button
                               type="button"
-                              onClick={() => handleVerifyItem(item.id)}
-                              className="text-xs text-emerald-600 font-bold hover:underline cursor-pointer"
-                              title="Mark as human reviewed & manual equivalent"
+                              onClick={() => handleEditInit(item.id)}
+                              className="text-xs text-[var(--primary)] font-bold hover:underline cursor-pointer"
                             >
-                              Verify
+                              Edit
                             </button>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => handleEditInit(item.id)}
-                            className="text-xs text-[var(--primary)] font-bold hover:underline cursor-pointer"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(item.id)}
-                            className="text-xs text-[var(--secondary)] font-bold hover:underline cursor-pointer"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </article>
-                    ))}
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(item.id)}
+                              className="text-xs text-[var(--secondary)] font-bold hover:underline cursor-pointer"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </article>
+                      );
+                    })}
                   </>
                 );
               }
