@@ -245,15 +245,6 @@ async function querySingleBySlug(collectionId: string, slug: string, locale: Loc
                       },
                     },
                   ];
-                  if (collectionId === "posts" || collectionId === "jobs") {
-                    f.push({
-                      fieldFilter: {
-                        field: { fieldPath: "isManual" },
-                        op: "EQUAL",
-                        value: { booleanValue: true },
-                      },
-                    });
-                  }
                   return f;
                 })(),
               },
@@ -434,6 +425,12 @@ async function queryPublishedByLocale(collectionId: string, locale: Locale, limi
                     { fieldPath: "deadline" },
                   ];
                 }
+                if (collectionId === "currentAffairs") {
+                  return [
+                    ...baseFields,
+                    { fieldPath: "headline" },
+                  ];
+                }
                 return baseFields;
               })()
             },
@@ -441,34 +438,22 @@ async function queryPublishedByLocale(collectionId: string, locale: Locale, limi
             where: {
               compositeFilter: {
                 op: "AND",
-                filters: (() => {
-                  const f: any[] = [
-                    {
-                      fieldFilter: {
-                        field: { fieldPath: "status" },
-                        op: "EQUAL",
-                        value: { stringValue: "published" },
-                      },
+                filters: [
+                  {
+                    fieldFilter: {
+                      field: { fieldPath: "status" },
+                      op: "EQUAL",
+                      value: { stringValue: "published" },
                     },
-                    {
-                      fieldFilter: {
-                        field: { fieldPath: "locale" },
-                        op: "EQUAL",
-                        value: { stringValue: locale },
-                      },
+                  },
+                  {
+                    fieldFilter: {
+                      field: { fieldPath: "locale" },
+                      op: "EQUAL",
+                      value: { stringValue: locale },
                     },
-                  ];
-                  if (collectionId === "posts" || collectionId === "jobs") {
-                    f.push({
-                      fieldFilter: {
-                        field: { fieldPath: "isManual" },
-                        op: "EQUAL",
-                        value: { booleanValue: true },
-                      },
-                    });
-                  }
-                  return f;
-                })(),
+                  },
+                ],
               },
             },
             limit: limitCount,
@@ -574,15 +559,6 @@ async function queryPublishedByLocaleAndCategory(
                       },
                     },
                   ];
-                  if (collectionId === "posts" || collectionId === "jobs") {
-                    f.push({
-                      fieldFilter: {
-                        field: { fieldPath: "isManual" },
-                        op: "EQUAL",
-                        value: { booleanValue: true },
-                      },
-                    });
-                  }
                   return f;
                 })(),
               },

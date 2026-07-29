@@ -316,8 +316,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   // 2. Select featured posts (manually featured takes priority, fallback to latest standard posts if none or only 1 is selected)
   let featuredPosts: PublicPost[] = [...manuallyFeatured];
 
-  if (featuredPosts.length < 2) {
-    const remainingCount = 2 - featuredPosts.length;
+  if (featuredPosts.length < 4) {
+    const remainingCount = 4 - featuredPosts.length;
     const featuredSlugsSet = new Set(featuredPosts.map(p => p.slug));
     const latestFallback = posts
       .filter(p => !featuredSlugsSet.has(p.slug))
@@ -325,8 +325,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     featuredPosts = [...featuredPosts, ...latestFallback];
   }
 
-  // Cleanly limit to exactly 2 featured posts
-  featuredPosts = featuredPosts.slice(0, 2);
+  // Cleanly limit to exactly 4 featured posts
+  featuredPosts = featuredPosts.slice(0, 4);
 
   // Filter out the highlighted/featured articles from the standard recent feed to prevent duplicate visual entries on the page
   const featuredSlugsSet = new Set(featuredPosts.map(p => p.slug));
@@ -505,7 +505,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </div>
 
             {/* Grid */}
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {featuredPosts.map((post) => (
                 <div 
                   key={post.slug}
