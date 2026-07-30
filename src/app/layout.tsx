@@ -72,6 +72,14 @@ export default function RootLayout({
       lang="kn"
       className={`${publicSans.variable} ${sourceSerif.variable} ${notoKannada.variable} h-full antialiased`}
     >
+      <head>
+        <Script 
+          async 
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1813097110898475" 
+          crossOrigin="anonymous" 
+          strategy="afterInteractive" 
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         {children}
         {gaId && (
