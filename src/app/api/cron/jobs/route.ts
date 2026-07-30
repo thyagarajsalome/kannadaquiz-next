@@ -3,23 +3,27 @@ import { revalidatePath } from 'next/cache';
 import * as admin from 'firebase-admin';
 import Parser from 'rss-parser';
 
-// 1. Initialize Firebase Admin securely
-if (!admin.apps.length) {
-  try {
-    admin.initializeApp({
-      credential: admin.credential.cert({
-        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
-      }),
-    });
-  } catch (error) {
-    console.error('Firebase Admin Init Error:', error);
+// 1. Initialize Firebase Admin securely (Lazy wrapper for build-time safety)
+function getDb() {
+  if (!admin.apps.length) {
+    try {
+      if (process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL) {
+        admin.initializeApp({
+          credential: admin.credential.cert({
+            projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+            privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+          }),
+        });
+      }
+    } catch (error) {
+      console.error('Firebase Admin Init Error:', error);
+    }
   }
+  return admin.apps.length ? admin.firestore() : null;
 }
 
-const db = admin.firestore();
-const parser = new Parser();
+const getParser = () => new Parser();
 
 // Configure the RSS Feed for Karnataka and Central Govt Jobs
 const JOBS_RSS_URL = 'https://news.google.com/rss/search?q=karnataka+government+jobs+recruitment+OR+KPSC+OR+UPSC+OR+SSC+OR+RRB+OR+India+government+jobs&hl=en-IN&gl=IN&ceid=IN:en';
@@ -34,6 +38,13 @@ export async function GET(request: Request) {
   if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return new NextResponse('Unauthorized', { status: 401 });
   }
+
+  const db = getDb();
+  if (!db) {
+    return NextResponse.json({ error: "Firestore not initialized (missing env config)" }, { status: 500 });
+  }
+
+  const parser = getParser();
 
   try {
     const feed = await parser.parseURL(JOBS_RSS_URL);
