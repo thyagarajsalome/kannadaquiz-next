@@ -36,7 +36,7 @@ export default async function ContactPage({
             </p>
             <div className="bg-[var(--surface-soft)] p-6 rounded-lg border border-[var(--border)] mt-4">
               <h3 className="font-bold text-[var(--primary)] mb-2">ಇಮೇಲ್ ಮೂಲಕ ಸಂಪರ್ಕಿಸಿ:</h3>
-              <p className="font-mono text-[var(--secondary)] font-medium text-lg">contact@kannadaquiz.in</p>
+              <p className="font-mono text-[var(--secondary)] font-medium text-lg">kannadaquiz.support@gmail.com</p>
             </div>
             <p>
               ಜಾಹೀರಾತು, ಪಾಲುದಾರಿಕೆ, ಅಥವಾ ವೆಬ್‌ಸೈಟ್‌ಗೆ ಸಂಬಂಧಿಸಿದ ತಾಂತ್ರಿಕ ಸಮಸ್ಯೆಗಳಿದ್ದರೂ ದಯವಿಟ್ಟು ಮೇಲಿನ ಇಮೇಲ್ ವಿಳಾಸಕ್ಕೆ ಬರೆಯಿರಿ. ನಾವು ಆದಷ್ಟು ಬೇಗ ನಿಮಗೆ ಪ್ರತಿಕ್ರಿಯಿಸುತ್ತೇವೆ.
@@ -49,7 +49,7 @@ export default async function ContactPage({
             </p>
             <div className="bg-[var(--surface-soft)] p-6 rounded-lg border border-[var(--border)] mt-4">
               <h3 className="font-bold text-[var(--primary)] mb-2">Email Us At:</h3>
-              <p className="font-mono text-[var(--secondary)] font-medium text-lg">contact@kannadaquiz.in</p>
+              <p className="font-mono text-[var(--secondary)] font-medium text-lg">kannadaquiz.support@gmail.com</p>
             </div>
             <p>
               For advertising, partnerships, or reporting technical issues with the website, drop us an email at the address above. We aim to respond to all queries as soon as possible.

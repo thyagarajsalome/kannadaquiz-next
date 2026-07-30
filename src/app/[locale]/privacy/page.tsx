@@ -75,7 +75,7 @@ export default async function PrivacyPage({
             <section className="space-y-3">
               <h2 className="font-serif text-xl font-bold text-[var(--primary)]">5. ನಿಮ್ಮ ಹಕ್ಕುಗಳು ಮತ್ತು ಡೇಟಾ ಅಳಿಸುವಿಕೆ (Data Deletion Rights)</h2>
               <p>
-                ನಿಮ್ಮ ಖಾತೆ ಮತ್ತು ಡೇಟಾವನ್ನು ನಮ್ಮ ಸಿಸ್ಟಮ್‌ನಿಂದ ಸಂಪೂರ್ಣವಾಗಿ ಅಳಿಸಲು ನೀವು ಹಕ್ಕನ್ನು ಹೊಂದಿದ್ದೀರಿ. ಡಿಜಿಟಲ್ ವೈಯಕ್ತಿಕ ಡೇಟಾ ಸಂರಕ್ಷಣಾ ಕಾಯ್ದೆ (DPDP Act, India) ಅನ್ವಯ, ನಿಮ್ಮ ಮಾಹಿತಿಯನ್ನು ಪರಿಶೀಲಿಸಲು ಅಥವಾ ಅಳಿಸಲು ನೀವು <strong>contact@kannadaquiz.in</strong> ಗೆ ಇಮೇಲ್ ಮಾಡಬಹುದು. ನಿಮ್ಮ ಕೋರಿಕೆಯ ಮೇರೆಗೆ ನಾವು ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಶಾಶ್ವತವಾಗಿ ತೆಗೆದುಹಾಕುತ್ತೇವೆ.
+                ನಿಮ್ಮ ಖಾತೆ ಮತ್ತು ಡೇಟಾವನ್ನು ನಮ್ಮ ಸಿಸ್ಟಮ್‌ನಿಂದ ಸಂಪೂರ್ಣವಾಗಿ ಅಳಿಸಲು ನೀವು ಹಕ್ಕನ್ನು ಹೊಂದಿದ್ದೀರಿ. ಡಿಜಿಟಲ್ ವೈಯಕ್ತಿಕ ಡೇಟಾ ಸಂರಕ್ಷಣಾ ಕಾಯ್ದೆ (DPDP Act, India) ಅನ್ವಯ, ನಿಮ್ಮ ಮಾಹಿತಿಯನ್ನು ಪರಿಶೀಲಿಸಲು ಅಥವಾ ಅಳಿಸಲು ನೀವು <strong>kannadaquiz.support@gmail.com</strong> ಗೆ ಇಮೇಲ್ ಮಾಡಬಹುದು. ನಿಮ್ಮ ಕೋರಿಕೆಯ ಮೇರೆಗೆ ನಾವು ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಶಾಶ್ವತವಾಗಿ ತೆಗೆದುಹಾಕುತ್ತೇವೆ.
               </p>
             </section>
 
@@ -135,7 +135,7 @@ export default async function PrivacyPage({
             <section className="space-y-3">
               <h2 className="font-serif text-xl font-bold text-[var(--primary)]">5. Your Data Rights & Deletion (DPDP Compliance)</h2>
               <p>
-                In accordance with global standards and India's Digital Personal Data Protection (DPDP) Act, you have the right to access, rectify, or erase your personal data. If you wish to delete your account and all associated data from our servers, you can request account deletion by emailing us at <strong>contact@kannadaquiz.in</strong>. We will process your request promptly.
+                In accordance with global standards and India's Digital Personal Data Protection (DPDP) Act, you have the right to access, rectify, or erase your personal data. If you wish to delete your account and all associated data from our servers, you can request account deletion by emailing us at <strong>kannadaquiz.support@gmail.com</strong>. We will process your request promptly.
               </p>
             </section>
 
