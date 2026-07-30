@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { type PublicPost } from "@/lib/public-content";
 import { type Locale } from "@/lib/locales";
 
@@ -144,7 +145,19 @@ export function HeroSlider({ posts, locale, readMoreText }: HeroSliderProps) {
       {/* Slide Content wrapper with fade transition */}
       <div className={`transition-all duration-300 ease-in-out ${isTransitioning ? "opacity-0 translate-x-2" : "opacity-100 translate-x-0"}`}>
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--secondary)]">
+          {activePost.featuredImageUrl && (
+            <Link href={`/${locale}/posts/${activePost.slug}`} className="block overflow-hidden aspect-[21/9] border-b border-[var(--border)]/45 relative mb-4">
+              <Image
+                src={activePost.featuredImageUrl}
+                alt={activePost.title}
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, 66vw"
+                className="object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </Link>
+          )}
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--secondary)] mt-2">
             <span className="bg-[var(--secondary)]/10 text-[var(--secondary)] px-2.5 py-0.5 rounded-full font-black text-[10px] uppercase tracking-widest mr-1">
               {locale === "kn" ? "ವಿಶೇಷ ಸುದ್ದಿ" : "PINNED"}
             </span>

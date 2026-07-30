@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { getPublicPosts, getPublicPostBySlug, type PublicPost } from "@/lib/public-content";
 import { MiniQuizPlayer } from "@/components/MiniQuizPlayer";
@@ -270,11 +271,14 @@ export default async function PostDetailPage({ params }: PageProps) {
 
         {/* Featured Image */}
         {post.featuredImageUrl && (
-          <div className="mt-6 overflow-hidden rounded-xl border border-[var(--border)] aspect-video">
-            <img
+          <div className="mt-6 overflow-hidden rounded-xl border border-[var(--border)] aspect-video relative">
+            <Image
               src={post.featuredImageUrl}
               alt={post.title || "Post image"}
-              className="w-full h-full object-cover"
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 800px"
+              className="object-cover"
             />
           </div>
         )}

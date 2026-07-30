@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { siteText } from "@/data/content";
 import { HeroSlider } from "@/components/HeroSlider";
 import { isLocale, locales, type Locale } from "@/lib/locales";
@@ -279,11 +280,13 @@ function PostGridCard({ post, locale, readMoreText }: PostGridCardProps) {
     <div className="kq-card overflow-hidden flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 rounded-xl border border-[var(--border)]">
       <div>
         {post.featuredImageUrl && (
-          <Link href={`/${locale}/posts/${post.slug}`} prefetch={false} className="block overflow-hidden aspect-video border-b border-[var(--border)]/40 hover:opacity-95 transition-opacity">
-            <img
+          <Link href={`/${locale}/posts/${post.slug}`} prefetch={false} className="block overflow-hidden aspect-video border-b border-[var(--border)]/40 hover:opacity-95 transition-opacity relative">
+            <Image
               src={post.featuredImageUrl}
               alt={post.title}
-              className="w-full h-full object-cover"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover"
               loading="lazy"
             />
           </Link>
@@ -532,12 +535,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   <div>
                     {post.featuredImageUrl && (
                       <Link href={`/${locale}/posts/${post.slug}`} className="block overflow-hidden aspect-[21/9] border-b border-[var(--border)]/45 relative">
-                        <img
+                        <Image
                           src={post.featuredImageUrl}
                           alt={post.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          fill
+                          priority
+                          sizes="(max-width: 768px) 100vw, 25vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
                         />
-                        <span className="absolute top-3 left-3 bg-amber-500 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full shadow-sm tracking-widest">
+                        <span className="absolute top-3 left-3 bg-amber-500 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full shadow-sm tracking-widest z-10">
                           {locale === "kn" ? "⭐ ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ" : "⭐ FEATURED"}
                         </span>
                       </Link>
