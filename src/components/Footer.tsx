@@ -22,6 +22,12 @@ export function Footer({ locale }: { locale: Locale }) {
         </div>
         <div className="flex flex-col md:items-end gap-2 shrink-0">
           <div className="flex flex-wrap gap-4 text-xs text-white/80">
+            <Link href={`/${locale}/about`} className="hover:text-white hover:underline">
+              {locale === "kn" ? "ನಮ್ಮ ಬಗ್ಗೆ (About)" : "About Us"}
+            </Link>
+            <Link href={`/${locale}/contact`} className="hover:text-white hover:underline">
+              {locale === "kn" ? "ಸಂಪರ್ಕಿಸಿ (Contact)" : "Contact Us"}
+            </Link>
             <Link href={`/${locale}/disclaimer`} className="hover:text-white hover:underline">
               {locale === "kn" ? "ಹಕ್ಕುತ್ಯಾಗ (Disclaimer)" : "Disclaimer"}
             </Link>

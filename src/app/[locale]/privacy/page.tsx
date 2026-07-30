@@ -61,10 +61,15 @@ export default async function PrivacyPage({
             </section>
 
             <section className="space-y-3">
-              <h2 className="font-serif text-xl font-bold text-[var(--primary)]">4. ಮೂರನೇ ವ್ಯಕ್ತಿಯ ಸೇವೆಗಳು (Third-Party Services)</h2>
+              <h2 className="font-serif text-xl font-bold text-[var(--primary)]">4. ಮೂರನೇ ವ್ಯಕ್ತಿಯ ಸೇವೆಗಳು ಮತ್ತು ಜಾಹೀರಾತುಗಳು (Third-Party Services & Advertising)</h2>
               <p>
-                ನಾವು ವೆಬ್‌ಸೈಟ್ ಟ್ರಾಫಿಕ್ ವಿಶ್ಲೇಷಣೆಗಾಗಿ <strong>Google Analytics</strong> ಮತ್ತು ದೃಢೀಕರಣ/ಡೇಟಾಬೇಸ್‌ಗಾಗಿ <strong>Google Firebase</strong> ಅನ್ನು ಬಳಸುತ್ತೇವೆ. ಈ ಪೂರೈಕೆದಾರರು ತಮ್ಮದೇ ಆದ ಗೌಪ್ಯತಾ ನೀತಿಗಳಿಗೆ ಒಳಪಟ್ಟಿರುತ್ತಾರೆ. ನಾವು ಯಾವುದೇ ಕಾರಣಕ್ಕೂ ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ಡೇಟಾವನ್ನು (ಉದಾ: ಇಮೇಲ್) ಜಾಹೀರಾತುದಾರರಿಗೆ ಅಥವಾ ಮೂರನೇ ವ್ಯಕ್ತಿಗಳಿಗೆ ಮಾರಾಟ ಮಾಡುವುದಿಲ್ಲ ಅಥವಾ ಹಂಚಿಕೊಳ್ಳುವುದಿಲ್ಲ.
+                ನಾವು ವೆಬ್‌ಸೈಟ್ ಟ್ರಾಫಿಕ್ ವಿಶ್ಲೇಷಣೆಗಾಗಿ <strong>Google Analytics</strong> ಮತ್ತು ದೃಢೀಕರಣ/ಡೇಟಾಬೇಸ್‌ಗಾಗಿ <strong>Google Firebase</strong> ಅನ್ನು ಬಳಸುತ್ತೇವೆ. ಜೊತೆಗೆ, ನಮ್ಮ ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿ ಜಾಹೀರಾತುಗಳನ್ನು ಪ್ರದರ್ಶಿಸಲು <strong>Google AdSense</strong> ಅನ್ನು ಬಳಸುತ್ತೇವೆ.
               </p>
+              <ul className="list-disc pl-6 space-y-1 mt-2">
+                <li>Google ಸೇರಿದಂತೆ ಮೂರನೇ ವ್ಯಕ್ತಿಯ ಮಾರಾಟಗಾರರು (Third-party vendors), ಬಳಕೆದಾರರು ನಮ್ಮ ವೆಬ್‌ಸೈಟ್ ಅಥವಾ ಇತರ ವೆಬ್‌ಸೈಟ್‌ಗಳಿಗೆ ನೀಡಿದ ಹಿಂದಿನ ಭೇಟಿಗಳ ಆಧಾರದ ಮೇಲೆ ಜಾಹೀರಾತುಗಳನ್ನು ಪ್ರದರ್ಶಿಸಲು ಕುಕೀಗಳನ್ನು (Cookies) ಬಳಸುತ್ತಾರೆ.</li>
+                <li>ಜಾಹೀರಾತು ಕುಕೀಗಳ ಬಳಕೆಯು Google ಮತ್ತು ಅದರ ಪಾಲುದಾರರಿಗೆ ಬಳಕೆದಾರರ ಆಸಕ್ತಿಗಳಿಗೆ ಅನುಗುಣವಾಗಿ (Personalized ads) ಜಾಹೀರಾತುಗಳನ್ನು ತೋರಿಸಲು ಅನುವು ಮಾಡಿಕೊಡುತ್ತದೆ.</li>
+                <li>ಬಳಕೆದಾರರು <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" className="text-[var(--secondary)] hover:underline">Ads Settings</a> ಗೆ ಭೇಟಿ ನೀಡುವ ಮೂಲಕ ವೈಯಕ್ತೀಕರಿಸಿದ ಜಾಹೀರಾತುಗಳಿಂದ (Personalized advertising) ಹೊರಗುಳಿಯಬಹುದು, ಅಥವಾ <a href="http://www.aboutads.info" target="_blank" rel="noopener noreferrer" className="text-[var(--secondary)] hover:underline">www.aboutads.info</a> ಗೆ ಭೇಟಿ ನೀಡುವ ಮೂಲಕ ಮೂರನೇ ವ್ಯಕ್ತಿಯ ಕುಕೀಗಳನ್ನು ನಿರ್ಬಂಧಿಸಬಹುದು.</li>
+              </ul>
             </section>
 
             <section className="space-y-3">
@@ -113,10 +118,16 @@ export default async function PrivacyPage({
             </section>
 
             <section className="space-y-3">
-              <h2 className="font-serif text-xl font-bold text-[var(--primary)]">4. Third-Party Services</h2>
+              <h2 className="font-serif text-xl font-bold text-[var(--primary)]">4. Third-Party Services & Advertising</h2>
               <p>
-                We use <strong>Google Analytics</strong> to analyze website traffic and <strong>Google Firebase</strong> for database and authentication services. These third-party service providers have their own privacy policies addressing how they use such information. 
-                <br/><br/>
+                We use <strong>Google Analytics</strong> to analyze website traffic and <strong>Google Firebase</strong> for database and authentication services. Additionally, we use <strong>Google AdSense</strong> to display advertisements on our website.
+              </p>
+              <ul className="list-disc pl-6 space-y-1 mt-2">
+                <li>Third party vendors, including Google, use cookies to serve ads based on a user's prior visits to your website or other websites.</li>
+                <li>Google's use of advertising cookies enables it and its partners to serve ads to your users based on their visit to your sites and/or other sites on the Internet.</li>
+                <li>Users may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" className="text-[var(--secondary)] hover:underline">Ads Settings</a>, or by visiting <a href="http://www.aboutads.info" target="_blank" rel="noopener noreferrer" className="text-[var(--secondary)] hover:underline">www.aboutads.info</a> to opt out of a third-party vendor's use of cookies for personalized advertising.</li>
+              </ul>
+              <p className="mt-4">
                 <strong>We do not sell, rent, or trade your personal information</strong> (such as email addresses) to third-party marketers or advertisers under any circumstances.
               </p>
             </section>
