@@ -184,11 +184,40 @@ export async function getPublicPostsByCategory(
   return mapped;
 }
 
-export async function getPublicJobs(locale: Locale, count = 20): Promise<PublicJob[]> {
-  const remote = await queryPublishedByLocale("jobs", locale, count);
-  const mapped = remote.map(toPublicJob).filter((job): job is PublicJob => Boolean(job));
+export async function getPublicJobs(locale: Locale, count = 50): Promise<PublicJob[]> {
+  // 1. Fetch from 'jobs' collection (Automated)
+  const remoteJobs = await queryPublishedByLocale("jobs", locale, count);
+  const mappedJobs = remoteJobs.map(toPublicJob).filter((job): job is PublicJob => Boolean(job));
 
-  return mapped;
+  // 2. Fetch from 'posts' collection where category is Jobs (Manual posts by admin)
+  const manualJobsPosts = await getPublicPostsByCategory(locale, "jobs", count);
+  const mappedManualJobs: PublicJob[] = manualJobsPosts.map((post) => ({
+    id: post.id,
+    slug: post.slug,
+    locale: post.locale,
+    title: post.title,
+    organization: post.sourceName || "Government of Karnataka",
+    deadline: "Open", // Manual posts don't have a deadline field natively
+    status: "published",
+    body: post.excerpt || post.body,
+    applyUrl: post.sourceUrl || `/${locale}/posts/${post.slug}`,
+  }));
+
+  // 3. Combine and sort by date descending (assuming newer IDs or just merge)
+  // We will map manual jobs to have an applyUrl that links to the actual post details if they don't have a source url.
+  
+  // Create a Map to deduplicate by slug just in case
+  const jobsMap = new Map<string, PublicJob>();
+  
+  // Add manual first (so they can be overridden if same slug, or vice versa)
+  for (const job of mappedManualJobs) {
+    jobsMap.set(job.slug, job);
+  }
+  for (const job of mappedJobs) {
+    jobsMap.set(job.slug, job); // automated takes precedence if duplicate slug
+  }
+
+  return Array.from(jobsMap.values()).slice(0, count);
 }
 
 export async function getPublicCurrentAffairs(

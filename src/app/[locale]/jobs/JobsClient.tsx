@@ -4,32 +4,19 @@ import { useState } from "react";
 import Link from "next/link";
 import { type Locale } from "@/lib/locales";
 
-interface PublicJob {
-  id: string;
-  titleKn?: string;
-  titleEn?: string;
-  descKn?: string;
-  descEn?: string;
-  organization?: string;
-  deadline?: string;
-  link?: string;
-  source?: string;
-  date?: string;
-  slug?: string;
-  status?: string;
-}
+import { type PublicJob } from "@/lib/public-content";
 
 export function JobsClient({ locale, jobs }: { locale: Locale; jobs: PublicJob[] }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredJobs = jobs.filter(job => {
     const searchLower = searchTerm.toLowerCase();
-    const title = locale === "kn" ? job.titleKn : job.titleEn;
-    const desc = locale === "kn" ? job.descKn : job.descEn;
+    const title = job.title || "";
+    const desc = job.body || "";
     const org = job.organization || "";
     return (
-      (title && title.toLowerCase().includes(searchLower)) ||
-      (desc && desc.toLowerCase().includes(searchLower)) ||
+      title.toLowerCase().includes(searchLower) ||
+      desc.toLowerCase().includes(searchLower) ||
       org.toLowerCase().includes(searchLower)
     );
   });
@@ -89,13 +76,12 @@ export function JobsClient({ locale, jobs }: { locale: Locale; jobs: PublicJob[]
                       <span className="bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded border border-blue-200">
                         {job.organization || "Govt"}
                       </span>
-                      {job.date && <span className="text-[var(--muted)]">• Published: {job.date}</span>}
                     </div>
                     <h3 className="font-serif text-xl font-bold text-[var(--primary)] mb-2 leading-snug">
-                      {locale === "kn" ? job.titleKn : job.titleEn}
+                      {job.title}
                     </h3>
                     <p className="text-[var(--muted)] text-sm mb-4 line-clamp-3">
-                      {locale === "kn" ? job.descKn : job.descEn}
+                      {job.body}
                     </p>
                     
                     <div className="flex items-center gap-6 mt-auto text-sm">
@@ -109,9 +95,9 @@ export function JobsClient({ locale, jobs }: { locale: Locale; jobs: PublicJob[]
                   </div>
                   
                   <div className="bg-gray-50 border-t md:border-t-0 md:border-l border-[var(--border)] p-6 md:w-64 flex flex-col items-center justify-center gap-3">
-                    {job.link ? (
+                    {job.applyUrl ? (
                       <a 
-                        href={job.link}
+                        href={job.applyUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-full text-center bg-[var(--secondary)] hover:bg-[var(--secondary)]/90 text-white font-bold py-3 px-4 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
