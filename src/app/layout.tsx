@@ -73,12 +73,12 @@ export default function RootLayout({
       className={`${publicSans.variable} ${sourceSerif.variable} ${notoKannada.variable} h-full antialiased`}
     >
       <head>
-        <Script 
+        <meta name="google-adsense-account" content="ca-pub-1813097110898475" />
+        <script 
           async 
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1813097110898475" 
-          crossOrigin="anonymous" 
-          strategy="afterInteractive" 
-        />
+          crossOrigin="anonymous"
+        ></script>
       </head>
       <body className="min-h-full flex flex-col">
         {children}
