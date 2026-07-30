@@ -1319,6 +1319,7 @@ export function AdminDashboard() {
                 <option value="Government Schemes">Government Schemes</option>
                 <option value="Heritage & Tourism">Heritage & Tourism</option>
                 <option value="Sports News">Sports News</option>
+                <option value="Technology">Technology & AI</option>
                 <option value="Movies">Movies & Cinema</option>
                 <option value="Home Design">Home Design & Real Estate</option>
               </select>
@@ -1666,6 +1667,7 @@ export function AdminDashboard() {
                       <option value="Government Schemes">Government Schemes</option>
                       <option value="Heritage & Tourism">Heritage & Tourism</option>
                       <option value="Sports News">Sports News</option>
+                      <option value="Technology">Technology & AI</option>
                       <option value="Movies">Movies & Cinema</option>
                       <option value="Home Design">Home Design & Real Estate</option>
                     </select>

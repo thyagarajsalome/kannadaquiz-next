@@ -21,8 +21,8 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 const parser = new Parser();
 
-// Configure the RSS Feed for Karnataka Jobs
-const JOBS_RSS_URL = 'https://news.google.com/rss/search?q=karnataka+government+jobs+recruitment+OR+KPSC+OR+KEA&hl=en-IN&gl=IN&ceid=IN:en';
+// Configure the RSS Feed for Karnataka and Central Govt Jobs
+const JOBS_RSS_URL = 'https://news.google.com/rss/search?q=karnataka+government+jobs+recruitment+OR+KPSC+OR+UPSC+OR+SSC+OR+RRB+OR+India+government+jobs&hl=en-IN&gl=IN&ceid=IN:en';
 
 function generateSlug(text: string) {
   return text.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-").slice(0, 90);
