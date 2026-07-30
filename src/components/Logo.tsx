@@ -12,7 +12,7 @@ export function Logo({ className = "" }: { className?: string }) {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <rect width="40" height="40" rx="10" fill="#b22b1d" />
+        <rect width="40" height="40" rx="10" fill="#0f172a" />
         <circle cx="20" cy="20" r="14" fill="#ffffff" opacity="0.15" />
         <text
           x="20"
@@ -29,10 +29,10 @@ export function Logo({ className = "" }: { className?: string }) {
       {/* Brand Name Text */}
       <div className="flex flex-col justify-center select-none">
         <span className="font-serif text-[21px] font-black leading-none tracking-tight text-[var(--primary)]">
-          ಕನ್ನಡ<span className="text-[var(--secondary)]">ಕ್ವಿಜ್‌</span>
+          ಕನ್ನಡಕ್ವಿಜ್‌
         </span>
-        <span className="text-[9px] font-black uppercase tracking-widest text-[var(--muted)] leading-none mt-1">
-          Kannada<span className="text-[var(--secondary)]">Quiz</span>
+        <span className="text-[9px] font-black uppercase tracking-widest text-[var(--primary)] leading-none mt-1">
+          KannadaQuiz
         </span>
       </div>
     </div>
