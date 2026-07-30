@@ -32,6 +32,9 @@ export const metadata: Metadata = {
   verification: {
     google: "of_pRvg6YQBwtKsdlZhbUOEOOn24aY4eUfvzr0AtpRo",
   },
+  other: {
+    "google-adsense-account": "ca-pub-1813097110898475",
+  },
   robots: {
     index: true,
     follow: true,
@@ -72,15 +75,14 @@ export default function RootLayout({
       lang="kn"
       className={`${publicSans.variable} ${sourceSerif.variable} ${notoKannada.variable} h-full antialiased`}
     >
-      <head>
-        <meta name="google-adsense-account" content="ca-pub-1813097110898475" />
-        <script 
+      <body className="min-h-full flex flex-col">
+        <Script 
+          id="adsense-script"
           async 
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1813097110898475" 
           crossOrigin="anonymous"
-        ></script>
-      </head>
-      <body className="min-h-full flex flex-col">
+          strategy="afterInteractive"
+        />
         {children}
         {gaId && (
           <>
