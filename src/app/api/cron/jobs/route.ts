@@ -118,36 +118,25 @@ Return a strict JSON object with:
     }
 
     // ==========================================
-    // CLEANUP EXPIRED JOBS (Keep 2 most recent)
+    // CLEANUP EXPIRED JOBS (Keep for 2 days after deadline)
     // ==========================================
     
-    // Get today's date in YYYY-MM-DD
-    const todayStr = new Date().toISOString().split('T')[0];
+    // Calculate cutoff date: 2 days ago
+    const cutoffDateObj = new Date();
+    cutoffDateObj.setDate(cutoffDateObj.getDate() - 2);
+    const cutoffStr = cutoffDateObj.toISOString().split('T')[0];
     
-    // Fetch jobs where deadline < today (expired)
-    // Note: Since 'deadline' is a string 'YYYY-MM-DD', lexicographical comparison works perfectly
+    // Fetch jobs where deadline < cutoff date (expired more than 2 days ago)
     const snapshot = await db.collection('jobs')
-      .where('deadline', '<', todayStr)
+      .where('deadline', '<', cutoffStr)
       .get();
       
-    let expiredJobs = [];
-    snapshot.forEach(doc => {
-      expiredJobs.push({ id: doc.id, deadline: doc.data().deadline });
-    });
-    
-    // Sort expired jobs descending by deadline (most recently expired first)
-    expiredJobs.sort((a, b) => b.deadline.localeCompare(a.deadline));
-    
     let deletedCount = 0;
     
-    // Keep the first 2. Delete the rest.
-    if (expiredJobs.length > 2) {
-      const jobsToDelete = expiredJobs.slice(2);
-      
-      // Batch delete
+    if (!snapshot.empty) {
       const batch = db.batch();
-      jobsToDelete.forEach(job => {
-        batch.delete(db.collection('jobs').doc(job.id));
+      snapshot.forEach(doc => {
+        batch.delete(doc.ref);
         deletedCount++;
       });
       await batch.commit();
@@ -161,7 +150,7 @@ Return a strict JSON object with:
       success: true, 
       jobsAdded: addedCount,
       expiredJobsDeleted: deletedCount,
-      expiredJobsKept: Math.min(expiredJobs.length, 2)
+      cutoffDateUsed: cutoffStr
     });
     
   } catch (error: any) {
