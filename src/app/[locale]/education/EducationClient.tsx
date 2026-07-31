@@ -10,6 +10,7 @@ interface EduItem {
   desc: string;
   descKn: string;
   link?: string;
+  colleges?: { name: string; url: string; }[];
 }
 
 interface EduCategory {
@@ -49,13 +50,63 @@ const EDUCATION_DATA: EduCategory[] = [
     title: "Undergraduate (Bachelor's Degrees)",
     titleKn: "ಪದವಿ ಕೋರ್ಸ್‌ಗಳು (Undergraduate)",
     items: [
-      { id: "ba", name: "BA (Bachelor of Arts)", nameKn: "ಬಿ.ಎ (Bachelor of Arts)", desc: "3 to 4-year degree focusing on humanities, social sciences, literature, and languages. Subjects include History, Political Science, Economics, Sociology, Psychology, and Languages. Graduates can pursue careers in civil services (UPSC/KPSC), teaching, journalism, public administration, social work, content writing, and human resources. It provides a strong foundation for competitive exams and creative professions.", descKn: "ಮಾನವಿಕ ವಿಷಯಗಳು, ಸಮಾಜ ವಿಜ್ಞಾನ, ಸಾಹಿತ್ಯ ಮತ್ತು ಭಾಷೆಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕೃತವಾದ 3 ರಿಂದ 4 ವರ್ಷಗಳ ಪದವಿ. ಪ್ರಮುಖ ವಿಷಯಗಳಲ್ಲಿ ಇತಿಹಾಸ, ರಾಜ್ಯಶಾಸ್ತ್ರ, ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ಮತ್ತು ಮನೋವಿಜ್ಞಾನ ಸೇರಿವೆ. ಪದವೀಧರರು ಐಎಎಸ್ (UPSC), ಕೆಎಎಸ್ (KPSC), ಶಿಕ್ಷಕ ವೃತ್ತಿ, ಪತ್ರಿಕೋದ್ಯಮ, ಸಾರ್ವಜನಿಕ ಆಡಳಿತ, ಮತ್ತು ಮಾನವ ಸಂಪನ್ಮೂಲ ವಿಭಾಗಗಳಲ್ಲಿ ಉದ್ಯೋಗ ಪಡೆಯಬಹುದು. ಇದು ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳಿಗೆ ಅತ್ಯುತ್ತಮ ಬುನಾದಿ ಒದಗಿಸುತ್ತದೆ." },
+      { 
+        id: "ba", 
+        name: "BA (Bachelor of Arts)", 
+        nameKn: "ಬಿ.ಎ (Bachelor of Arts)", 
+        desc: "3 to 4-year degree focusing on humanities, social sciences, literature, and languages. Subjects include History, Political Science, Economics, Sociology, Psychology, and Languages. Graduates can pursue careers in civil services (UPSC/KPSC), teaching, journalism, public administration, social work, content writing, and human resources. It provides a strong foundation for competitive exams and creative professions.", 
+        descKn: "ಮಾನವಿಕ ವಿಷಯಗಳು, ಸಮಾಜ ವಿಜ್ಞಾನ, ಸಾಹಿತ್ಯ ಮತ್ತು ಭಾಷೆಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕೃತವಾದ 3 ರಿಂದ 4 ವರ್ಷಗಳ ಪದವಿ. ಪ್ರಮುಖ ವಿಷಯಗಳಲ್ಲಿ ಇತಿಹಾಸ, ರಾಜ್ಯಶಾಸ್ತ್ರ, ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ಮತ್ತು ಮನೋವಿಜ್ಞಾನ ಸೇರಿವೆ. ಪದವೀಧರರು ಐಎಎಸ್ (UPSC), ಕೆಎಎಸ್ (KPSC), ಶಿಕ್ಷಕ ವೃತ್ತಿ, ಪತ್ರಿಕೋದ್ಯಮ, ಸಾರ್ವಜನಿಕ ಆಡಳಿತ, ಮತ್ತು ಮಾನವ ಸಂಪನ್ಮೂಲ ವಿಭಾಗಗಳಲ್ಲಿ ಉದ್ಯೋಗ ಪಡೆಯಬಹುದು. ಇದು ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳಿಗೆ ಅತ್ಯುತ್ತಮ ಬುನಾದಿ ಒದಗಿಸುತ್ತದೆ.",
+        colleges: [
+          { name: "Christ University", url: "https://christuniversity.in/" },
+          { name: "St. Joseph's University", url: "https://www.sju.edu.in/" },
+          { name: "Mount Carmel College", url: "https://mccblr.edu.in/" }
+        ]
+      },
       { id: "bsc", name: "BSc (Bachelor of Science)", nameKn: "ಬಿ.ಎಸ್ಸಿ (Bachelor of Science)", desc: "3 to 4-year degree in pure sciences or applied sciences. Subjects include Physics, Chemistry, Mathematics, Botany, Zoology, and Computer Science. Graduates can find jobs in research laboratories, healthcare, pharmaceuticals, biotechnology, agriculture, and IT sectors. It is ideal for students aiming for scientific research, teaching, or specialized technical roles.", descKn: "ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಜೀವಶಾಸ್ತ್ರ (Pure Science) ಅಥವಾ ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್, ಕೃಷಿ (Applied Science) ಮುಂತಾದ ವಿಷಯಗಳನ್ನು ಒಳಗೊಂಡಿರುವ 3 ರಿಂದ 4 ವರ್ಷಗಳ ಪದವಿ. ಪದವೀಧರರು ಸಂಶೋಧನಾ ಪ್ರಯೋಗಾಲಯಗಳು, ಆರೋಗ್ಯ ವಲಯ, ಫಾರ್ಮಾಸ್ಯುಟಿಕಲ್ಸ್, ಐಟಿ ಮತ್ತು ಕೃಷಿ ಕ್ಷೇತ್ರಗಳಲ್ಲಿ ಉದ್ಯೋಗ ಪಡೆಯಬಹುದು. ವಿಜ್ಞಾನ, ತಂತ್ರಜ್ಞಾನ ಮತ್ತು ಬೋಧನಾ ವೃತ್ತಿಗೆ ಸೇರಬಯಸುವವರಿಗೆ ಇದು ಅತ್ಯುತ್ತಮ ಆಯ್ಕೆ." },
-      { id: "bcom", name: "BCom (Bachelor of Commerce)", nameKn: "ಬಿ.ಕಾಂ (Bachelor of Commerce)", desc: "3 to 4-year degree focused on commerce, accounting, finance, and business studies. Core subjects include Financial Accounting, Corporate Law, Taxation, Auditing, and Economics. Graduates are highly sought after for roles like accountants, tax consultants, financial analysts, banking professionals, and auditors. It is the primary stepping stone for professional courses like CA, CS, and CMA.", descKn: "ವಾಣಿಜ್ಯ, ಲೆಕ್ಕಪತ್ರ ನಿರ್ವಹಣೆ (Accounting), ಹಣಕಾಸು ಮತ್ತು ವ್ಯಾಪಾರ ಅಧ್ಯಯನಗಳ 3 ರಿಂದ 4 ವರ್ಷಗಳ ಪದವಿ. ಪ್ರಮುಖ ವಿಷಯಗಳಲ್ಲಿ ಆರ್ಥಿಕ ಲೆಕ್ಕಪತ್ರ, ಕಾರ್ಪೊರೇಟ್ ಕಾನೂನು, ತೆರಿಗೆ ಮತ್ತು ಆಡಿಟಿಂಗ್ ಸೇರಿವೆ. ಬಿ.ಕಾಂ ಪದವೀಧರರು ಬ್ಯಾಂಕಿಂಗ್, ಆಡಿಟರ್, ಅಕೌಂಟೆಂಟ್, ಮತ್ತು ಫೈನಾನ್ಷಿಯಲ್ ಅನಾಲಿಸ್ಟ್ ಆಗಿ ಉದ್ಯೋಗ ಪಡೆಯಬಹುದು. ಸಿ.ಎ (CA) ಮತ್ತು ಸಿ.ಎಸ್ (CS) ನಂತಹ ವೃತ್ತಿಪರ ಕೋರ್ಸ್‌ಗಳಿಗೆ ಇದು ಪ್ರಮುಖ ಅಡಿಪಾಯ." },
+      { 
+        id: "bcom", 
+        name: "BCom (Bachelor of Commerce)", 
+        nameKn: "ಬಿ.ಕಾಂ (Bachelor of Commerce)", 
+        desc: "3 to 4-year degree focused on commerce, accounting, finance, and business studies. Core subjects include Financial Accounting, Corporate Law, Taxation, Auditing, and Economics. Graduates are highly sought after for roles like accountants, tax consultants, financial analysts, banking professionals, and auditors. It is the primary stepping stone for professional courses like CA, CS, and CMA.", 
+        descKn: "ವಾಣಿಜ್ಯ, ಲೆಕ್ಕಪತ್ರ ನಿರ್ವಹಣೆ (Accounting), ಹಣಕಾಸು ಮತ್ತು ವ್ಯಾಪಾರ ಅಧ್ಯಯನಗಳ 3 ರಿಂದ 4 ವರ್ಷಗಳ ಪದವಿ. ಪ್ರಮುಖ ವಿಷಯಗಳಲ್ಲಿ ಆರ್ಥಿಕ ಲೆಕ್ಕಪತ್ರ, ಕಾರ್ಪೊರೇಟ್ ಕಾನೂನು, ತೆರಿಗೆ ಮತ್ತು ಆಡಿಟಿಂಗ್ ಸೇರಿವೆ. ಬಿ.ಕಾಂ ಪದವೀಧರರು ಬ್ಯಾಂಕಿಂಗ್, ಆಡಿಟರ್, ಅಕೌಂಟೆಂಟ್, ಮತ್ತು ಫೈನಾನ್ಷಿಯಲ್ ಅನಾಲಿಸ್ಟ್ ಆಗಿ ಉದ್ಯೋಗ ಪಡೆಯಬಹುದು. ಸಿ.ಎ (CA) ಮತ್ತು ಸಿ.ಎಸ್ (CS) ನಂತಹ ವೃತ್ತಿಪರ ಕೋರ್ಸ್‌ಗಳಿಗೆ ಇದು ಪ್ರಮುಖ ಅಡಿಪಾಯ.",
+        colleges: [
+          { name: "St. Joseph's College of Commerce", url: "https://www.sjcc.edu.in/" },
+          { name: "Jain University", url: "https://www.jainuniversity.ac.in/" },
+          { name: "Christ University", url: "https://christuniversity.in/" },
+          { name: "Kristu Jayanti College", url: "https://kristujayanti.edu.in/" }
+        ]
+      },
       { id: "bca", name: "BCA (Bachelor of Computer Applications)", nameKn: "ಬಿ.ಸಿ.ಎ (BCA)", desc: "3 to 4-year undergraduate degree focused heavily on software and application development. Subjects cover Programming (Java, C++, Python), Database Management, Web Development, and Networking. Graduates can easily secure high-paying jobs in the IT industry as software developers, web designers, system analysts, and database administrators, competing directly with engineering graduates.", descKn: "ಸಾಫ್ಟ್‌ವೇರ್ ಮತ್ತು ಕಂಪ್ಯೂಟರ್ ಅಪ್ಲಿಕೇಶನ್ ಅಭಿವೃದ್ಧಿಯ ಬಗ್ಗೆ ಆಳವಾದ ಜ್ಞಾನ ನೀಡುವ 3 ರಿಂದ 4 ವರ್ಷಗಳ ಪದವಿ. ಪ್ರೋಗ್ರಾಮಿಂಗ್ (Java, Python), ಡೇಟಾಬೇಸ್, ಮತ್ತು ವೆಬ್ ಡೆವಲಪ್ಮೆಂಟ್ ಪ್ರಮುಖ ವಿಷಯಗಳು. ಬಿ.ಸಿ.ಎ ಪದವೀಧರರು ಐಟಿ ಕಂಪನಿಗಳಲ್ಲಿ ಸಾಫ್ಟ್‌ವೇರ್ ಡೆವಲಪರ್, ವೆಬ್ ಡಿಸೈನರ್, ಮತ್ತು ಸಿಸ್ಟಮ್ ಅನಾಲಿಸ್ಟ್ ಆಗಿ ಇಂಜಿನಿಯರಿಂಗ್ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಸಮಾನವಾಗಿ ಉತ್ತಮ ವೇತನದ ಉದ್ಯೋಗ ಪಡೆಯಬಹುದು." },
       { id: "bba", name: "BBA (Bachelor of Business Administration)", nameKn: "ಬಿ.ಬಿ.ಎ (BBA)", desc: "3 to 4-year degree focused on business management, entrepreneurship, and corporate leadership. Subjects include Marketing, Human Resources, Business Analytics, and Organizational Behavior. Graduates can find entry-level management jobs as HR executives, marketing managers, sales executives, and business consultants. It is the perfect foundational course for an MBA.", descKn: "ವ್ಯಾಪಾರ ನಿರ್ವಹಣೆ, ಕಾರ್ಪೊರೇಟ್ ನಾಯಕತ್ವ ಮತ್ತು ಉದ್ಯಮಶೀಲತೆಯ ಮೇಲಿನ 3 ರಿಂದ 4 ವರ್ಷಗಳ ಪದವಿ. ಮಾರುಕಟ್ಟೆ (Marketing), ಮಾನವ ಸಂಪನ್ಮೂಲ (HR), ಮತ್ತು ಬಿಸಿನೆಸ್ ಅನಾಲಿಟಿಕ್ಸ್ ಪ್ರಮುಖ ವಿಷಯಗಳು. ಪದವೀಧರರು ಕಾರ್ಪೊರೇಟ್ ಕಂಪನಿಗಳಲ್ಲಿ ಹೆಚ್.ಆರ್ ಎಕ್ಸಿಕ್ಯೂಟಿವ್, ಮಾರ್ಕೆಟಿಂಗ್ ಮ್ಯಾನೇಜರ್, ಮತ್ತು ಬಿಸಿನೆಸ್ ಕನ್ಸಲ್ಟೆಂಟ್ ಆಗಿ ಕೆಲಸ ಮಾಡಬಹುದು. ಇದು ಎಂ.ಬಿ.ಎ (MBA) ಮಾಡಲು ಅತ್ಯುತ್ತಮ ಬುನಾದಿ." },
-      { id: "be-btech", name: "BE / BTech (Engineering)", nameKn: "ಬಿ.ಇ / ಬಿ.ಟೆಕ್ (ಇಂಜಿನಿಯರಿಂಗ್)", desc: "4-year professional engineering degree across multiple branches like CS, EC, Civil, Mechanical.", descKn: "ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್, ಸಿವಿಲ್, ಮೆಕ್ಯಾನಿಕಲ್ ಮುಂತಾದ ವಿಭಾಗಗಳಲ್ಲಿ ನೀಡಲಾಗುವ 4 ವರ್ಷಗಳ ವೃತ್ತಿಪರ ಇಂಜಿನಿಯರಿಂಗ್ ಪದವಿ.", link: "https://vtu.ac.in/" },
-      { id: "mbbs", name: "MBBS / BDS (Medical)", nameKn: "ಎಂಬಿಬಿಎಸ್ / ಬಿಡಿಎಸ್ (ವೈದ್ಯಕೀಯ)", desc: "Highly competitive medical degrees to become a certified doctor or dentist.", descKn: "ವೈದ್ಯರಾಗಲು ಅಥವಾ ದಂತ ವೈದ್ಯರಾಗಲು ಓದಬೇಕಾದ ಅತ್ಯಂತ ಬೇಡಿಕೆಯುಳ್ಳ ವೈದ್ಯಕೀಯ ಪದವಿಗಳು.", link: "https://nmc.org.in/" },
+      { 
+        id: "be-btech", 
+        name: "BE / BTech (Engineering)", 
+        nameKn: "ಬಿ.ಇ / ಬಿ.ಟೆಕ್ (ಇಂಜಿನಿಯರಿಂಗ್)", 
+        desc: "4-year professional engineering degree across multiple branches like CS, EC, Civil, Mechanical.", 
+        descKn: "ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್, ಸಿವಿಲ್, ಮೆಕ್ಯಾನಿಕಲ್ ಮುಂತಾದ ವಿಭಾಗಗಳಲ್ಲಿ ನೀಡಲಾಗುವ 4 ವರ್ಷಗಳ ವೃತ್ತಿಪರ ಇಂಜಿನಿಯರಿಂಗ್ ಪದವಿ.", 
+        link: "https://vtu.ac.in/",
+        colleges: [
+          { name: "RVCE, Bengaluru", url: "https://www.rvce.edu.in/" },
+          { name: "PES University", url: "https://pes.edu/" },
+          { name: "NITK Surathkal", url: "https://www.nitk.ac.in/" },
+          { name: "BMSCE", url: "https://bmsce.ac.in/" },
+          { name: "IIT Dharwad", url: "https://www.iitdh.ac.in/" }
+        ]
+      },
+      { 
+        id: "mbbs", 
+        name: "MBBS / BDS (Medical)", 
+        nameKn: "ಎಂಬಿಬಿಎಸ್ / ಬಿಡಿಎಸ್ (ವೈದ್ಯಕೀಯ)", 
+        desc: "Highly competitive medical degrees to become a certified doctor or dentist.", 
+        descKn: "ವೈದ್ಯರಾಗಲು ಅಥವಾ ದಂತ ವೈದ್ಯರಾಗಲು ಓದಬೇಕಾದ ಅತ್ಯಂತ ಬೇಡಿಕೆಯುಳ್ಳ ವೈದ್ಯಕೀಯ ಪದವಿಗಳು.", 
+        link: "https://nmc.org.in/",
+        colleges: [
+          { name: "BMCRI (Bangalore Medical College)", url: "https://bmcri.karnataka.gov.in/" },
+          { name: "St. John's Medical College", url: "https://stjohns.in/" },
+          { name: "KMC Manipal", url: "https://manipal.edu/kmc-manipal.html" },
+          { name: "JSS Medical College, Mysuru", url: "https://jssuni.edu.in/" }
+        ]
+      },
       { id: "llb", name: "LLB (Law)", nameKn: "ಎಲ್.ಎಲ್.ಬಿ (ಕಾನೂನು ಪದವಿ)", desc: "Undergraduate degree in law, available as a 3-year course after graduation or a 5-year integrated course after 12th.", descKn: "ಕಾನೂನು ವೃತ್ತಿ ಅಥವಾ ವಕೀಲರಾಗಲು ಅಗತ್ಯವಿರುವ ಪದವಿ. (ಪದವಿಯ ನಂತರ 3 ವರ್ಷ ಅಥವಾ 12ನೇ ತರಗತಿಯ ನಂತರ 5 ವರ್ಷ).", link: "https://barcouncilofindia.org/" },
       { id: "bed", name: "BEd (Bachelor of Education)", nameKn: "ಬಿ.ಇಡಿ (ಶಿಕ್ಷಕರ ತರಬೇತಿ ಪದವಿ)", desc: "Professional degree required to take up teaching as a profession in schools.", descKn: "ಶಾಲೆಗಳಲ್ಲಿ ಶಿಕ್ಷಕ ವೃತ್ತಿಯನ್ನು ಕೈಗೊಳ್ಳಲು ಕಡ್ಡಾಯವಾಗಿ ಬೇಕಾಗಿರುವ ವೃತ್ತಿಪರ ಶಿಕ್ಷಣ ಪದವಿ.", link: "https://ncte.gov.in/" }
     ]
@@ -67,7 +118,19 @@ const EDUCATION_DATA: EduCategory[] = [
     items: [
       { id: "ma", name: "MA (Master of Arts)", nameKn: "ಎಂ.ಎ (Master of Arts)", desc: "2-year postgraduate program focusing on advanced studies in humanities, arts, and social sciences. Specializations include English, History, Economics, and Political Science. Graduates can pursue careers as university professors, senior researchers, journalists, authors, and public policy analysts. It is essential for clearing the NET/SLET exams for lectureship.", descKn: "ಕಲಾ ವಿಭಾಗ ಮತ್ತು ಮಾನವಿಕ ವಿಷಯಗಳಲ್ಲಿ 2 ವರ್ಷಗಳ ಉನ್ನತ ಮಟ್ಟದ ಅಧ್ಯಯನ. ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಮತ್ತು ರಾಜ್ಯಶಾಸ್ತ್ರ ಮುಂತಾದ ವಿಷಯಗಳಲ್ಲಿ ಪರಿಣತಿ ಸಾಧಿಸಬಹುದು. ಎಂ.ಎ ಮುಗಿಸಿದವರು ವಿಶ್ವವಿದ್ಯಾಲಯದ ಪ್ರಾಧ್ಯಾಪಕರು (Lecturers), ಹಿರಿಯ ಸಂಶೋಧಕರು, ಪತ್ರಕರ್ತರು, ಮತ್ತು ಸಾರ್ವಜನಿಕ ನೀತಿ ವಿಶ್ಲೇಷಕರಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸಬಹುದು. ಪ್ರಾಧ್ಯಾಪಕರಾಗಲು ಬರೆಯುವ NET/SLET ಪರೀಕ್ಷೆಗಳಿಗೆ ಇದು ಕಡ್ಡಾಯವಾಗಿದೆ." },
       { id: "msc", name: "MSc (Master of Science)", nameKn: "ಎಂ.ಎಸ್ಸಿ (Master of Science)", desc: "2-year Master's degree offering deeper specialization in pure and applied sciences like Physics, Data Science, or Biotechnology. It involves heavy practical and theoretical research work. Graduates secure high-paying jobs as research scientists, data analysts, environmental consultants, and lab directors. It serves as the primary gateway to a Ph.D. program.", descKn: "ವಿಜ್ಞಾನ ವಿಷಯಗಳಲ್ಲಿ (ಉದಾಹರಣೆಗೆ ಭೌತಶಾಸ್ತ್ರ, ಡೇಟಾ ಸೈನ್ಸ್, ಅಥವಾ ಬಯೋಟೆಕ್ನಾಲಜಿ) ಆಳವಾದ ಸಂಶೋಧನೆ ಮತ್ತು ಪ್ರಾಯೋಗಿಕ ಜ್ಞಾನ ನೀಡುವ 2 ವರ್ಷಗಳ ಪದವಿ. ಪದವೀಧರರು ವಿಜ್ಞಾನಿಗಳು, ಡೇಟಾ ಅನಾಲಿಸ್ಟ್, ಮತ್ತು ಪ್ರಯೋಗಾಲಯದ ನಿರ್ದೇಶಕರಾಗಿ ಅತ್ಯುತ್ತಮ ವೇತನದ ಉದ್ಯೋಗಗಳನ್ನು ಪಡೆಯಬಹುದು. ಇದು ಪಿಎಚ್‌ಡಿ (Ph.D) ಅಧ್ಯಯನಕ್ಕೆ ಪ್ರಮುಖ ಮೆಟ್ಟಿಲಾಗಿದೆ." },
-      { id: "mba", name: "MBA (Master of Business Administration)", nameKn: "ಎಂ.ಬಿ.ಎ (MBA)", desc: "2-year highly sought-after corporate management degree offering specializations in HR, Marketing, Finance, and Operations. It develops leadership, critical thinking, and strategic management skills. Graduates are hired as corporate managers, investment bankers, marketing directors, and startup consultants by top multinational companies globally.", descKn: "ಮಾನವ ಸಂಪನ್ಮೂಲ (HR), ಮಾರುಕಟ್ಟೆ (Marketing), ಮತ್ತು ಹಣಕಾಸು (Finance) ವಿಭಾಗಗಳಲ್ಲಿ ಪರಿಣತಿ ಒದಗಿಸುವ ಅತ್ಯಂತ ಜನಪ್ರಿಯ 2 ವರ್ಷಗಳ ಮ್ಯಾನೇಜ್ಮೆಂಟ್ ಪದವಿ. ಇದು ನಾಯಕತ್ವ ಮತ್ತು ನಿರ್ವಹಣಾ ಕೌಶಲ್ಯಗಳನ್ನು ಬೆಳೆಸುತ್ತದೆ. ಎಂ.ಬಿ.ಎ ಮುಗಿಸಿದವರನ್ನು ಬಹುರಾಷ್ಟ್ರೀಯ ಕಂಪನಿಗಳು ಕಾರ್ಪೊರೇಟ್ ಮ್ಯಾನೇಜರ್, ಇನ್ವೆಸ್ಟ್ಮೆಂಟ್ ಬ್ಯಾಂಕರ್, ಮತ್ತು ಬಿಸಿನೆಸ್ ಕನ್ಸಲ್ಟೆಂಟ್ ಆಗಿ ನೇಮಿಸಿಕೊಳ್ಳುತ್ತವೆ.", link: "https://iimcat.ac.in/" },
+      { 
+        id: "mba", 
+        name: "MBA (Master of Business Administration)", 
+        nameKn: "ಎಂ.ಬಿ.ಎ (MBA)", 
+        desc: "2-year highly sought-after corporate management degree offering specializations in HR, Marketing, Finance, and Operations. It develops leadership, critical thinking, and strategic management skills. Graduates are hired as corporate managers, investment bankers, marketing directors, and startup consultants by top multinational companies globally.", 
+        descKn: "ಮಾನವ ಸಂಪನ್ಮೂಲ (HR), ಮಾರುಕಟ್ಟೆ (Marketing), ಮತ್ತು ಹಣಕಾಸು (Finance) ವಿಭಾಗಗಳಲ್ಲಿ ಪರಿಣತಿ ಒದಗಿಸುವ ಅತ್ಯಂತ ಜನಪ್ರಿಯ 2 ವರ್ಷಗಳ ಮ್ಯಾನೇಜ್ಮೆಂಟ್ ಪದವಿ. ಇದು ನಾಯಕತ್ವ ಮತ್ತು ನಿರ್ವಹಣಾ ಕೌಶಲ್ಯಗಳನ್ನು ಬೆಳೆಸುತ್ತದೆ. ಎಂ.ಬಿ.ಎ ಮುಗಿಸಿದವರನ್ನು ಬಹುರಾಷ್ಟ್ರೀಯ ಕಂಪನಿಗಳು ಕಾರ್ಪೊರೇಟ್ ಮ್ಯಾನೇಜರ್, ಇನ್ವೆಸ್ಟ್ಮೆಂಟ್ ಬ್ಯಾಂಕರ್, ಮತ್ತು ಬಿಸಿನೆಸ್ ಕನ್ಸಲ್ಟೆಂಟ್ ಆಗಿ ನೇಮಿಸಿಕೊಳ್ಳುತ್ತವೆ.", 
+        link: "https://iimcat.ac.in/",
+        colleges: [
+          { name: "IIM Bangalore", url: "https://www.iimb.ac.in/" },
+          { name: "TAPMI Manipal", url: "https://www.tapmi.edu.in/" },
+          { name: "XIME Bangalore", url: "https://xime.org/" }
+        ]
+      },
       { id: "mtech", name: "ME / MTech", nameKn: "ಎಂ.ಇ / ಎಂ.ಟೆಕ್", desc: "2-year postgraduate engineering degree meant for deep research, specialized development, and advanced technical knowledge. Fields include VLSI, Structural Engineering, and AI. Graduates become lead engineers, system architects, and technical directors in top tech firms or pursue advanced scientific research at national institutions like ISRO or DRDO.", descKn: "ಇಂಜಿನಿಯರಿಂಗ್ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಸಂಶೋಧನೆ ಮತ್ತು ಉನ್ನತ ತಾಂತ್ರಿಕ ಜ್ಞಾನಕ್ಕಾಗಿ ಇರುವ 2 ವರ್ಷಗಳ ಸ್ನಾತಕೋತ್ತರ ಪದವಿ. ಸಿವಿಲ್, ಕಂಪ್ಯೂಟರ್ ಮತ್ತು ಮೆಕ್ಯಾನಿಕಲ್‌ನ ನಿರ್ದಿಷ್ಟ ವಿಷಯಗಳಲ್ಲಿ ಪರಿಣತಿ ಸಾಧಿಸಬಹುದು. ಎಂ.ಟೆಕ್ ಮುಗಿಸಿದವರು ಟಾಪ್ ಟೆಕ್ ಕಂಪನಿಗಳಲ್ಲಿ ಲೀಡ್ ಇಂಜಿನಿಯರ್ ಆಗಬಹುದು ಅಥವಾ ಇಸ್ರೋ (ISRO), ಡಿಆರ್ಡಿಒ (DRDO) ನಂತಹ ಸಂಸ್ಥೆಗಳಲ್ಲಿ ವಿಜ್ಞಾನಿಗಳಾಗಿ ಸೇರಬಹುದು." },
       { id: "mca", name: "MCA (Master of Computer Applications)", nameKn: "ಎಂ.ಸಿ.ಎ (MCA)", desc: "2-year advanced degree focusing on software engineering, database management, cloud computing, and modern programming languages. It bridges the gap between theoretical computing and practical software applications. MCA graduates are highly valued as Senior Software Engineers, Cloud Architects, and IT Consultants, enjoying salaries at par with premium BTech graduates.", descKn: "ಸಾಫ್ಟ್‌ವೇರ್ ಇಂಜಿನಿಯರಿಂಗ್, ಡೇಟಾಬೇಸ್, ಕ್ಲೌಡ್ ಕಂಪ್ಯೂಟಿಂಗ್ ಮತ್ತು ಆಧುನಿಕ ಪ್ರೋಗ್ರಾಮಿಂಗ್ ಭಾಷೆಗಳಲ್ಲಿ ಉನ್ನತ ತಾಂತ್ರಿಕ ಜ್ಞಾನ ಒದಗಿಸುವ 2 ವರ್ಷಗಳ ಕೋರ್ಸ್. ಎಂ.ಸಿ.ಎ ಪದವೀಧರರು ಐಟಿ ಉದ್ಯಮದಲ್ಲಿ ಸೀನಿಯರ್ ಸಾಫ್ಟ್‌ವೇರ್ ಇಂಜಿನಿಯರ್, ಕ್ಲೌಡ್ ಆರ್ಕಿಟೆಕ್ಟ್, ಮತ್ತು ಐಟಿ ಕನ್ಸಲ್ಟೆಂಟ್ ಆಗಿ ಉತ್ತಮ ವೇತನ ಪಡೆಯುತ್ತಾರೆ." }
     ]
@@ -179,6 +242,31 @@ export function EducationClient({ locale }: { locale: Locale }) {
                         <p className="text-sm text-[var(--muted)] leading-relaxed">
                           {locale === "kn" ? item.descKn : item.desc}
                         </p>
+                        
+                        {item.colleges && item.colleges.length > 0 && (
+                          <div className="mt-4 pt-3 border-t border-[var(--border)]">
+                            <span className="text-xs font-bold uppercase tracking-wider text-[var(--muted)] mb-2 block">
+                              {locale === "kn" ? "ಉನ್ನತ ಕಾಲೇಜುಗಳು / ಸಂಸ್ಥೆಗಳು" : "Top Colleges / Institutions"}
+                            </span>
+                            <div className="flex flex-wrap gap-2">
+                              {item.colleges.map((college, idx) => (
+                                <a
+                                  key={idx}
+                                  href={college.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[var(--border)] hover:border-[var(--secondary)] hover:text-[var(--secondary)] rounded-md text-xs font-medium text-[var(--primary)] transition-colors shadow-sm"
+                                >
+                                  {college.name}
+                                  <svg className="w-3 h-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                  </svg>
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
                         {item.link && (
                           <a
                             href={item.link}
