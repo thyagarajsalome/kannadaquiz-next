@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import type { Locale } from "@/lib/locales";
 import type { PublicPost } from "@/lib/public-content";
 
@@ -50,6 +51,11 @@ export function CategoryFilterList({
   categoryKey: string;
 }) {
   const [selectedSubCategory, setSelectedSubCategory] = useState("all");
+  const [visibleCount, setVisibleCount] = useState(12);
+
+  const loadMore = () => {
+    setVisibleCount((prev) => prev + 12);
+  };
   const isTech = categoryKey.toLowerCase() === "technology";
   const subCategories = subCategoriesMap[locale] || [];
 
@@ -105,61 +111,76 @@ export function CategoryFilterList({
           )}
         </div>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-          {filteredPosts.map((post) => (
-            <article
-              key={post.slug}
-              className="kq-card overflow-hidden flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 rounded-xl border border-[var(--border)]"
-            >
-              <div>
-                {post.featuredImageUrl && (
-                  <Link href={`/${locale}/posts/${post.slug}`} prefetch={false} className="block overflow-hidden aspect-video border-b border-[var(--border)]/40 hover:opacity-95 transition-opacity">
-                    <img
-                      src={post.featuredImageUrl}
-                      alt={post.title}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                  </Link>
-                )}
-                <div className="p-4 pb-0">
-                  <div className="flex items-center flex-wrap gap-2 justify-between text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
-                    <span>{getSourceName(post)}</span>
-                    <div className="flex items-center gap-1.5">
-                      {post.subCategory && isTech && (
-                        <span className="bg-[var(--surface-soft)] text-[10px] text-[var(--muted)] px-2 py-0.5 rounded-md border border-[var(--border)]">
-                          {
-                            subCategories.find((s) => s.key === post.subCategory)
-                              ?.label || post.subCategory
-                          }
-                        </span>
-                      )}
-                      <span>•</span>
-                      <time>{post.date}</time>
+        <>
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+            {filteredPosts.slice(0, visibleCount).map((post) => (
+              <article
+                key={post.slug}
+                className="kq-card overflow-hidden flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 rounded-xl border border-[var(--border)]"
+              >
+                <div>
+                  {post.featuredImageUrl && (
+                    <Link href={`/${locale}/posts/${post.slug}`} prefetch={false} className="block overflow-hidden aspect-video border-b border-[var(--border)]/40 hover:opacity-95 transition-opacity relative">
+                      <Image
+                        src={post.featuredImageUrl}
+                        alt={post.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover"
+                        loading="lazy"
+                      />
+                    </Link>
+                  )}
+                  <div className="p-4 pb-0">
+                    <div className="flex items-center flex-wrap gap-2 justify-between text-[10px] font-bold uppercase tracking-wider text-[var(--secondary)]">
+                      <span>{getSourceName(post)}</span>
+                      <div className="flex items-center gap-1.5">
+                        {post.subCategory && isTech && (
+                          <span className="bg-[var(--surface-soft)] text-[10px] text-[var(--muted)] px-2 py-0.5 rounded-md border border-[var(--border)]">
+                            {
+                              subCategories.find((s) => s.key === post.subCategory)
+                                ?.label || post.subCategory
+                            }
+                          </span>
+                        )}
+                        <span>•</span>
+                        <time>{post.date}</time>
+                      </div>
                     </div>
+                    <Link href={`/${locale}/posts/${post.slug}`} prefetch={false} className="group">
+                      <h2 className="mt-2.5 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2 leading-relaxed">
+                        {post.title}
+                      </h2>
+                    </Link>
+                    <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
+                      {post.excerpt}
+                    </p>
                   </div>
-                  <Link href={`/${locale}/posts/${post.slug}`} prefetch={false} className="group">
-                    <h2 className="mt-2.5 font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-2 leading-relaxed">
-                      {post.title}
-                    </h2>
-                  </Link>
-                  <p className="mt-2 text-xs leading-5 text-[var(--muted)] line-clamp-2">
-                    {post.excerpt}
-                  </p>
                 </div>
-              </div>
-              <div className="mt-4 p-4 pt-3 border-t border-[var(--border)] flex items-center justify-between">
-                <Link
-                  href={`/${locale}/posts/${post.slug}`}
-                  prefetch={false}
-                  className="text-xs font-bold text-[var(--secondary)] hover:underline flex items-center gap-1"
-                >
-                  {locale === "kn" ? "ಹೆಚ್ಚಿನ ಮಾಹಿತಿ ➔" : "Read More ➔"}
-                </Link>
-              </div>
-            </article>
-          ))}
-        </div>
+                <div className="mt-4 p-4 pt-3 border-t border-[var(--border)] flex items-center justify-between">
+                  <Link
+                    href={`/${locale}/posts/${post.slug}`}
+                    prefetch={false}
+                    className="text-xs font-bold text-[var(--secondary)] hover:underline flex items-center gap-1"
+                  >
+                    {locale === "kn" ? "ಹೆಚ್ಚಿನ ಮಾಹಿತಿ ➔" : "Read More ➔"}
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {visibleCount < filteredPosts.length && (
+            <div className="mt-10 flex justify-center">
+              <button
+                onClick={loadMore}
+                className="px-8 py-3 rounded-full bg-[var(--surface-soft)] text-[var(--primary)] font-bold text-sm border border-[var(--border)] hover:bg-[var(--secondary)] hover:text-white hover:border-transparent transition-colors shadow-sm"
+              >
+                {locale === "kn" ? "ಇನ್ನಷ್ಟು ವೀಕ್ಷಿಸಿ ➔" : "Load More ➔"}
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

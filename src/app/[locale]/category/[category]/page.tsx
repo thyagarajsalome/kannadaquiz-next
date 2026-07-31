@@ -212,7 +212,7 @@ export default async function CategoryPage({
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
 
   const resolvedCategory = resolveCategoryKey(category);
-  const posts = await getPublicPostsByCategory(locale, resolvedCategory, 30);
+  const posts = await getPublicPostsByCategory(locale, resolvedCategory, 120);
 
   const catTitle = getLocalizedCategory(resolvedCategory, locale);
 

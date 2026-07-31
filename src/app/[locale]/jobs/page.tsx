@@ -38,7 +38,7 @@ export default async function JobsPage({ params }: { params: Promise<{ locale: s
   const { locale: rawLocale } = await params;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
   
-  const jobs = await getPublicJobs(locale, 30);
+  const jobs = await getPublicJobs(locale, 120);
 
   return <JobsClient locale={locale} jobs={jobs} />;
 }
