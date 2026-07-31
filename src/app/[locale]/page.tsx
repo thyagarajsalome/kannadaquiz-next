@@ -255,6 +255,14 @@ const categoriesInfo = [
     icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a10 10 0 100 20 10 10 0 000-20z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10m0-20a15.3 15.3 0 00-4 10 15.3 15.3 0 004 10M2 12h20" />`,
     color: "text-indigo-755 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-300",
     url: "category/sports"
+  },
+  {
+    key: "expat",
+    kn: "ಅನಿವಾಸಿ (NRI)",
+    en: "NRI & Expats",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />`,
+    color: "text-orange-755 bg-orange-50 hover:bg-orange-100 hover:border-orange-300",
+    url: "category/expat"
   }
 ];
 

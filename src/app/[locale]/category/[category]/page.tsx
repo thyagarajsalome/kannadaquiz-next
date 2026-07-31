@@ -6,7 +6,7 @@ import { CategoryFilterList } from "@/components/CategoryFilterList";
 export const revalidate = 3600;
 
 export function generateStaticParams() {
-  const categories = ["karnataka", "national", "international", "jobs", "agriculture", "education", "schemes", "tourism", "sports", "technology", "movies", "home-design", "general", "current-affairs"];
+  const categories = ["karnataka", "national", "international", "jobs", "agriculture", "education", "schemes", "tourism", "sports", "technology", "movies", "home-design", "general", "current-affairs", "expat"];
   const params: { locale: string; category: string }[] = [];
   
   // Create paths for both locales and all standard categories
@@ -32,6 +32,7 @@ const categoryTranslations: Record<string, Record<string, string>> = {
   technology: { kn: "ಕಂಪ್ಯೂಟರ್ ಮತ್ತು ತಂತ್ರಜ್ಞಾನ", en: "Computer & Technology" },
   movies: { kn: "ಚಲನಚಿತ್ರ ಸುದ್ದಿ", en: "Movies & Cinema" },
   "home-design": { kn: "ಮನೆ ವಿನ್ಯಾಸ ಮತ್ತು ರಿಯಲ್ ಎಸ್ಟೇಟ್", en: "Home Design & Real Estate" },
+  expat: { kn: "ಅನಿವಾಸಿ ಕನ್ನಡಿಗರು (NRI)", en: "NRI & Expats" },
   general: { kn: "ಸಾಮಾನ್ಯ ಸುದ್ದಿ", en: "General News" }
 };
 
@@ -66,7 +67,10 @@ const categorySynonyms: Record<string, string> = {
   plan: "home-design",
   estate: "home-design",
   realestate: "home-design",
-  promotion: "home-design"
+  promotion: "home-design",
+  nri: "expat",
+  abroad: "expat",
+  visa: "expat"
 };
 
 export function resolveCategoryKey(category: string): string {
@@ -155,6 +159,10 @@ export async function generateMetadata({
     "home-design": {
       kn: ["ಮನೆ ವಿನ್ಯಾಸ", "ಒಳಾಂಗಣ ವಿನ್ಯಾಸ", "ಮನೆ ಪ್ಲಾನ್", "ರಿಯಲ್ ಎಸ್ಟೇಟ್ ಕರ್ನಾಟಕ", "ಮನೆ ಕಟ್ಟುವ ನಕ್ಷೆ", "ಇಂಟೀರಿಯರ್ ಡಿಸೈನ್", "ಮನೆ ಕಟ್ಟುವ ಮಾಹಿತಿ"],
       en: ["Home Design Ideas", "Interior Design Karnataka", "House Plans", "Real Estate Bangalore", "Floor Plans", "Interior Decoration", "Building Promotion", "Service Promotion"]
+    },
+    expat: {
+      kn: ["ಅನಿವಾಸಿ ಕನ್ನಡಿಗರು", "ಎನ್ಆರ್ಐ ನ್ಯೂಸ್", "ಬೆಂಗಳೂರು ವಿಮಾನ", "ವೀಸಾ ನಿಯಮಗಳು", "ವಿದೇಶಿ ಸುದ್ದಿ", "ಅನಿವಾಸಿ ಭಾರತೀಯರು"],
+      en: ["NRI Karnataka", "Expat News", "H1B Visa Updates", "Bangalore Flights", "NRI Investments", "Non Resident Indians"]
     },
     general: {
       kn: ["ಸಾಮಾನ್ಯ ಸುದ್ದಿ", "ಕನ್ನಡ ಕ್ವಿಜ್", "ಕನ್ನಡ ವಾರ್ತೆಗಳು", "ಸಾಮಾನ್ಯ ಜ್ಞಾನ"],
