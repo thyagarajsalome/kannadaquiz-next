@@ -3,7 +3,7 @@ import { isLocale, type Locale } from "@/lib/locales";
 import { getPublicPostsByCategory } from "@/lib/public-content";
 import { CategoryFilterList } from "@/components/CategoryFilterList";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export function generateStaticParams() {
   const categories = ["karnataka", "national", "international", "jobs", "agriculture", "education", "schemes", "tourism", "sports", "technology", "movies", "home-design", "general", "current-affairs"];
