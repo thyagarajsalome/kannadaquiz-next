@@ -6,7 +6,7 @@ import { HeroSlider } from "@/components/HeroSlider";
 import { isLocale, locales, type Locale } from "@/lib/locales";
 import { getPublicCurrentAffairs, getPublicPosts, getPublicQuizzes, getPublicPostsByCategory, getPublicPostBySlug, getPublicFeaturedPosts, type PublicPost } from "@/lib/public-content";
 
-export const revalidate = 300;
+export const revalidate = 3600; // Aggressive 1-hour cache to save Firestore reads
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));

@@ -10,7 +10,7 @@ function getEnv(val: string | undefined, fallback: string): string {
 
 const firestoreProjectId = getEnv(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID, "kannadaquiz-fc21b");
 const firestoreApiKey = getEnv(process.env.NEXT_PUBLIC_FIREBASE_API_KEY, "AIzaSyC07b-JG7h-lkTFi4m96fB_He-LeBmus7A");
-const revalidateSeconds = 300;
+const revalidateSeconds = 3600; // Aggressive 1-hour cache to drastically cut Firebase reads
 
 type FirestoreValue = {
   stringValue?: string;

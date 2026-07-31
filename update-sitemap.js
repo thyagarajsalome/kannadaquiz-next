@@ -1,0 +1,1 @@
+const fs = require('fs'); let content = fs.readFileSync('src/app/sitemap.ts', 'utf8'); content = content.replace('//services,', '//services,\n    //education,'); fs.writeFileSync('src/app/sitemap.ts', content);

@@ -3,8 +3,8 @@ import { isLocale, type Locale } from "@/lib/locales";
 import { getPublicJobs } from "@/lib/public-content";
 
 export async function generateStaticParams() {
-  const knJobs = await getPublicJobs("kn", 500);
-  const enJobs = await getPublicJobs("en", 500);
+  const knJobs = await getPublicJobs("kn", 20);
+  const enJobs = await getPublicJobs("en", 20);
   const knParams = knJobs.map((j) => ({ locale: "kn", slug: j.slug }));
   const enParams = enJobs.map((j) => ({ locale: "en", slug: j.slug }));
   const combined = [...knParams, ...enParams];

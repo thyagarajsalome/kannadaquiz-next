@@ -6,8 +6,8 @@ import { isLocale, locales, type Locale } from "@/lib/locales";
 import { getPublicQuizzes, getPublicQuizBySlug } from "@/lib/public-content";
 
 export async function generateStaticParams() {
-  const knQuizzes = await getPublicQuizzes("kn", 500);
-  const enQuizzes = await getPublicQuizzes("en", 500);
+  const knQuizzes = await getPublicQuizzes("kn", 20);
+  const enQuizzes = await getPublicQuizzes("en", 20);
   const knParams = knQuizzes.map((q) => ({ locale: "kn", slug: q.slug }));
   const enParams = enQuizzes.map((q) => ({ locale: "en", slug: q.slug }));
   const combined = [...knParams, ...enParams];

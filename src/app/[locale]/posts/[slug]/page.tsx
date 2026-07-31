@@ -6,8 +6,9 @@ import { getPublicPosts, getPublicPostBySlug, type PublicPost } from "@/lib/publ
 import { MiniQuizPlayer } from "@/components/MiniQuizPlayer";
 
 export async function generateStaticParams() {
-  const knPosts = await getPublicPosts("kn", 2000);
-  const enPosts = await getPublicPosts("en", 2000);
+  // Drastically reduced from 2000 to 50 to prevent huge Firestore read spikes on every Vercel build
+  const knPosts = await getPublicPosts("kn", 50);
+  const enPosts = await getPublicPosts("en", 50);
   const knParams = knPosts.map((post) => ({ locale: "kn", slug: post.slug }));
   const enParams = enPosts.map((post) => ({ locale: "en", slug: post.slug }));
   const combined = [...knParams, ...enParams];

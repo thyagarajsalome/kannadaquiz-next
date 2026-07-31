@@ -1,0 +1,1 @@
+﻿async function test() { const res = await fetch("https://kannadaquiz-next.vercel.app/kn/disclaimer", { cache: "no-store" }); const text = await res.text(); console.log(`Status: ${res.status}`); console.log(text.includes("No Government Affiliation") ? "Disclaimer Updated" : "Disclaimer OLD"); } test();
