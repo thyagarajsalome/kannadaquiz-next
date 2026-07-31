@@ -355,12 +355,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   // Cleanly limit to exactly 4 featured posts
   featuredPosts = featuredPosts.slice(0, 4);
 
-  // Filter out the highlighted/featured articles from the standard recent feed to prevent duplicate visual entries on the page
   const featuredSlugsSet = new Set(featuredPosts.map(p => p.slug));
   const standardPosts = posts.filter(p => !featuredSlugsSet.has(p.slug));
 
-  const heroPost = standardPosts[0] || posts[0] || null;
-  const recentHeadlines = standardPosts.slice(1, 5);
+  const heroPosts = standardPosts.slice(0, 3); // Top 3 standard posts for the hero slider
+  const heroPost = heroPosts[0] || null;
+  const recentHeadlines = standardPosts.slice(3, 7); // Next 4 for recent headlines
+
+  // ... (getCategoryKey remains the same) ...
 
   const getCategoryKey = (cat: string) => {
     const c = cat.toLowerCase();
@@ -380,9 +382,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   // 3. Track all posts displayed in the top folds to guarantee absolute zero repetition on the homepage
   const displayedSlugsSet = new Set<string>();
   featuredPosts.forEach(p => displayedSlugsSet.add(p.slug));
-  if (heroPost) {
-    displayedSlugsSet.add(heroPost.slug);
-  }
+  heroPosts.forEach(p => displayedSlugsSet.add(p.slug));
   recentHeadlines.forEach(p => displayedSlugsSet.add(p.slug));
 
   // Exclude already displayed posts from bottom categorized rows
@@ -598,9 +598,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <div className="kq-container">
           <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
             {/* Left Column: Big Hero Story / Interactive Slider */}
-            {featuredPosts.length > 0 ? (
+            {heroPosts.length > 1 ? (
               <HeroSlider
-                posts={featuredPosts}
+                posts={heroPosts}
                 locale={locale}
                 readMoreText={sectionTitles.readMore[locale]}
               />
