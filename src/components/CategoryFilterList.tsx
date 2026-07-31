@@ -171,13 +171,27 @@ export function CategoryFilterList({
           </div>
 
           {visibleCount < filteredPosts.length && (
-            <div className="mt-10 flex justify-center">
+            <div className="mt-10 flex flex-col items-center justify-center gap-3">
+              <p className="text-xs font-medium text-[var(--muted)]">
+                {locale === "kn" 
+                  ? `ಒಟ್ಟು ${filteredPosts.length} ಲೇಖನಗಳಲ್ಲಿ ${Math.min(visibleCount, filteredPosts.length)} ತೋರಿಸಲಾಗುತ್ತಿದೆ` 
+                  : `Showing ${Math.min(visibleCount, filteredPosts.length)} of ${filteredPosts.length} articles`}
+              </p>
               <button
                 onClick={loadMore}
                 className="px-8 py-3 rounded-full bg-[var(--surface-soft)] text-[var(--primary)] font-bold text-sm border border-[var(--border)] hover:bg-[var(--secondary)] hover:text-white hover:border-transparent transition-colors shadow-sm"
               >
                 {locale === "kn" ? "ಇನ್ನಷ್ಟು ವೀಕ್ಷಿಸಿ ➔" : "Load More ➔"}
               </button>
+            </div>
+          )}
+          {visibleCount >= filteredPosts.length && filteredPosts.length > 0 && (
+            <div className="mt-10 flex justify-center">
+              <p className="text-xs font-medium text-[var(--muted)] bg-gray-100 px-4 py-2 rounded-full">
+                {locale === "kn" 
+                  ? `ಎಲ್ಲಾ ${filteredPosts.length} ಲೇಖನಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಿದೆ` 
+                  : `All ${filteredPosts.length} articles loaded`}
+              </p>
             </div>
           )}
         </>

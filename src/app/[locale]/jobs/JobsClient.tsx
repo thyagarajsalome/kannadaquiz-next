@@ -131,13 +131,27 @@ export function JobsClient({ locale, jobs }: { locale: Locale; jobs: PublicJob[]
                 ))}
 
                 {visibleCount < filteredJobs.length && (
-                  <div className="mt-8 flex justify-center">
+                  <div className="mt-8 flex flex-col items-center justify-center gap-3">
+                    <p className="text-xs font-medium text-[var(--muted)]">
+                      {locale === "kn" 
+                        ? `ಒಟ್ಟು ${filteredJobs.length} ಉದ್ಯೋಗಗಳಲ್ಲಿ ${Math.min(visibleCount, filteredJobs.length)} ತೋರಿಸಲಾಗುತ್ತಿದೆ` 
+                        : `Showing ${Math.min(visibleCount, filteredJobs.length)} of ${filteredJobs.length} jobs`}
+                    </p>
                     <button
                       onClick={loadMore}
                       className="px-8 py-3 rounded-full bg-white text-[var(--primary)] font-bold text-sm border border-[var(--border)] hover:bg-[var(--secondary)] hover:text-white hover:border-transparent transition-colors shadow-sm"
                     >
                       {locale === "kn" ? "ಇನ್ನಷ್ಟು ಉದ್ಯೋಗಗಳು ➔" : "Load More Jobs ➔"}
                     </button>
+                  </div>
+                )}
+                {visibleCount >= filteredJobs.length && filteredJobs.length > 0 && (
+                  <div className="mt-8 flex justify-center">
+                    <p className="text-xs font-medium text-[var(--muted)] bg-gray-100 px-4 py-2 rounded-full">
+                      {locale === "kn" 
+                        ? `ಎಲ್ಲಾ ${filteredJobs.length} ಉದ್ಯೋಗಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಿದೆ` 
+                        : `All ${filteredJobs.length} jobs loaded`}
+                    </p>
                   </div>
                 )}
               </>
