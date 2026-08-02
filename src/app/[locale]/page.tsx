@@ -269,7 +269,7 @@ const categoriesInfo = [
     kn: "ಬೆಂಗಳೂರು",
     en: "Bangalore",
     icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 21v-4a2 2 0 012-2h2a2 2 0 012 2v4M9 7h6M9 11h6" />`,
-    color: "text-blue-600 bg-blue-50 hover:bg-blue-100 hover:border-blue-300",
+    color: "text-violet-755 bg-violet-50 hover:bg-violet-100 hover:border-violet-300",
     url: "bangalore-guide"
   }
 ];
