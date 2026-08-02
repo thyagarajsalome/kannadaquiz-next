@@ -61,6 +61,9 @@ export function Header({ locale }: { locale: Locale }) {
               <Link href={`/${locale}/education`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ಶೈಕ್ಷಣಿಕ ಮಾರ್ಗದರ್ಶಿ" : "Education Guide"}
               </Link>
+              <Link href={`/${locale}/bangalore-guide`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+                {locale === "kn" ? "ಬೆಂಗಳೂರು ಮಾರ್ಗದರ್ಶಿ" : "Bangalore Guide"}
+              </Link>
               <Link href={`/${locale}/category/international`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ಅಂತರರಾಷ್ಟ್ರೀಯ ಸುದ್ದಿ" : "International News"}
               </Link>
@@ -117,6 +120,9 @@ export function Header({ locale }: { locale: Locale }) {
           </Link>
           <Link href={`/${locale}/education`} prefetch={false} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಶೈಕ್ಷಣಿಕ" : "Education"}
+          </Link>
+          <Link href={`/${locale}/bangalore-guide`} prefetch={false} className="hover:text-[var(--secondary)] shrink-0">
+            {locale === "kn" ? "ಬೆಂಗಳೂರು ಗೈಡ್" : "Blr Guide"}
           </Link>
           <Link href={`/${locale}/category/home-design`} prefetch={false} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಮನೆ ವಿನ್ಯಾಸ" : "Home Design"}
