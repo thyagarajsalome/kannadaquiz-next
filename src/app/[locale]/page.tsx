@@ -263,6 +263,14 @@ const categoriesInfo = [
     icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />`,
     color: "text-orange-755 bg-orange-50 hover:bg-orange-100 hover:border-orange-300",
     url: "expat-guide"
+  },
+  {
+    key: "bangalore",
+    kn: "ಬೆಂಗಳೂರು",
+    en: "Bangalore",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 21v-4a2 2 0 012-2h2a2 2 0 012 2v4M9 7h6M9 11h6" />`,
+    color: "text-blue-600 bg-blue-50 hover:bg-blue-100 hover:border-blue-300",
+    url: "bangalore-guide"
   }
 ];
 
