@@ -347,7 +347,10 @@ export function AdminDashboard() {
                   : "",
           };
         })
-        .filter((item) => !item.status || item.status === "published" || item.status === "draft")
+        .filter((item) => {
+          const s = (item.status || "").toLowerCase();
+          return !s || s === "published" || s === "draft";
+        })
         .sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
 
       setItems(nextItems);
@@ -1816,7 +1819,7 @@ export function AdminDashboard() {
                               ) : (
                                 <span>{item.title}</span>
                               )}
-                              {item.status === "draft" && (
+                              {item.status?.toLowerCase() === "draft" && (
                                 <span className="inline-block rounded bg-amber-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-amber-800 border border-amber-200">
                                   Draft
                                 </span>

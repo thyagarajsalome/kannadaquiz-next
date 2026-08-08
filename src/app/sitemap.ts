@@ -23,6 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     `/${locale}/services`,
     `/${locale}/services/railway`,
     `/${locale}/expat`,
+    `/${locale}/bangalore-guide`,
     `/${locale}/games/gadhe`,
     `/${locale}/games/worldcup`,
     `/${locale}/category/karnataka`,

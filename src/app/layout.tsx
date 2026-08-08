@@ -45,13 +45,6 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
     },
   },
-  alternates: {
-    canonical: "/kn",
-    languages: {
-      kn: "/kn",
-      en: "/en",
-    },
-  },
   openGraph: {
     title: "KannadaQuiz - Karnataka Exam Preparation",
     description:
