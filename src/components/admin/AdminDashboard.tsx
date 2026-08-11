@@ -310,20 +310,20 @@ export function AdminDashboard() {
     try {
       let snapshot;
       try {
-        // Fetch up to 300 items ordered by the most recently updated first.
+        // Fetch up to 3000 items ordered by the most recently updated first.
         // This guarantees that newly published or modified drafts are fetched without wasting Firestore reads.
         const docsQuery = query(
           collection(firestore, firestoreCollections[nextKind]),
           orderBy("updatedAt", "desc"),
-          limit(300)
+          limit(3000)
         );
         snapshot = await getDocs(docsQuery);
       } catch (indexError) {
         console.warn("Index not found or sorting failed, falling back to unordered fetch:", indexError);
-        // Fallback to fetch up to 300 items without sorting at the database level.
+        // Fallback to fetch up to 3000 items without sorting at the database level.
         const docsQuery = query(
           collection(firestore, firestoreCollections[nextKind]),
-          limit(300)
+          limit(3000)
         );
         snapshot = await getDocs(docsQuery);
       }
@@ -1743,7 +1743,8 @@ export function AdminDashboard() {
                 const search = searchQuery.toLowerCase().trim();
                 const titleMatch = !search || 
                                    item.title.toLowerCase().includes(search) || 
-                                   (item.slug || "").toLowerCase().includes(search);
+                                   (item.slug || "").toLowerCase().includes(search) ||
+                                   search.includes((item.slug || "").toLowerCase());
                 
                 let categoryMatch = true;
                 if (selectedCategoryFilter !== "All" && kind === "posts") {
