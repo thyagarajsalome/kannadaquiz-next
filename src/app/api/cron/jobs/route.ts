@@ -33,9 +33,9 @@ function generateSlug(text: string) {
 }
 
 export async function GET(request: Request) {
-  // Optional security: Ensure this is called by Vercel Cron
+  // STRICT SECURITY: Reject if CRON_SECRET is missing from Vercel, or if auth header doesn't match
   const authHeader = request.headers.get('authorization');
-  if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!process.env.CRON_SECRET || authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return new NextResponse('Unauthorized', { status: 401 });
   }
 
