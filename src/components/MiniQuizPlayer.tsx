@@ -69,14 +69,26 @@ export function MiniQuizPlayer({ questions, locale }: MiniQuizPlayerProps) {
                       type="button"
                       disabled={isAnswered}
                       onClick={() => setAnswers((prev) => ({ ...prev, [qIdx]: oIdx }))}
-                      className={`w-full text-left px-4 py-2.5 rounded-lg border text-xs leading-relaxed transition-all select-none ${btnClass} ${
+                      className={`w-full px-4 py-2.5 rounded-lg border text-xs leading-relaxed transition-all select-none flex items-center justify-between gap-3 ${btnClass} ${
                         !isAnswered ? "cursor-pointer active:scale-[0.99]" : "pointer-events-none"
                       }`}
                     >
-                      <span className="font-extrabold uppercase mr-1.5 opacity-60">
-                        {String.fromCharCode(65 + oIdx)}.
-                      </span>
-                      {opt}
+                      <div className="flex text-left">
+                        <span className="font-extrabold uppercase mr-1.5 opacity-60">
+                          {String.fromCharCode(65 + oIdx)}.
+                        </span>
+                        <span>{opt}</span>
+                      </div>
+                      {isAnswered && isCorrect && (
+                        <svg className="w-5 h-5 shrink-0 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                      {isAnswered && isWrong && (
+                        <svg className="w-5 h-5 shrink-0 text-rose-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      )}
                     </button>
                   );
                 })}

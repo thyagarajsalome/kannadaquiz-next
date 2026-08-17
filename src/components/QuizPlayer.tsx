@@ -97,17 +97,32 @@ export function QuizPlayer({ quiz, locale }: { quiz: PublicQuiz; locale: Locale 
                       setAnswers((current) => ({ ...current, [question.id]: optionIndex }))
                     }
                     className={[
-                      "min-h-11 rounded-md border px-4 py-2 text-left text-sm font-medium transition",
+                      "min-h-11 rounded-md border px-4 py-2 text-sm font-medium transition flex items-center justify-between gap-3 text-left w-full",
                       correct
                         ? "border-green-700 bg-green-50 text-green-900"
                         : wrong
                           ? "border-red-700 bg-red-50 text-red-900"
                           : selected
-                            ? "border-[var(--primary)] bg-[var(--surface-soft)]"
-                            : "border-[var(--border)] bg-white hover:border-[var(--primary)]",
+                            ? "border-[var(--primary)] bg-[var(--primary)] text-white shadow-md"
+                            : "border-[var(--border)] bg-white text-[var(--primary)] hover:border-[var(--primary)]/50",
                     ].join(" ")}
                   >
-                    {option}
+                    <span>{option}</span>
+                    {selected && !submitted && (
+                      <svg className="w-5 h-5 shrink-0 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                    {correct && (
+                      <svg className="w-5 h-5 shrink-0 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                    {wrong && (
+                      <svg className="w-5 h-5 shrink-0 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    )}
                   </button>
                 );
               })}
