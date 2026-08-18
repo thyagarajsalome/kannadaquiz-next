@@ -55,7 +55,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ 
       success: true, 
-      message: Successfully found and permanently deleted  articles related to Pakistan.,
+      message: `Successfully found and permanently deleted ${deletedCount} articles related to Pakistan.`,
       action: 'Please go back to Google Search Console. If any URLs are already indexed, you dont need to do anything. Since the articles are deleted, the server will now return a 404 Not Found. Google will naturally see this and drop them from the index during its next crawl.'
     });
     
