@@ -812,6 +812,37 @@ export function AdminDashboard() {
     }
   }
 
+  async function handleDeletePakistanArticles() {
+    if (!firestore) return;
+    const confirm = window.confirm("Are you sure you want to delete all Pakistan-related articles?");
+    if (!confirm) return;
+
+    setCleaningDb(true);
+    setCleanMessage("Scanning database for Pakistan-related articles...");
+
+    try {
+      let deleted = 0;
+      const postsRef = collection(firestore, firestoreCollections.posts);
+      const snapshot = await getDocs(postsRef);
+
+      for (const docSnap of snapshot.docs) {
+        const data = docSnap.data();
+        const text = String(data.title || "") + " " + String(data.body || "") + " " + String(data.slug || "");
+        if (text.toLowerCase().includes("pakistan") || text.includes("ಪಾಕಿಸ್ತಾನ")) {
+          await deleteDoc(doc(firestore, firestoreCollections.posts, docSnap.id));
+          deleted++;
+        }
+      }
+
+      setCleanMessage(`✅ Success! Found and deleted ${deleted} articles related to Pakistan.`);
+      void loadStats();
+      void loadItems(activeTab);
+    } catch (error: any) {
+      setCleanMessage(`❌ Error: ${error.message}`);
+    } finally {
+      setCleaningDb(false);
+    }
+  }
   async function handleCleanAutomatedContent() {
     if (!firestore) return;
 
@@ -1919,6 +1950,29 @@ export function AdminDashboard() {
                 {cleaningDb ? "Cleaning Database..." : "Clean Database Now"}
               </button>
             </div>
+            
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 md:p-6 bg-red-50 border-t border-red-100">
+              <div>
+                <h3 className="font-bold text-red-900 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-red-700 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9z" clipRule="evenodd" />
+                  </svg>
+                  Remove Pakistan Articles
+                </h3>
+                <p className="text-xs text-red-800 mt-1 leading-relaxed">
+                  Scan the database and permanently delete all articles mentioning Pakistan.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleDeletePakistanArticles}
+                disabled={cleaningDb}
+                className="rounded-md bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-5 py-2.5 shadow-sm transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                {cleaningDb ? "Processing..." : "Delete Articles Now"}
+              </button>
+            </div>
+            
             {cleanMessage && (
               <div className="mt-4 p-3 bg-white border border-amber-200 rounded-md text-xs font-mono text-amber-900 whitespace-pre-wrap leading-relaxed shadow-inner">
                 {cleanMessage}
