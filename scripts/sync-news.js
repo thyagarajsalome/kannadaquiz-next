@@ -1,4 +1,4 @@
-﻿const admin = require("firebase-admin");
+const admin = require("firebase-admin");
 const path = require("path");
 const fs = require("fs");
 const Parser = require("rss-parser");
@@ -260,6 +260,13 @@ async function runSync() {
         if (feedArticlesImported >= 2) {
           console.log(`[Limit] Already imported 2 new articles for feed "${feed.name}" in this run. Moving to next feed.`);
           break;
+        }
+
+        // Hard filter for unwanted topics (Pakistan)
+        const textToSearch = ((item.title || "") + " " + (item.contentSnippet || "")).toLowerCase();
+        if (textToSearch.includes("pakistan") || textToSearch.includes("ಪಾಕಿಸ್ತಾನ")) {
+          console.log(`[Filter] Skipping item due to unwanted keyword (Pakistan): ${item.title}`);
+          continue;
         }
         const originalTitle = item.title;
         const originalDescription = item.contentSnippet || item.content || item.description || "";
