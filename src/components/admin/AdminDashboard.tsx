@@ -836,7 +836,7 @@ export function AdminDashboard() {
 
       setCleanMessage(`✅ Success! Found and deleted ${deleted} articles related to Pakistan.`);
       void loadStats();
-      void loadItems(activeTab);
+      void loadItems(kind);
     } catch (error: any) {
       setCleanMessage(`❌ Error: ${error.message}`);
     } finally {
