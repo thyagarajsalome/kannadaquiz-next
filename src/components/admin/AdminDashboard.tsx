@@ -1356,6 +1356,12 @@ export function AdminDashboard() {
                 <option value="Technology">Technology & AI</option>
                 <option value="Movies">Movies & Cinema</option>
                 <option value="Home Design">Home Design & Real Estate</option>
+                <option value="Syllabus">Syllabus & Exam Pattern</option>
+                <option value="Question Papers">Previous Year Question Papers</option>
+                <option value="Study Materials">Study Materials & Notes</option>
+                <option value="Hall Ticket">Admit Card & Hall Ticket</option>
+                <option value="Results">Results & Cut-off</option>
+                <option value="Preparation Guides">How to Prepare (Guides)</option>
               </select>
             </label>
           ) : null}
@@ -1704,6 +1710,12 @@ export function AdminDashboard() {
                       <option value="Technology">Technology & AI</option>
                       <option value="Movies">Movies & Cinema</option>
                       <option value="Home Design">Home Design & Real Estate</option>
+                      <option value="Syllabus">Syllabus & Exam Pattern</option>
+                      <option value="Question Papers">Previous Year Question Papers</option>
+                      <option value="Study Materials">Study Materials & Notes</option>
+                      <option value="Hall Ticket">Admit Card & Hall Ticket</option>
+                      <option value="Results">Results & Cut-off</option>
+                      <option value="Preparation Guides">How to Prepare (Guides)</option>
                     </select>
                   </div>
                 )}
@@ -1795,7 +1807,13 @@ export function AdminDashboard() {
                     "heritage & tourism": ["heritage & tourism", "tourism", "ಪ್ರವಾಸ"],
                     "sports news": ["sports news", "sports", "ಕ್ರೀಡೆ"],
                     movies: ["movies", "movies & cinema", "cinema", "film", "ಚಿತ್ರ"],
-                    "home design": ["home design", "real estate", "interior", "house plans", "promotion", "services", "home design & real estate", "ವಿನ್ಯಾಸ"],
+                    "home design": ["home design", "real estate", "interior", "house plans", "promotion", "services", "home design & real estate", "ರಿಯಲ್ ಎಸ್ಟೇಟ್"],
+                    syllabus: ["syllabus", "exam pattern", "syllabus & exam pattern", "ಪಠ್ಯಕ್ರಮ"],
+                    "question papers": ["question papers", "previous year", "old question papers", "ಹಿಂದಿನ ಪ್ರಶ್ನೆ"],
+                    "study materials": ["study materials", "notes", "study materials & notes", "ಸ್ಟಡಿ ನೋಟ್ಸ್"],
+                    "hall ticket": ["hall ticket", "admit card", "admit card & hall ticket", "ಪ್ರವೇಶ ಪತ್ರ"],
+                    results: ["results", "cut-off", "results & cut-off", "ಫಲಿತಾಂಶ"],
+                    "preparation guides": ["preparation", "how to prepare", "guides", "preparation guides", "ತಯಾರಿ ಹೇಗೆ"]
                   };
 
                   const groupSynonyms = categoryGroups[filterKey] || [filterKey];

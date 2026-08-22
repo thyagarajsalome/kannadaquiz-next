@@ -164,6 +164,12 @@ export async function getPublicPostsByCategory(
     movies: ["Movies", "Movies & Cinema", "Cinema", "Film", "ಚಲನಚಿತ್ರ"],
     "home-design": ["Home Design", "Home Design & Real Estate", "Real Estate", "Interior", "House Plans", "Promotion", "Services", "ಮನೆ ವಿನ್ಯಾಸ ಮತ್ತು ರಿಯಲ್ ಎಸ್ಟೇಟ್", "home-design"],
     general: ["General", "General News", "ಸಾಮಾನ್ಯ", "ಸಾಮಾನ್ಯ ಸುದ್ದಿ"],
+    syllabus: ["Syllabus", "Syllabus & Exam Pattern", "ಪಠ್ಯಕ್ರಮ"],
+    "question-papers": ["Question Papers", "Previous Year Question Papers", "ಹಿಂದಿನ ಪ್ರಶ್ನೆ"],
+    "study-materials": ["Study Materials", "Study Materials & Notes", "ಸ್ಟಡಿ ನೋಟ್ಸ್"],
+    "hall-ticket": ["Hall Ticket", "Admit Card & Hall Ticket", "ಪ್ರವೇಶ ಪತ್ರ"],
+    results: ["Results", "Results & Cut-off", "ಫಲಿತಾಂಶ"],
+    "preparation-guides": ["Preparation Guides", "How to Prepare (Guides)", "ತಯಾರಿ ಹೇಗೆ"],
   };
 
   const normKey = categoryKey.toLowerCase();
