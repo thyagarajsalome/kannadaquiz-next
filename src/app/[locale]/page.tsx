@@ -201,6 +201,46 @@ const categoriesInfo = [
     url: "category/movies"
   },
   {
+    key: "question-papers",
+    kn: "ಹಿಂದಿನ ಪ್ರಶ್ನೆ",
+    en: "Old Papers",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />`,
+    color: "text-orange-755 bg-orange-50 hover:bg-orange-100 hover:border-orange-300",
+    url: "category/question-papers"
+  },
+  {
+    key: "study-materials",
+    kn: "ಸ್ಟಡಿ ನೋಟ್ಸ್",
+    en: "Study Notes",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />`,
+    color: "text-emerald-755 bg-emerald-50 hover:bg-emerald-100 hover:border-emerald-300",
+    url: "category/study-materials"
+  },
+  {
+    key: "hall-ticket",
+    kn: "ಪ್ರವೇಶ ಪತ್ರ",
+    en: "Hall Ticket",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />`,
+    color: "text-pink-755 bg-pink-50 hover:bg-pink-100 hover:border-pink-300",
+    url: "category/hall-ticket"
+  },
+  {
+    key: "results",
+    kn: "ಫಲಿತಾಂಶ",
+    en: "Results",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />`,
+    color: "text-teal-755 bg-teal-50 hover:bg-teal-100 hover:border-teal-300",
+    url: "category/results"
+  },
+  {
+    key: "preparation-guides",
+    kn: "ತಯಾರಿ ಹೇಗೆ",
+    en: "Prep Guides",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />`,
+    color: "text-yellow-755 bg-yellow-50 hover:bg-yellow-100 hover:border-yellow-300",
+    url: "category/preparation-guides"
+  },
+  {
     key: "education",
     kn: "ಶೈಕ್ಷಣಿಕ ಮಾರ್ಗದರ್ಶಿ",
     en: "Education Guide",
