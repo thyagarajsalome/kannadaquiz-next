@@ -217,14 +217,6 @@ const categoriesInfo = [
     url: "category/study-materials"
   },
   {
-    key: "hall-ticket",
-    kn: "ಪ್ರವೇಶ ಪತ್ರ",
-    en: "Hall Ticket",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />`,
-    color: "text-pink-755 bg-pink-50 hover:bg-pink-100 hover:border-pink-300",
-    url: "category/hall-ticket"
-  },
-  {
     key: "results",
     kn: "ಫಲಿತಾಂಶ",
     en: "Results",

@@ -167,7 +167,6 @@ export async function getPublicPostsByCategory(
     syllabus: ["Syllabus", "Syllabus & Exam Pattern", "ಪಠ್ಯಕ್ರಮ"],
     "question-papers": ["Question Papers", "Previous Year Question Papers", "ಹಿಂದಿನ ಪ್ರಶ್ನೆ"],
     "study-materials": ["Study Materials", "Study Materials & Notes", "ಸ್ಟಡಿ ನೋಟ್ಸ್"],
-    "hall-ticket": ["Hall Ticket", "Admit Card & Hall Ticket", "ಪ್ರವೇಶ ಪತ್ರ"],
     results: ["Results", "Results & Cut-off", "ಫಲಿತಾಂಶ"],
     "preparation-guides": ["Preparation Guides", "How to Prepare (Guides)", "ತಯಾರಿ ಹೇಗೆ"],
   };

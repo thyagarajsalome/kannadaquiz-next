@@ -70,9 +70,6 @@ export function Header({ locale }: { locale: Locale }) {
               <Link href={`/${locale}/category/study-materials`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ಸ್ಟಡಿ ನೋಟ್ಸ್" : "Study Materials"}
               </Link>
-              <Link href={`/${locale}/category/hall-ticket`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
-                {locale === "kn" ? "ಪ್ರವೇಶ ಪತ್ರ" : "Hall Ticket"}
-              </Link>
               <Link href={`/${locale}/category/results`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ಫಲಿತಾಂಶ" : "Results & Cut-off"}
               </Link>
@@ -144,9 +141,6 @@ export function Header({ locale }: { locale: Locale }) {
             </Link>
             <Link href={`/${locale}/category/study-materials`} prefetch={false} className="hover:text-[var(--secondary)] shrink-0">
               {locale === "kn" ? "ಸ್ಟಡಿ ನೋಟ್ಸ್" : "Notes"}
-            </Link>
-            <Link href={`/${locale}/category/hall-ticket`} prefetch={false} className="hover:text-[var(--secondary)] shrink-0">
-              {locale === "kn" ? "ಪ್ರವೇಶ ಪತ್ರ" : "Admit Card"}
             </Link>
             <Link href={`/${locale}/category/results`} prefetch={false} className="hover:text-[var(--secondary)] shrink-0">
               {locale === "kn" ? "ಫಲಿತಾಂಶ" : "Results"}

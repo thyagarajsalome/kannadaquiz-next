@@ -1713,7 +1713,6 @@ export function AdminDashboard() {
                       <option value="Syllabus">Syllabus & Exam Pattern</option>
                       <option value="Question Papers">Previous Year Question Papers</option>
                       <option value="Study Materials">Study Materials & Notes</option>
-                      <option value="Hall Ticket">Admit Card & Hall Ticket</option>
                       <option value="Results">Results & Cut-off</option>
                       <option value="Preparation Guides">How to Prepare (Guides)</option>
                     </select>
