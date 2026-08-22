@@ -252,6 +252,15 @@ export default async function CategoryPage({
         </h1>
       </div>
 
+      {["study-materials", "syllabus", "question-papers", "preparation-guides"].includes(resolvedCategory) && (
+        <div className="mb-8 p-4 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg text-sm text-amber-900 leading-relaxed shadow-sm">
+          <strong>{locale === "kn" ? "ಹಕ್ಕು ನಿರಾಕರಣೆ (Disclaimer):" : "Disclaimer:"}</strong>{" "}
+          {locale === "kn" 
+            ? "ಕನ್ನಡಕ್ವಿಜ್ (KannadaQuiz) ಒದಗಿಸುವ ಈ ಅಧ್ಯಯನ ಸಾಮಗ್ರಿಗಳು ಮತ್ತು ಮಾಹಿತಿಯನ್ನು ಬಾಹ್ಯ ಮೂಲಗಳು ಹಾಗೂ AI ತಂತ್ರಜ್ಞಾನದ ಸಹಾಯದಿಂದ ಸಿದ್ಧಪಡಿಸಲಾಗಿದೆ. ಇದು 100% ನಿಖರವಾಗಿರದಿರಬಹುದು. ದಯವಿಟ್ಟು ಅಧಿಕೃತ ವೆಬ್‌ಸೈಟ್‌ಗಳೊಂದಿಗೆ ಮಾಹಿತಿಯನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ. ಯಾವುದೇ ತಪ್ಪುಗಳು ಕಂಡುಬಂದಲ್ಲಿ, ನಾವು ಅದನ್ನು ನಿರಂತರವಾಗಿ ಸುಧಾರಿಸುತ್ತೇವೆ."
+            : "The study materials and information provided by KannadaQuiz are compiled using external sources and AI technology. While we strive for accuracy, it may not be 100% perfect. Please verify with official websites. We will continuously improve the content if any errors are found."}
+        </div>
+      )}
+
       <CategoryFilterList initialPosts={posts} locale={locale} categoryKey={category} />
     </section>
   );
