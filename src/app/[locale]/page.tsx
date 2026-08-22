@@ -598,9 +598,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                           sizes="(max-width: 768px) 100vw, 25vw"
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
                         />
-                        <span className="absolute top-3 left-3 bg-amber-500 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full shadow-sm tracking-widest z-10">
-                          {locale === "kn" ? "⭐ ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ" : "⭐ FEATURED"}
-                        </span>
+
                       </Link>
                     )}
                     
