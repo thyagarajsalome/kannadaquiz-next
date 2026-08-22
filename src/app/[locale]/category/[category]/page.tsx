@@ -86,7 +86,6 @@ const categorySynonyms: Record<string, string> = {
   result: "results",
   cutoff: "results",
   preparation: "preparation-guides",
-  guide: "preparation-guides",
   howtoprepare: "preparation-guides",
   nri: "expat",
   abroad: "expat",
