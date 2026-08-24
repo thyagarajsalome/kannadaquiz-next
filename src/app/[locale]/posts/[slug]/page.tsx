@@ -101,6 +101,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {
       title: `${post.title} | KannadaQuiz`,
       description: post.excerpt || post.title,
+      alternates: {
+        canonical: `/${locale}/posts/${post.slug}`,
+        languages: {
+          kn: `/kn/posts/${post.slug}`,
+          en: `/en/posts/${post.slug}`,
+        },
+      },
       openGraph: {
         title: post.title,
         description: post.excerpt || post.title,

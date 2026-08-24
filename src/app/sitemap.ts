@@ -36,6 +36,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     `/${locale}/category/tourism`,
     `/${locale}/category/sports`,
     `/${locale}/category/technology`,
+    `/${locale}/category/study-materials`,
+    `/${locale}/category/results`,
+    `/${locale}/category/syllabus`,
+    `/${locale}/category/question-papers`,
+    `/${locale}/category/preparation-guides`,
   ]);
 
   const contentByLocale = await Promise.all(
