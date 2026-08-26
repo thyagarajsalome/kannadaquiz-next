@@ -127,7 +127,7 @@ export function Header({ locale }: { locale: Locale }) {
           <Link href={`/${locale}/category/technology`} prefetch={false} className="hover:text-[var(--secondary)] shrink-0">
             {locale === "kn" ? "ತಂತ್ರಜ್ಞಾನ" : "Technology"}
           </Link>
-          <Link href={`/${locale}/jobs`} prefetch={false} className="hover:text-[var(--secondary)]">
+          <Link href={`/${locale}/category/jobs`} prefetch={false} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಉದ್ಯೋಗಗಳು" : "Jobs"}
           </Link>
           <Link href={`/${locale}/services`} prefetch={false} className="hover:text-[var(--secondary)] shrink-0">

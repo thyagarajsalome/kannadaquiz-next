@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { locales } from "@/lib/locales";
-import { getPublicJobs, getPublicPosts, getPublicQuizzes } from "@/lib/public-content";
+import { getPublicPosts, getPublicQuizzes } from "@/lib/public-content";
 
 const baseUrl = "https://kannadaquiz.in";
 
@@ -12,7 +12,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     `/${locale}`,
     `/${locale}/quizzes`,
     `/${locale}/posts`,
-    `/${locale}/jobs`,
     `/${locale}/syllabus`,
     `/${locale}/syllabus/kas`,
     `/${locale}/syllabus/psi`,
@@ -48,14 +47,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       locale,
       quizzes: await getPublicQuizzes(locale, 2000),
       posts: await getPublicPosts(locale, 2000),
-      jobs: await getPublicJobs(locale, 2000),
     })),
   );
 
-  const contentRoutes = contentByLocale.flatMap(({ locale, quizzes, posts, jobs }) => [
+  const contentRoutes = contentByLocale.flatMap(({ locale, quizzes, posts }) => [
     ...quizzes.map((quiz) => `/${locale}/quizzes/${quiz.slug}`),
     ...posts.map((post) => `/${locale}/posts/${post.slug}`),
-    ...jobs.map((job) => `/${locale}/jobs/${job.slug}`),
   ]);
 
   return [...staticRoutes, ...contentRoutes].map((route) => ({
