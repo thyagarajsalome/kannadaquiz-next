@@ -375,7 +375,21 @@ export default async function PostDetailPage({ params }: PageProps) {
                 </a>
               </div>
             );
-          })() : null}
+          })() : (
+            post.category && getCategorySlug(post.category) === "jobs" ? (
+              <div className="mt-6 border-t border-[var(--border)] pt-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-[var(--muted)]">
+                <span>
+                  {locale === "kn" ? "ಅಧಿಕೃತ ವೆಬ್‌ಸೈಟ್‌ಗಳನ್ನು ಪರಿಶೀಲಿಸಿ: " : "Check Official Websites: "}
+                  <span className="font-bold text-[var(--foreground)]">Karnataka Govt Portals</span>
+                </span>
+                <div className="flex gap-4">
+                  <a href="https://kpsc.kar.nic.in/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-bold text-blue-600 hover:underline">KPSC ➔</a>
+                  <a href="https://cetonline.karnataka.gov.in/kea/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-bold text-blue-600 hover:underline">KEA ➔</a>
+                  <a href="https://ksp.karnataka.gov.in/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-bold text-blue-600 hover:underline">KSP ➔</a>
+                </div>
+              </div>
+            ) : null
+          )}
         </div>
 
         {/* Mini Quiz Player (if attached) */}
