@@ -52,7 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const contentRoutes = contentByLocale.flatMap(({ locale, quizzes, posts }) => [
     ...quizzes.map((quiz) => `/${locale}/quizzes/${quiz.slug}`),
-    ...posts.map((post) => `/${locale}/posts/${post.slug}`),
+    ...posts.filter(p => ["jobs", "study-materials", "quizzes", "results", "syllabus", "question-papers", "preparation-guides", "education"].includes(p.category || "")).map((post) => `/${locale}/posts/${post.slug}`),
   ]);
 
   return [...staticRoutes, ...contentRoutes].map((route) => ({

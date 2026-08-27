@@ -428,16 +428,16 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   // Exclude already displayed posts from bottom categorized rows
   const remainingPostsForCategories = posts.filter(p => !displayedSlugsSet.has(p.slug));
 
-  const karnatakaPosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "karnataka").slice(0, 3);
-  const internationalPosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "international").slice(0, 3);
-  const agriculturePosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "agriculture").slice(0, 3);
+  const karnatakaPosts: any[] = [];
+  const internationalPosts: any[] = [];
+  const agriculturePosts: any[] = [];
   const educationPosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "education").slice(0, 3);
-  const schemesPosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "schemes").slice(0, 3);
-  const tourismPosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "tourism").slice(0, 3);
-  const sportsPosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "sports").slice(0, 3);
-  const moviesPosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "movies").slice(0, 3);
-  const homeDesignPosts = remainingPostsForCategories.filter(p => getCategoryKey(p.category) === "home-design").slice(0, 3);
-  const cleanTechnologyPosts = technologyPosts.filter(p => !displayedSlugsSet.has(p.slug)).slice(0, 3);
+  const schemesPosts: any[] = [];
+  const tourismPosts: any[] = [];
+  const sportsPosts: any[] = [];
+  const moviesPosts: any[] = [];
+  const homeDesignPosts: any[] = [];
+  const cleanTechnologyPosts: any[] = [];
 
   return (
     <>
