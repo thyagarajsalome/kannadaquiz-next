@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { getPublicPosts, getPublicQuizzes } from "@/lib/public-content";
-import { MiniQuizPlayer } from "@/components/MiniQuizPlayer";
 import { ExploreCategoriesTabs } from "@/components/ExploreCategoriesTabs";
 import { siteText } from "@/data/content";
 import { HeroSlider } from "@/components/HeroSlider";
