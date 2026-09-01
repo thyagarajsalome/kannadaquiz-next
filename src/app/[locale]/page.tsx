@@ -536,23 +536,110 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </h3>
           </div>
  
-          <div className="grid gap-2.5 grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-9">
-            {categoriesInfo.map((cat) => (
-              <Link
-                key={cat.key}
-                href={cat.url ? `/${locale}/${cat.url}` : `/${locale}/category/${cat.key}`}
-                className={`kq-card px-2 py-3 sm:px-3 sm:py-3.5 xl:px-2.5 xl:py-3 flex flex-col items-center text-center justify-between transition-all duration-300 border border-[var(--border)]/60 hover:shadow-sm hover:border-[var(--secondary)]/40 rounded-xl group ${cat.color}`}
-              >
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-[var(--border)]/20 shadow-sm group-hover:scale-110 transition-transform duration-300 mb-2">
-                  <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: cat.icon }} />
-                </div>
-                <div className="flex-1 flex flex-col justify-center w-full">
-                  <span className="text-[11px] xs:text-xs md:text-sm xl:text-xs 2xl:text-sm font-bold block text-[var(--primary)] leading-tight w-full break-words px-0.5">
-                    {locale === "kn" ? cat.kn : cat.en}
-                  </span>
-                </div>
-              </Link>
-            ))}
+          <div className="space-y-8">
+            {/* Group 1: Exams & Education */}
+            <div>
+              <h4 className="font-bold text-[var(--secondary)] mb-3 text-lg flex items-center gap-2">
+                <span className="w-1.5 h-4 bg-[var(--secondary)] inline-block rounded-full"></span>
+                {locale === "kn" ? "📚 ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳು (Exams & Education)" : "📚 Exams & Education"}
+              </h4>
+              <div className="grid gap-2.5 grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-9">
+                {categoriesInfo.filter(c => ['quizzes', 'syllabus', 'question-papers', 'study-materials', 'results', 'preparation-guides', 'education', 'jobs'].includes(c.key)).map((cat) => (
+                  <Link
+                    key={cat.key}
+                    href={cat.url ? `/${locale}/${cat.url}` : `/${locale}/category/${cat.key}`}
+                    className={`kq-card px-2 py-3 sm:px-3 sm:py-3.5 flex flex-col items-center text-center justify-between transition-all duration-300 border border-[var(--border)]/60 hover:shadow-sm hover:border-[var(--secondary)]/40 rounded-xl group ${cat.color}`}
+                  >
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-[var(--border)]/20 shadow-sm group-hover:scale-110 transition-transform duration-300 mb-2">
+                      <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: cat.icon }} />
+                    </div>
+                    <div className="flex-1 flex flex-col justify-center w-full">
+                      <span className="text-[11px] xs:text-xs md:text-sm font-bold block text-[var(--primary)] leading-tight w-full break-words px-0.5">
+                        {locale === "kn" ? cat.kn : cat.en}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Group 2: News & Updates */}
+            <div>
+              <h4 className="font-bold text-[var(--secondary)] mb-3 text-lg flex items-center gap-2">
+                <span className="w-1.5 h-4 bg-[var(--secondary)] inline-block rounded-full"></span>
+                {locale === "kn" ? "📰 ಪ್ರಮುಖ ಸುದ್ದಿಗಳು (News & Updates)" : "📰 News & Updates"}
+              </h4>
+              <div className="grid gap-2.5 grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-9">
+                {categoriesInfo.filter(c => ['karnataka', 'international', 'bangalore', 'schemes'].includes(c.key)).map((cat) => (
+                  <Link
+                    key={cat.key}
+                    href={cat.url ? `/${locale}/${cat.url}` : `/${locale}/category/${cat.key}`}
+                    className={`kq-card px-2 py-3 sm:px-3 sm:py-3.5 flex flex-col items-center text-center justify-between transition-all duration-300 border border-[var(--border)]/60 hover:shadow-sm hover:border-[var(--secondary)]/40 rounded-xl group ${cat.color}`}
+                  >
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-[var(--border)]/20 shadow-sm group-hover:scale-110 transition-transform duration-300 mb-2">
+                      <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: cat.icon }} />
+                    </div>
+                    <div className="flex-1 flex flex-col justify-center w-full">
+                      <span className="text-[11px] xs:text-xs md:text-sm font-bold block text-[var(--primary)] leading-tight w-full break-words px-0.5">
+                        {locale === "kn" ? cat.kn : cat.en}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Group 3: Info & Services */}
+            <div>
+              <h4 className="font-bold text-[var(--secondary)] mb-3 text-lg flex items-center gap-2">
+                <span className="w-1.5 h-4 bg-[var(--secondary)] inline-block rounded-full"></span>
+                {locale === "kn" ? "💡 ಮಾಹಿತಿ ಮತ್ತು ಸೇವೆಗಳು (Info & Services)" : "💡 Info & Services"}
+              </h4>
+              <div className="grid gap-2.5 grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-9">
+                {categoriesInfo.filter(c => ['agriculture', 'technology', 'services', 'expat'].includes(c.key)).map((cat) => (
+                  <Link
+                    key={cat.key}
+                    href={cat.url ? `/${locale}/${cat.url}` : `/${locale}/category/${cat.key}`}
+                    className={`kq-card px-2 py-3 sm:px-3 sm:py-3.5 flex flex-col items-center text-center justify-between transition-all duration-300 border border-[var(--border)]/60 hover:shadow-sm hover:border-[var(--secondary)]/40 rounded-xl group ${cat.color}`}
+                  >
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-[var(--border)]/20 shadow-sm group-hover:scale-110 transition-transform duration-300 mb-2">
+                      <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: cat.icon }} />
+                    </div>
+                    <div className="flex-1 flex flex-col justify-center w-full">
+                      <span className="text-[11px] xs:text-xs md:text-sm font-bold block text-[var(--primary)] leading-tight w-full break-words px-0.5">
+                        {locale === "kn" ? cat.kn : cat.en}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Group 4: Lifestyle & Entertainment */}
+            <div>
+              <h4 className="font-bold text-[var(--secondary)] mb-3 text-lg flex items-center gap-2">
+                <span className="w-1.5 h-4 bg-[var(--secondary)] inline-block rounded-full"></span>
+                {locale === "kn" ? "🎬 ಜೀವನಶೈಲಿ (Lifestyle)" : "🎬 Lifestyle"}
+              </h4>
+              <div className="grid gap-2.5 grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-9">
+                {categoriesInfo.filter(c => ['movies', 'sports', 'tourism', 'home-design'].includes(c.key)).map((cat) => (
+                  <Link
+                    key={cat.key}
+                    href={cat.url ? `/${locale}/${cat.url}` : `/${locale}/category/${cat.key}`}
+                    className={`kq-card px-2 py-3 sm:px-3 sm:py-3.5 flex flex-col items-center text-center justify-between transition-all duration-300 border border-[var(--border)]/60 hover:shadow-sm hover:border-[var(--secondary)]/40 rounded-xl group ${cat.color}`}
+                  >
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-[var(--border)]/20 shadow-sm group-hover:scale-110 transition-transform duration-300 mb-2">
+                      <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: cat.icon }} />
+                    </div>
+                    <div className="flex-1 flex flex-col justify-center w-full">
+                      <span className="text-[11px] xs:text-xs md:text-sm font-bold block text-[var(--primary)] leading-tight w-full break-words px-0.5">
+                        {locale === "kn" ? cat.kn : cat.en}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
