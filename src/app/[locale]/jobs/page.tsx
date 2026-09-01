@@ -3,7 +3,7 @@ import { isLocale, locales, type Locale } from "@/lib/locales";
 import { getPublicJobs } from "@/lib/public-content";
 import { JobsClient } from "./JobsClient";
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));

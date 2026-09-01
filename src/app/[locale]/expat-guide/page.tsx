@@ -3,7 +3,7 @@ import Link from "next/link";
 import { isLocale, locales, type Locale } from "@/lib/locales";
 
 // Update every 1 hour to keep currency rates fresh without hitting rate limits
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
