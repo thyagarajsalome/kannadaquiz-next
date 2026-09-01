@@ -18,16 +18,16 @@ export function ExploreCategoriesTabs({ locale, categoriesInfo }: CategoryTabPro
   };
 
   const groupedCategories = [
-    { label: locale === "kn" ? "༲್༪༰෍༧༾༤෍༮༕ ༪༰༃༕ཌྷ༷ཆ༗༳༁ (Exams & Edu)" : "Exams & Edu", keys: ['quizzes', 'syllabus', 'question-papers', 'study-materials', 'results', 'preparation-guides', 'education', 'jobs'] },
-    { label: locale === "kn" ? "༪ཌྷ༮༮ཁ༖ ༲ශ༤෍༤ཱྀ༗༳༁ (News & Updates)" : "News & Updates", keys: ['karnataka', 'international', 'bangalore', 'schemes'] },
-    { label: locale === "kn" ? "༮༾ཱྀ༹༤ཱྀ ༮༤ཌྷ༤ ༲ཇབཆ༗༳༁ (Info & Services)" : "Info & Services", keys: ['agriculture', 'technology', 'services', 'expat'] },
-    { label: locale === "kn" ? "༜ව༕༨༶෈༲ཱྀ (Lifestyle)" : "Lifestyle", keys: ['movies', 'sports', 'tourism', 'home-design'] }
+    { label: locale === "kn" ? "༲್༪༰෍༧༾༤෍༮༕ ༪༰༃༕ཌྷ༷ཆ༗༳༁" : "Exams & Education", keys: ['quizzes', 'syllabus', 'question-papers', 'study-materials', 'results', 'preparation-guides', 'education', 'jobs'] },
+    { label: locale === "kn" ? "༪ཌྷ༮༮ཁ༖ ༲࿁༤ཌྷ༤ཱྀ༗༳༁" : "News & Updates", keys: ['karnataka', 'international', 'bangalore', 'schemes'] },
+    { label: locale === "kn" ? "༮༾ཱྀ༹༤ཱྀ ༮༤ཌྷ༤ ༲ཇབཆ༗༳༁" : "Info & Services", keys: ['agriculture', 'technology', 'services', 'expat'] },
+    { label: locale === "kn" ? "༜࿀༕༨༶࿈༲ཱྀ" : "Lifestyle", keys: ['movies', 'sports', 'tourism', 'home-design'] }
   ];
 
   return (
     <div className="w-full max-w-md mx-auto mb-10 mt-4">
       <label htmlFor="category-select" className="block text-sm font-medium text-[var(--primary)] mb-2">
-        {locale === "kn" ? "༆༯෍༕ෆ ༮༾༑ཱྀ (Select Category)" : "Select a Category"}
+        {locale === "kn" ? "༆༯ཌྷ༕ཆ ༮༾༑ཱྀ" : "Select a Category"}
       </label>
       <select 
         id="category-select"
@@ -36,7 +36,7 @@ export function ExploreCategoriesTabs({ locale, categoriesInfo }: CategoryTabPro
         defaultValue=""
       >
         <option value="" disabled>
-          {locale === "kn" ? "-- ༕༰ཌྷ༕ཱུ��7���7�򤃂����7��W���༮༾༑ཱྀ --" : "-- Select Category --"}
+          {locale === "kn" ? "-- ༕༰ཌྷ༕ཌྷ༨ཌྷ༩ ༆༯ཌྷ༕ཆ ༮༾༑ཱྀ --" : "-- Select Category --"}
         </option>
         
         {groupedCategories.map(group => (
