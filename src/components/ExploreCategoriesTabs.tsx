@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type CategoryTabProps = {
   locale: string;
@@ -9,54 +8,47 @@ type CategoryTabProps = {
 };
 
 export function ExploreCategoriesTabs({ locale, categoriesInfo }: CategoryTabProps) {
-  const [activeTab, setActiveTab] = useState("exams");
+  const router = useRouter();
 
-  const tabs = [
-    { id: "exams", kn: "ğŸ“š ó†²ó†®ó‡ó†¤ó†®ó‡ó†®ó†¥ó†¥ ó†šó†¸ó‡ó†²ó‡ó†·ó‡ó†—ó†ó‡ó†”ó‡", en: "ğŸ“š Exams & Edu", keys: ['quizzes', 'syllabus', 'question-papers', 'study-materials', 'results', 'preparation-guides', 'education', 'jobs'] },
-    { id: "news", kn: "ğŸ“° ó†šó‡ó†°ó†®ó‡ó†– ã†¸ã†ã†¦ã†ó†¦ã†¿ã†—ã†³ã†", en: "ğŸ“° News & Updates", keys: ['karnataka', 'international', 'bangalore', 'schemes'] },
-    { id: "info", kn: "ğŸ¡ ó†®ó†¾ó†¹ó†¿ó†´ó†¿ ã†®ã†§ã†ó†§ã† ó†¸ó‡‡ó†¥ó‡‡ó†·ó†£ó‡", en: "ğŸ¡ Info & Services", keys: ['agriculture', 'technology', 'services', 'expat'] },
-    { id: "lifestyle", kn: "ğŸ¼ ó†œó‡€ó†µó†¸ó†¶ó‡ˆó†¶ó†¿", en: "ğŸ¼ Lifestyle", keys: ['movies', 'sports', 'tourism', 'home-design'] }
+  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    if (val) {
+      router.push(val);
+    }
+  };
+
+  const groupedCategories = [
+    { label: locale === "kn" ? "à¼²à³à¼ªà¼°à·à¼§à¼¾à¼¤à·à¼®à¼• à¼ªà¼°à¼ƒà¼•à½à¼·à½†à¼—à¼³à¼ (Exams & Edu)" : "Exams & Edu", keys: ['quizzes', 'syllabus', 'question-papers', 'study-materials', 'results', 'preparation-guides', 'education', 'jobs'] },
+    { label: locale === "kn" ? "à¼ªà½à¼®à¼®à½à¼– à¼²à·à¼¤à·à¼¤à¾à¼—à¼³à¼ (News & Updates)" : "News & Updates", keys: ['karnataka', 'international', 'bangalore', 'schemes'] },
+    { label: locale === "kn" ? "à¼®à¼¾à¼¹à¾à¼¤à¾ à¼®à¼¤à½à¼¤ à¼²à½‡à½–à½†à¼—à¼³à¼ (Info & Services)" : "Info & Services", keys: ['agriculture', 'technology', 'services', 'expat'] },
+    { label: locale === "kn" ? "à¼œà·€à¼•à¼¨à¼¶à·ˆà¼²à¾ (Lifestyle)" : "Lifestyle", keys: ['movies', 'sports', 'tourism', 'home-design'] }
   ];
 
-  const activeKeys = tabs.find(t => t.id === activeTab)?.keys || [];
-  const filteredCategories = categoriesInfo.filter(c => activeKeys.includes(c.key));
-
   return (
-    <div className="w-full">
-      <div className="flex flex-wrap gap-2 mb-6 border-b border-[var(--border)] pb-2">
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 rounded-t-lg font-bold text-sm sm:text-base transition-colors ${
-              activeTab === tab.id 
-                ? "bg-[var(--secondary)] text-white" 
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            {locale === "kn" ? tab.kn : tab.en}
-          </button>
-        ))}
-      </div>
-
-      <div className="grid gap-2.5 grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-9 min-h-[150px]">
-        {filteredCategories.map((cat) => (
-          <Link
-            key={cat.key}
-            href={cat.url ? `/${locale}/${cat.url}` : `/${locale}/category/${cat.key}`}
-            className=pkq-card px-2 py-3 sm:px-3 sm:py-3.5 flex flex-col items-center text-center justify-between transition-all duration-300 border border-[var(--border)]/60 hover:shadow-sm hover:border-[var(--secondary)]/40 rounded-xl group ${cat.color}`}
-          >
-            <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-[var(--border)]/20 shadow-sm group-hover:scale-110 transition-transform duration-300 mb-2">
-              <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: cat.icon }} />
-            </div>
-            <div className="flex-1 flex flex-col justify-center w-full">
-              <span className="text-[11px] xs:text-xs md:text-sm font-bold block text-[var(--primary)] leading-tight w-full break-words px-0.5">
+    <div className="w-full max-w-md mx-auto mb-10 mt-4">
+      <label htmlFor="category-select" className="block text-sm font-medium text-[var(--primary)] mb-2">
+        {locale === "kn" ? "à¼†à¼¯à·à¼•à·† à¼®à¼¾à¼‘à¾ (Select Category)" : "Select a Category"}
+      </label>
+      <select 
+        id="category-select"
+        onChange={handleSelect}
+        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[var(--secondary)] focus:ring-[var(--secondary)] sm:text-lg p-3 bg-white border text-[var(--primary)] font-semibold"
+        defaultValue=""
+      >
+        <option value="" disabled>
+          {locale === "kn" ? "-- à¼•à¼°à½à¼•à½µ‚ö7‚ò£‚ö7‚ò¤ƒ‚ò‚ò¿‚ö7‚òW‚ö€à¼®à¼¾à¼‘à¾ --" : "-- Select Category --"}
+        </option>
+        
+        {groupedCategories.map(group => (
+          <optgroup key={group.label} label={group.label}>
+            {categoriesInfo.filter(c => group.keys.includes(c.key)).map(cat => (
+              <option key={cat.key} value={cat.url ? `/${locale}/${cat.url}` : `/${locale}/category/${cat.key}`}>
                 {locale === "kn" ? cat.kn : cat.en}
-              </span>
-            </div>
-          </Link>
+              </option>
+            ))}
+          </optgroup>
         ))}
-      </div>
+      </select>
     </div>
   );
 }
