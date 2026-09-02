@@ -423,8 +423,28 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </div>
 
+      {/* Trust & Stats Bar */}
+      <div className="py-4 bg-white border-b border-[var(--border)]">
+        <div className="kq-container">
+          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12 md:gap-20 text-center">
+            <div className="flex flex-col items-center">
+              <span className="text-2xl font-black text-[var(--secondary)]">5,000+</span>
+              <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider mt-1">{locale === 'kn' ? 'ಅಭ್ಯಾಸ ಪ್ರಶ್ನೆಗಳು' : 'Practice Questions'}</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-2xl font-black text-[var(--secondary)]">100+</span>
+              <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider mt-1">{locale === 'kn' ? 'ವಿಷಯವಾರು ರಸಪ್ರಶ್ನೆಗಳು' : 'Subject Quizzes'}</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-2xl font-black text-[var(--secondary)]">Daily</span>
+              <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider mt-1">{locale === 'kn' ? 'ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು' : 'Current Affairs'}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* 1d. Browse by Category Grid Section */}
-      <section className="py-8 bg-white border-b border-[var(--border)]">
+      <section className="py-10 bg-[var(--surface-soft)] border-b border-[var(--border)]">
         <div className="kq-container">
           <div className="flex items-center gap-2 border-b-2 border-[var(--secondary)] pb-2 mb-6">
             <span className="w-3 h-6 bg-[var(--secondary)] inline-block"></span>
@@ -529,8 +549,40 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
  
       
 
+      {/* 2. Daily Challenge */}
+      <section className="py-8 bg-white border-b border-[var(--border)]">
+        <div className="kq-container">
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/60 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+            <div className="flex items-center gap-5">
+              <div className="w-16 h-16 shrink-0 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center shadow-inner">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <div>
+                <span className="text-xs font-extrabold uppercase tracking-widest text-amber-600 mb-1 block">
+                  {locale === 'kn' ? 'ಇಂದಿನ ಸವಾಲು' : 'Challenge of the Day'}
+                </span>
+                <h3 className="font-serif text-xl md:text-2xl font-bold text-slate-800">
+                  {locale === 'kn' ? '10 ಪ್ರಶ್ನೆಗಳ ಮಿಶ್ರ ರಸಪ್ರಶ್ನೆ' : '10-Question Mixed Mock Test'}
+                </h3>
+                <p className="text-sm text-slate-600 mt-1">
+                  {locale === 'kn' ? 'ನಿಮ್ಮ ಪ್ರಸ್ತುತ ಜ್ಞಾನವನ್ನು ಪರೀಕ್ಷಿಸಿ. ಪ್ರತಿದಿನ ಹೊಸ ಪ್ರಶ್ನೆಗಳು!' : 'Test your general knowledge. Fresh questions every 24 hours!'}
+                </p>
+              </div>
+            </div>
+            <Link
+              href={`/${locale}/quizzes`}
+              className="shrink-0 bg-amber-500 hover:bg-amber-600 text-white font-black uppercase tracking-wider text-sm px-8 py-3.5 rounded-xl transition-colors shadow-md hover:shadow-lg"
+            >
+              {locale === 'kn' ? 'ಸವಾಲು ಸ್ವೀಕರಿಸಿ ➔' : 'Start Challenge ➔'}
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* 3. Featured Quizzes */}
-      <section className="py-10 bg-[var(--background)] border-b border-[var(--border)]">
+      <section className="py-10 bg-[var(--surface-soft)] border-b border-[var(--border)]">
         <div className="kq-container">
           <div className="w-full">
             {/* Featured Quizzes */}
