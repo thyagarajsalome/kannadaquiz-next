@@ -434,14 +434,14 @@ export function AdminDashboard() {
   }
 
   useEffect(() => {
-    if (activeTab === "telemetry" && user) {
+    if (false && user) {
       void loadSyncLogs();
       void loadStats();
     }
   }, [activeTab, user]);
 
   useEffect(() => {
-    if (activeTab === "telemetry") {
+    if (false) {
       const getMetrics = () => {
         setTimeout(() => {
           const navigationEntries = performance.getEntriesByType("navigation");
@@ -1855,7 +1855,7 @@ export function AdminDashboard() {
           </div>
         </aside>
       </div>
-      ) : activeTab === "telemetry" ? (
+      ) : false ? (
         <div className="mt-8 grid gap-6">
 
             {/* Content Balance & API Fetching Data Visualizations */}
