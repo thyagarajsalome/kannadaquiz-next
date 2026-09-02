@@ -104,7 +104,7 @@ export function AdminDashboard() {
   const [saving, setSaving] = useState(false);
 
   // Telemetry & Stats states
-  const [activeTab, setActiveTab] = useState<"content" | "telemetry" | "infrastructure">("content");
+  const activeTab = "content";
   const [syncLogs, setSyncLogs] = useState<any[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
   const [cleaningDb, setCleaningDb] = useState(false);
@@ -1254,39 +1254,9 @@ export function AdminDashboard() {
 
       {/* Tabs */}
       <div className="mt-6 flex border-b border-[var(--border)] gap-4 select-none">
-        <button
-          type="button"
-          onClick={() => setActiveTab("content")}
-          className={`pb-2 text-sm font-bold px-1 transition-colors relative cursor-pointer ${
-            activeTab === "content"
-              ? "text-[var(--primary)] border-b-2 border-[var(--primary)] font-black"
-              : "text-[var(--muted)] hover:text-[var(--foreground)]"
-          }`}
-        >
-          Content Manager
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab("telemetry")}
-          className={`pb-2 text-sm font-bold px-1 transition-colors relative cursor-pointer ${
-            activeTab === "telemetry"
-              ? "text-[var(--primary)] border-b-2 border-[var(--primary)] font-black"
-              : "text-[var(--muted)] hover:text-[var(--foreground)]"
-          }`}
-        >
-          Telemetry & Performance
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab("infrastructure")}
-          className={`pb-2 text-sm font-bold px-1 transition-colors relative cursor-pointer ${
-            activeTab === "infrastructure"
-              ? "text-[var(--primary)] border-b-2 border-[var(--primary)] font-black"
-              : "text-[var(--muted)] hover:text-[var(--foreground)]"
-          }`}
-        >
-          Services & Infrastructure
-        </button>
+        
+        
+        
       </div>
 
       {activeTab === "content" ? (
@@ -2166,7 +2136,7 @@ export function AdminDashboard() {
         </div>
       ) : (
         <div className="mt-8">
-          <ServicesInfrastructure stats={stats} hasFirebase={Boolean(canUseFirebase)} />
+          null
         </div>
       )}
     </AdminFrame>
