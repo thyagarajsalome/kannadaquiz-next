@@ -100,7 +100,7 @@ export function SeoDashboard() {
           disabled={isRunning}
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
         >
-          {isRunning ? \`Checking (\${progress}%)...\` : "Run Health Check"}
+          {isRunning ? `Checking (${progress}%)...` : "Run Health Check"}
         </button>
       </div>
 
