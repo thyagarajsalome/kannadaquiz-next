@@ -164,17 +164,7 @@ export default async function ExamSeoPage({ params }: { params: Promise<{ locale
               </ul>
             </div>
             
-            <div className="kq-card p-6 bg-[var(--surface-soft)]">
-              <h3 className="font-bold text-[var(--primary)] mb-2">
-                {isKn ? "ದೈನಂದಿನ ಅಪ್ಡೇಟ್ಸ್ ಪಡೆಯಿರಿ" : "Get Daily Updates"}
-              </h3>
-              <p className="text-xs text-[var(--muted)] mb-4">
-                {isKn ? "ನಮ್ಮ ಟೆಲಿಗ್ರಾಮ್ ಗುಂಪಿಗೆ ಸೇರಿ ಮತ್ತು ಉಚಿತ ಸ್ಟಡಿ ಮೆಟೀರಿಯಲ್ಸ್ ಪಡೆಯಿರಿ." : "Join our Telegram group for daily free study materials and updates."}
-              </p>
-              <a href="#" className="block text-center w-full bg-[#0088cc] hover:bg-[#0077b3] text-white font-bold py-2 rounded transition-colors text-sm">
-                Join Telegram
-              </a>
-            </div>
+            
           </div>
           
         </div>
