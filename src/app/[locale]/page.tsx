@@ -414,11 +414,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <div className="kq-container">
           <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12 md:gap-20 text-center">
             <div className="flex flex-col items-center">
-              <span className="text-2xl font-black text-[var(--secondary)]">5,000+</span>
+              <span className="text-2xl font-black text-[var(--secondary)]">100+</span>
               <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider mt-1">{locale === 'kn' ? 'ಅಭ್ಯಾಸ ಪ್ರಶ್ನೆಗಳು' : 'Practice Questions'}</span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="text-2xl font-black text-[var(--secondary)]">100+</span>
+              <span className="text-2xl font-black text-[var(--secondary)]">10+</span>
               <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider mt-1">{locale === 'kn' ? 'ವಿಷಯವಾರು ರಸಪ್ರಶ್ನೆಗಳು' : 'Subject Quizzes'}</span>
             </div>
             <div className="flex flex-col items-center">
