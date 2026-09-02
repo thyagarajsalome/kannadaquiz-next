@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { locales } from "@/lib/locales";
 import { getPublicPosts, getPublicQuizzes } from "@/lib/public-content";
+import fs from "fs";
+import path from "path";
 
 const baseUrl = "https://kannadaquiz.in";
 
@@ -19,27 +21,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     `/${locale}/syllabus/vao`,
     `/${locale}/syllabus/sslc`,
     `/${locale}/syllabus/puc`,
-    `/${locale}/services`,
-    `/${locale}/services/railway`,
-    `/${locale}/expat`,
-    `/${locale}/bangalore-guide`,
-    `/${locale}/games/gadhe`,
-    `/${locale}/games/worldcup`,
-    `/${locale}/category/karnataka`,
-    `/${locale}/category/national`,
-    `/${locale}/category/international`,
     `/${locale}/category/jobs`,
     `/${locale}/category/schemes`,
-    `/${locale}/category/agriculture`,
     `/${locale}/category/education`,
-    `/${locale}/category/tourism`,
-    `/${locale}/category/sports`,
     `/${locale}/category/technology`,
-    `/${locale}/category/study-materials`,
-    `/${locale}/category/results`,
-    `/${locale}/category/syllabus`,
-    `/${locale}/category/question-papers`,
-    `/${locale}/category/preparation-guides`,
   ]);
 
   const contentByLocale = await Promise.all(
@@ -52,10 +37,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const contentRoutes = contentByLocale.flatMap(({ locale, quizzes, posts }) => [
     ...quizzes.map((quiz) => `/${locale}/quizzes/${quiz.slug}`),
-    ...posts.filter(p => ["jobs", "study-materials", "quizzes", "results", "syllabus", "question-papers", "preparation-guides", "education"].includes(p.category || "")).map((post) => `/${locale}/posts/${post.slug}`),
+    ...posts.map((post) => `/${locale}/posts/${post.slug}`),
   ]);
 
-  return [...staticRoutes, ...contentRoutes].map((route) => ({
+  // Load SEO Pages
+  let seoRoutes: string[] = [];
+  try {
+    const seoFilePath = path.join(process.cwd(), "src", "data", "seo-exams.json");
+    if (fs.existsSync(seoFilePath)) {
+      const seoData = JSON.parse(fs.readFileSync(seoFilePath, "utf8"));
+      seoRoutes = locales.flatMap(locale => 
+        seoData.map((page: any) => `/${locale}/exams/${page.slug}`)
+      );
+    }
+  } catch (error) {
+    console.error("Failed to load SEO pages for sitemap:", error);
+  }
+
+  return [...staticRoutes, ...contentRoutes, ...seoRoutes].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: route.includes("/quizzes/") ? "weekly" : "daily",
