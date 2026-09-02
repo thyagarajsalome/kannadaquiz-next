@@ -28,19 +28,19 @@ const FEATURED_POST_SLUGS: Record<Locale, string[]> = {
 const trendingTopics: Record<string, { name: string; url: string }[]> = {
   kn: [
     { name: "ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆ ಕ್ವಿಜ್", url: "/kn/quizzes" },
-    { name: "ಕರ್ನಾಟಕ ಇತಿಹಾಸ ಪ್ರವಾಸ", url: "/kn/category/tourism" },
-    { name: "ಹೊಸ ಮನೆ ವಿನ್ಯಾಸಗಳು", url: "/kn/category/home-design" },
-    { name: "ಕನ್ನಡ ಚಿತ್ರರಂಗ", url: "/kn/category/movies" },
-    { name: "ರೈತ ಕೃಷಿ ಮಾಹಿತಿ", url: "/kn/category/agriculture" },
-    { name: "ಕಂಪ್ಯೂಟರ್ ತಂತ್ರಜ್ಞಾನ", url: "/kn/category/technology" }
+    { name: "ಉದ್ಯೋಗ ಮಾಹಿತಿ", url: "/kn/category/jobs" },
+    { name: "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", url: "/kn/category/current-affairs" },
+    { name: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು", url: "/kn/category/schemes" },
+    { name: "ಪರೀಕ್ಷಾ ಪಠ್ಯಕ್ರಮ", url: "/kn/syllabus" },
+    { name: "ರೈತ ಕೃಷಿ ಮಾಹಿತಿ", url: "/kn/category/agriculture" }
   ],
   en: [
     { name: "Competitive Exam Quizzes", url: "/en/quizzes" },
-    { name: "Karnataka Heritage & History", url: "/en/category/tourism" },
-    { name: "Modern House Plans", url: "/en/category/home-design" },
-    { name: "Sandalwood & Movies", url: "/en/category/movies" },
-    { name: "Krishi & Farmer Guide", url: "/en/category/agriculture" },
-    { name: "Computer & AI Basics", url: "/en/category/technology" }
+    { name: "Government Jobs", url: "/en/category/jobs" },
+    { name: "Current Affairs", url: "/en/category/current-affairs" },
+    { name: "Government Schemes", url: "/en/category/schemes" },
+    { name: "Exam Syllabus", url: "/en/syllabus" },
+    { name: "Agriculture Guide", url: "/en/category/agriculture" }
   ]
 };
 
@@ -161,44 +161,12 @@ const categoriesInfo = [
     url: "syllabus"
   },
   {
-    key: "karnataka",
-    kn: "ಕರ್ನಾಟಕ",
-    en: "Karnataka",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />`,
-    color: "text-red-755 bg-red-50 hover:bg-red-100 hover:border-red-300",
-    url: "category/karnataka"
-  },
-  {
-    key: "international",
-    kn: "ಅಂತರರಾಷ್ಟ್ರೀಯ",
-    en: "International",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />`,
-    color: "text-indigo-755 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-300",
-    url: "category/international"
-  },
-  {
     key: "technology",
     kn: "ತಂತ್ರಜ್ಞಾನ",
     en: "Tech & AI",
     icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />`,
     color: "text-blue-755 bg-blue-50 hover:bg-blue-100 hover:border-blue-300",
     url: "category/technology"
-  },
-  {
-    key: "home-design",
-    kn: "ಮನೆ ವಿನ್ಯಾಸ",
-    en: "Home Design",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />`,
-    color: "text-amber-755 bg-amber-50 hover:bg-amber-100 hover:border-amber-300",
-    url: "category/home-design"
-  },
-  {
-    key: "movies",
-    kn: "ಚಲನಚಿತ್ರಗಳು",
-    en: "Movies",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V4a1 1 0 00-1-1H4a1 1 0 00-1 1v15a1 1 0 001 1z" />`,
-    color: "text-fuchsia-755 bg-fuchsia-50 hover:bg-fuchsia-100 hover:border-fuchsia-300",
-    url: "category/movies"
   },
   {
     key: "question-papers",
@@ -249,60 +217,12 @@ const categoriesInfo = [
     url: "category/jobs"
   },
   {
-    key: "services",
-    kn: "ಸರ್ಕಾರಿ ಸೇವೆಗಳು",
-    en: "Govt Services",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />`,
-    color: "text-slate-700 bg-slate-50 hover:bg-slate-100 hover:border-slate-300",
-    url: "services"
-  },
-  {
     key: "agriculture",
     kn: "ಕೃಷಿ ಮಾಹಿತಿ",
     en: "Agriculture",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M14 12a2 2 0 11-4 0 2 2 0 014 0z" />`,
-    color: "text-emerald-755 bg-emerald-50 hover:bg-emerald-100 hover:border-emerald-300",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.62h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.62l1.07-3.292z" />`,
+    color: "text-green-755 bg-green-50 hover:bg-green-100 hover:border-green-300",
     url: "category/agriculture"
-  },
-  {
-    key: "schemes",
-    kn: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು",
-    en: "Govt Schemes",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />`,
-    color: "text-sky-755 bg-sky-50 hover:bg-sky-100 hover:border-sky-300",
-    url: "category/schemes"
-  },
-  {
-    key: "tourism",
-    kn: "ಇತಿಹಾಸ ಪ್ರವಾಸ",
-    en: "Heritage",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a5 5 0 110 10 5 5 0 010-10z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />`,
-    color: "text-teal-755 bg-teal-50 hover:bg-teal-100 hover:border-teal-300",
-    url: "category/tourism"
-  },
-  {
-    key: "sports",
-    kn: "ಕ್ರೀಡೆ",
-    en: "Sports",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a10 10 0 100 20 10 10 0 000-20z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10m0-20a15.3 15.3 0 00-4 10 15.3 15.3 0 004 10M2 12h20" />`,
-    color: "text-indigo-755 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-300",
-    url: "category/sports"
-  },
-  {
-    key: "expat",
-    kn: "ಅನಿವಾಸಿ (NRI)",
-    en: "NRI & Expats",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />`,
-    color: "text-orange-755 bg-orange-50 hover:bg-orange-100 hover:border-orange-300",
-    url: "expat-guide"
-  },
-  {
-    key: "bangalore",
-    kn: "ಬೆಂಗಳೂರು",
-    en: "Bangalore",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 21v-4a2 2 0 012-2h2a2 2 0 012 2v4M9 7h6M9 11h6" />`,
-    color: "text-violet-755 bg-violet-50 hover:bg-violet-100 hover:border-violet-300",
-    url: "bangalore-guide"
   }
 ];
 
@@ -536,18 +456,18 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </h3>
           </div>
  
-          <div className="grid gap-2.5 grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-9">
+          <div className="grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
             {categoriesInfo.map((cat) => (
               <Link
                 key={cat.key}
                 href={cat.url ? `/${locale}/${cat.url}` : `/${locale}/category/${cat.key}`}
-                className={`kq-card px-2 py-3 sm:px-3 sm:py-3.5 xl:px-2.5 xl:py-3 flex flex-col items-center text-center justify-between transition-all duration-300 border border-[var(--border)]/60 hover:shadow-sm hover:border-[var(--secondary)]/40 rounded-xl group ${cat.color}`}
+                className={`kq-card p-4 sm:p-5 flex items-center gap-4 transition-all duration-300 border border-[var(--border)]/60 hover:shadow-md hover:border-[var(--secondary)]/50 rounded-2xl group ${cat.color}`}
               >
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-[var(--border)]/20 shadow-sm group-hover:scale-110 transition-transform duration-300 mb-2">
-                  <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: cat.icon }} />
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex shrink-0 items-center justify-center bg-white border border-[var(--border)]/30 shadow-sm group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300">
+                  <svg className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: cat.icon }} />
                 </div>
-                <div className="flex-1 flex flex-col justify-center w-full">
-                  <span className="text-[11px] xs:text-xs md:text-sm xl:text-xs 2xl:text-sm font-bold block text-[var(--primary)] leading-tight w-full break-words px-0.5">
+                <div className="flex-1">
+                  <span className="text-base sm:text-lg font-bold block text-[var(--primary)] leading-tight">
                     {locale === "kn" ? cat.kn : cat.en}
                   </span>
                 </div>

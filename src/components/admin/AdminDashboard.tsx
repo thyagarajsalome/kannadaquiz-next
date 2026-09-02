@@ -1343,9 +1343,6 @@ export function AdminDashboard() {
                 className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2 bg-white"
               >
                 <option value="General">General News</option>
-                <option value="Karnataka">Karnataka News</option>
-                <option value="National">National News</option>
-                <option value="International">International News</option>
                 <option value="Jobs">Jobs & Careers</option>
                 <option value="Current Affairs">Current Affairs</option>
                 <option value="Agriculture">Agriculture Info</option>
@@ -1354,7 +1351,6 @@ export function AdminDashboard() {
                 <option value="Heritage & Tourism">Heritage & Tourism</option>
                 <option value="Sports News">Sports News</option>
                 <option value="Technology">Technology & AI</option>
-                <option value="Movies">Movies & Cinema</option>
                 <option value="Home Design">Home Design & Real Estate</option>
                 <option value="Syllabus">Syllabus & Exam Pattern</option>
                 <option value="Question Papers">Previous Year Question Papers</option>
@@ -1697,9 +1693,6 @@ export function AdminDashboard() {
                     >
                       <option value="All">All Categories</option>
                       <option value="General">General News</option>
-                      <option value="Karnataka">Karnataka News</option>
-                      <option value="National">National News</option>
-                      <option value="International">International News</option>
                       <option value="Jobs">Jobs & Careers</option>
                       <option value="Current Affairs">Current Affairs</option>
                       <option value="Agriculture">Agriculture Info</option>
@@ -1708,7 +1701,6 @@ export function AdminDashboard() {
                       <option value="Heritage & Tourism">Heritage & Tourism</option>
                       <option value="Sports News">Sports News</option>
                       <option value="Technology">Technology & AI</option>
-                      <option value="Movies">Movies & Cinema</option>
                       <option value="Home Design">Home Design & Real Estate</option>
                       <option value="Syllabus">Syllabus & Exam Pattern</option>
                       <option value="Question Papers">Previous Year Question Papers</option>
@@ -1795,9 +1787,6 @@ export function AdminDashboard() {
                   
                   const categoryGroups: Record<string, string[]> = {
                     general: ["general", "general news", "ಸಾಮಾನ್ಯ"],
-                    karnataka: ["karnataka", "karnataka news", "ಕರ್ನಾಟಕ"],
-                    national: ["national", "national news", "ರಾಷ್ಟ್ರೀಯ"],
-                    international: ["international", "international news", "ಅಂತರರಾಷ್ಟ್ರೀಯ"],
                     jobs: ["jobs", "jobs & careers", "kpsc", "exam notifications", "ಉದ್ಯೋಗ"],
                     "current affairs": ["current affairs", "ಚಾಲ್ತಿ"],
                     agriculture: ["agriculture", "agriculture info", "ಕೃಷಿ"],
@@ -1805,7 +1794,6 @@ export function AdminDashboard() {
                     "government schemes": ["government schemes", "schemes", "ಯೋಜನೆ"],
                     "heritage & tourism": ["heritage & tourism", "tourism", "ಪ್ರವಾಸ"],
                     "sports news": ["sports news", "sports", "ಕ್ರೀಡೆ"],
-                    movies: ["movies", "movies & cinema", "cinema", "film", "ಚಿತ್ರ"],
                     "home design": ["home design", "real estate", "interior", "house plans", "promotion", "services", "home design & real estate", "ರಿಯಲ್ ಎಸ್ಟೇಟ್"],
                     syllabus: ["syllabus", "exam pattern", "syllabus & exam pattern", "ಪಠ್ಯಕ್ರಮ"],
                     "question papers": ["question papers", "previous year", "old question papers", "ಹಿಂದಿನ ಪ್ರಶ್ನೆ"],
