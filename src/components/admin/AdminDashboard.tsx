@@ -1201,7 +1201,14 @@ export function AdminDashboard() {
           <p className="text-sm font-bold text-[var(--secondary)]">KannadaQuiz</p>
           <h1 className="font-serif text-4xl font-bold text-[var(--primary)]">Content admin</h1>
         </div>
-        <button
+        
+          <a
+            href="/admin/seo"
+            className="text-sm text-[var(--muted)] hover:text-[var(--primary)] font-medium mr-4"
+          >
+            SEO Link Checker
+          </a>
+          <button
           onClick={() => firebaseAuth && signOut(firebaseAuth)}
           className="rounded-md border border-[var(--border)] px-4 py-2 text-sm font-bold"
         >
