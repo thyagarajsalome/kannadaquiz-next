@@ -168,30 +168,7 @@ const categoriesInfo = [
     color: "text-blue-755 bg-blue-50 hover:bg-blue-100 hover:border-blue-300",
     url: "category/technology"
   },
-  {
-    key: "question-papers",
-    kn: "ಹಿಂದಿನ ಪ್ರಶ್ನೆ",
-    en: "Old Papers",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />`,
-    color: "text-orange-755 bg-orange-50 hover:bg-orange-100 hover:border-orange-300",
-    url: "category/question-papers"
-  },
-  {
-    key: "study-materials",
-    kn: "ಸ್ಟಡಿ ನೋಟ್ಸ್",
-    en: "Study Notes",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />`,
-    color: "text-emerald-755 bg-emerald-50 hover:bg-emerald-100 hover:border-emerald-300",
-    url: "category/study-materials"
-  },
-  {
-    key: "results",
-    kn: "ಫಲಿತಾಂಶ",
-    en: "Results",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />`,
-    color: "text-teal-755 bg-teal-50 hover:bg-teal-100 hover:border-teal-300",
-    url: "category/results"
-  },
+
   {
     key: "preparation-guides",
     kn: "ತಯಾರಿ ಹೇಗೆ",
@@ -552,11 +529,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
  
       
 
-      {/* 3. Mid Grid: Quizzes & Current Affairs */}
+      {/* 3. Featured Quizzes */}
       <section className="py-10 bg-[var(--background)] border-b border-[var(--border)]">
         <div className="kq-container">
-          <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
-            {/* Left: Featured Quizzes */}
+          <div className="w-full">
+            {/* Featured Quizzes */}
             <div>
               <div className="flex items-center justify-between border-b-2 border-[var(--primary)] pb-2 mb-5">
                 <h3 className="font-serif text-2xl font-bold text-[var(--primary)]">
@@ -566,9 +543,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   {locale === "kn" ? "ಎಲ್ಲಾ ಕ್ವಿಜ್‌ಗಳು ➔" : "View All Quizzes ➔"}
                 </Link>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {quizzes.length === 0 ? (
-                  <div className="kq-card p-6 col-span-2 text-center text-[var(--muted)]">
+                  <div className="kq-card p-6 col-span-full text-center text-[var(--muted)]">
                     {locale === "kn" ? "ಯಾವುದೇ ಕ್ವಿಜ್‌ಗಳು ಲಭ್ಯವಿಲ್ಲ." : "No quizzes available yet."}
                   </div>
                 ) : (
@@ -604,31 +581,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </div>
             </div>
 
-            {/* Right: Quick Current Affairs */}
-            <aside className="kq-card p-5 bg-white border border-[var(--border)] rounded-lg shadow-sm">
-              <h3 className="font-serif text-xl font-bold text-[var(--primary)] border-b-2 border-[var(--secondary)] pb-2 mb-4">
-                {sectionTitles.latestAffairs[locale]}
-              </h3>
-              <div className="flex flex-col gap-4 max-h-[380px] overflow-y-auto pr-1">
-                {currentAffairs.length === 0 ? (
-                  <p className="text-sm text-[var(--muted)]">
-                    {locale === "kn" ? "ಯಾವುದೇ ಪ್ರಚಲಿತ ಘಟನೆಗಳಿಲ್ಲ." : "No current affairs available yet."}
-                  </p>
-                ) : (
-                  currentAffairs.map((item, idx) => (
-                    <article key={idx} className="border-b border-[var(--border)] pb-3 last:border-0 last:pb-0">
-                      <div className="flex items-center justify-between text-[10px] font-bold text-[var(--secondary)]">
-                        <span>{locale === "kn" ? "ಅಪ್‌ಡೇಟ್" : "UPDATE"}</span>
-                        <time>{item.date}</time>
-                      </div>
-                      <p className="mt-1 text-sm leading-6 text-[var(--muted)] font-medium">
-                        {item.headline}
-                      </p>
-                    </article>
-                  ))
-                )}
-              </div>
-            </aside>
+
           </div>
         </div>
       </section>
