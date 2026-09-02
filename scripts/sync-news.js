@@ -77,13 +77,7 @@ const FEEDS = [
   { name: "Karnataka Jobs", url: "https://news.google.com/rss/search?q=karnataka+jobs+recruitment&hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "Exam Notifications", url: "https://news.google.com/rss/search?q=kpsc+OR+kea+OR+fda+OR+sda+OR+psi+recruitment+exam+karnataka&hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "Current Affairs & GK", url: "https://news.google.com/rss/search?q=daily+current+affairs+for+competitive+exams+india&hl=en-IN&gl=IN&ceid=IN:en" },
-  { name: "India National News", url: "https://news.google.com/rss/search?q=india+national+news&hl=en-IN&gl=IN&ceid=IN:en" },
-  { name: "CNN World News", url: "http://rss.cnn.com/rss/edition_world.rss" },
-  { name: "BBC News World", url: "http://feeds.bbci.co.uk/news/world/rss.xml" },
-  { name: "Google News International", url: "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "Government Schemes", url: "https://news.google.com/rss/search?q=karnataka+government+schemes+OR+yojana&hl=en-IN&gl=IN&ceid=IN:en" },
-  { name: "Sports News", url: "https://news.google.com/rss/search?q=sports+news+india+OR+cricket&hl=en-IN&gl=IN&ceid=IN:en" },
-  { name: "Football News", url: "https://news.google.com/rss/search?q=football+news+OR+fifa+OR+uefa+OR+premier+league+OR+isl&hl=en-IN&gl=IN&ceid=IN:en" },
   { name: "Technology & AI News", url: "https://news.google.com/rss/search?q=artificial+intelligence+OR+cybersecurity+OR+software+development+OR+computer+basics+OR+tech+careers&hl=en-IN&gl=IN&ceid=IN:en" }
 ];
 
