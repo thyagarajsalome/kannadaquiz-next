@@ -46,9 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const seoFilePath = path.join(process.cwd(), "src", "data", "seo-exams.json");
     if (fs.existsSync(seoFilePath)) {
       const seoData = JSON.parse(fs.readFileSync(seoFilePath, "utf8"));
-      seoRoutes = locales.flatMap(locale => 
-        seoData.map((page: any) => `/${locale}/exams/${page.slug}`)
-      );
+      seoRoutes = seoData.map((page: any) => `/kn/exams/${page.slug}`);
     }
   } catch (error) {
     console.error("Failed to load SEO pages for sitemap:", error);

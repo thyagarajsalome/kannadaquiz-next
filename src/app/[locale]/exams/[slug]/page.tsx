@@ -31,7 +31,7 @@ export function generateStaticParams() {
   const pages = getSeoPages();
   const params: { locale: string; slug: string }[] = [];
   
-  const locales = ["en", "kn"];
+  const locales = ["kn"];
   
   for (const locale of locales) {
     for (const page of pages) {
@@ -73,7 +73,8 @@ export default async function ExamSeoPage({ params }: { params: Promise<{ locale
     notFound();
   }
 
-  const isKn = locale === "kn";
+  if (locale !== "kn") { notFound(); }
+  const isKn = true;
 
   return (
     <div className="bg-[var(--background)] min-h-screen pb-16">

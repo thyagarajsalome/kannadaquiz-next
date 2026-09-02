@@ -29,8 +29,7 @@ export function SeoDashboard() {
         const allLinks: LinkStatus[] = [];
         (data || []).forEach((p) => {
           allLinks.push({ url: `/kn/exams/${p.slug}`, status: null, loading: false });
-          allLinks.push({ url: `/en/exams/${p.slug}`, status: null, loading: false });
-        });
+                  });
         setLinks(allLinks);
       })
       .catch(console.error);
