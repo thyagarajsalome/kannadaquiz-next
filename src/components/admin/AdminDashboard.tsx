@@ -1345,18 +1345,11 @@ export function AdminDashboard() {
                 <option value="General">General News</option>
                 <option value="Jobs">Jobs & Careers</option>
                 <option value="Current Affairs">Current Affairs</option>
-                <option value="Agriculture">Agriculture Info</option>
                 <option value="College Guide">College & Education Guide</option>
                 <option value="Government Schemes">Government Schemes</option>
-                <option value="Heritage & Tourism">Heritage & Tourism</option>
-                <option value="Sports News">Sports News</option>
                 <option value="Technology">Technology & AI</option>
-                <option value="Home Design">Home Design & Real Estate</option>
                 <option value="Syllabus">Syllabus & Exam Pattern</option>
-                <option value="Question Papers">Previous Year Question Papers</option>
-                <option value="Study Materials">Study Materials & Notes</option>
                 <option value="Hall Ticket">Admit Card & Hall Ticket</option>
-                <option value="Results">Results & Cut-off</option>
                 <option value="Preparation Guides">How to Prepare (Guides)</option>
               </select>
             </label>
@@ -1671,7 +1664,7 @@ export function AdminDashboard() {
 
             {/* Filter & Search Bar Controls */}
             <div className="bg-[var(--surface-soft)] p-4 rounded-lg border border-[var(--border)]/60 space-y-3">
-              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-2">
                 <div className="flex flex-col">
                   <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Search Title or Slug</label>
                   <input
@@ -1695,63 +1688,18 @@ export function AdminDashboard() {
                       <option value="General">General News</option>
                       <option value="Jobs">Jobs & Careers</option>
                       <option value="Current Affairs">Current Affairs</option>
-                      <option value="Agriculture">Agriculture Info</option>
                       <option value="College Guide">College & Education Guide</option>
                       <option value="Government Schemes">Government Schemes</option>
-                      <option value="Heritage & Tourism">Heritage & Tourism</option>
-                      <option value="Sports News">Sports News</option>
                       <option value="Technology">Technology & AI</option>
-                      <option value="Home Design">Home Design & Real Estate</option>
                       <option value="Syllabus">Syllabus & Exam Pattern</option>
-                      <option value="Question Papers">Previous Year Question Papers</option>
-                      <option value="Study Materials">Study Materials & Notes</option>
-                      <option value="Results">Results & Cut-off</option>
+                      <option value="Hall Ticket">Admit Card & Hall Ticket</option>
                       <option value="Preparation Guides">How to Prepare (Guides)</option>
                     </select>
                   </div>
                 )}
 
-                <div className="flex flex-col">
-                  <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Filter Status</label>
-                  <select
-                    value={selectedStatusFilter}
-                    onChange={(e) => setSelectedStatusFilter(e.target.value)}
-                    className="w-full truncate rounded-md border border-[var(--border)] px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)] cursor-pointer font-medium"
-                  >
-                    <option value="All">All Statuses</option>
-                    <option value="published">Published Only</option>
-                    <option value="draft">Draft Only</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col">
-                  <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Filter Language</label>
-                  <select
-                    value={selectedLocaleFilter}
-                    onChange={(e) => setSelectedLocaleFilter(e.target.value)}
-                    className="w-full truncate rounded-md border border-[var(--border)] px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)] cursor-pointer font-medium"
-                  >
-                    <option value="All">All Languages</option>
-                    <option value="kn">Kannada (kn)</option>
-                    <option value="en">English (en)</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col">
-                  <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Filter Source</label>
-                  <select
-                    value={selectedSourceFilter}
-                    onChange={(e) => setSelectedSourceFilter(e.target.value)}
-                    className="w-full truncate rounded-md border border-[var(--border)] px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)] cursor-pointer font-medium"
-                  >
-                    <option value="All">All Sources (Manual & Auto)</option>
-                    <option value="Manual">Manual Posts Only</option>
-                    <option value="Auto">Auto-Synced Only</option>
-                  </select>
-                </div>
-
                 {(searchQuery || selectedCategoryFilter !== "All" || selectedStatusFilter !== "All" || selectedLocaleFilter !== "All" || selectedSourceFilter !== "All") && (
-                  <div className="flex flex-col justify-end">
+                  <div className="flex flex-col justify-end sm:col-span-2 md:col-span-2">
                     <button
                       type="button"
                       onClick={() => {
