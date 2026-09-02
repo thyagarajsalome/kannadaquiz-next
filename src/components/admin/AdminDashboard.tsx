@@ -1350,7 +1350,7 @@ export function AdminDashboard() {
                 <option value="Technology">Technology & AI</option>
                 <option value="Syllabus">Syllabus & Exam Pattern</option>
                 <option value="Hall Ticket">Admit Card & Hall Ticket</option>
-                <option value="Preparation Guides">How to Prepare (Guides)</option>
+                
               </select>
             </label>
           ) : null}
@@ -1693,7 +1693,7 @@ export function AdminDashboard() {
                       <option value="Technology">Technology & AI</option>
                       <option value="Syllabus">Syllabus & Exam Pattern</option>
                       <option value="Hall Ticket">Admit Card & Hall Ticket</option>
-                      <option value="Preparation Guides">How to Prepare (Guides)</option>
+                      
                     </select>
                   </div>
                 )}

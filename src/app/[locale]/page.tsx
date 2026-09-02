@@ -32,7 +32,7 @@ const trendingTopics: Record<string, { name: string; url: string }[]> = {
     { name: "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", url: "/kn/category/current-affairs" },
     { name: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು", url: "/kn/category/schemes" },
     { name: "ಪರೀಕ್ಷಾ ಪಠ್ಯಕ್ರಮ", url: "/kn/syllabus" },
-    { name: "ರೈತ ಕೃಷಿ ಮಾಹಿತಿ", url: "/kn/category/agriculture" }
+    
   ],
   en: [
     { name: "Competitive Exam Quizzes", url: "/en/quizzes" },
@@ -40,7 +40,7 @@ const trendingTopics: Record<string, { name: string; url: string }[]> = {
     { name: "Current Affairs", url: "/en/category/current-affairs" },
     { name: "Government Schemes", url: "/en/category/schemes" },
     { name: "Exam Syllabus", url: "/en/syllabus" },
-    { name: "Agriculture Guide", url: "/en/category/agriculture" }
+    
   ]
 };
 
@@ -169,14 +169,7 @@ const categoriesInfo = [
     url: "category/technology"
   },
 
-  {
-    key: "preparation-guides",
-    kn: "ತಯಾರಿ ಹೇಗೆ",
-    en: "Prep Guides",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />`,
-    color: "text-yellow-755 bg-yellow-50 hover:bg-yellow-100 hover:border-yellow-300",
-    url: "category/preparation-guides"
-  },
+  
   {
     key: "education",
     kn: "ಶೈಕ್ಷಣಿಕ ಮಾರ್ಗದರ್ಶಿ",
@@ -193,14 +186,7 @@ const categoriesInfo = [
     color: "text-slate-700 bg-slate-50 hover:bg-slate-100 hover:border-slate-300",
     url: "category/jobs"
   },
-  {
-    key: "agriculture",
-    kn: "ಕೃಷಿ ಮಾಹಿತಿ",
-    en: "Agriculture",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.62h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.62l1.07-3.292z" />`,
-    color: "text-green-755 bg-green-50 hover:bg-green-100 hover:border-green-300",
-    url: "category/agriculture"
-  }
+  
 ];
 
 function getSourceName(post: { sourceUrl?: string; sourceName?: string }) {

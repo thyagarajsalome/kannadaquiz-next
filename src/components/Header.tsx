@@ -55,12 +55,8 @@ export function Header({ locale }: { locale: Locale }) {
               <Link href={`/${locale}/category/technology`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ತಂತ್ರಜ್ಞಾನ" : "Tech & AI"}
               </Link>
-              <Link href={`/${locale}/category/preparation-guides`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
-                {locale === "kn" ? "ತಯಾರಿ ಹೇಗೆ" : "Preparation Guides"}
-              </Link>
-              <Link href={`/${locale}/category/agriculture`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
-                {locale === "kn" ? "ಕೃಷಿ ಮಾಹಿತಿ" : "Agriculture Info"}
-              </Link>
+              
+              
             </div>
           </div>
         </nav>
@@ -100,9 +96,7 @@ export function Header({ locale }: { locale: Locale }) {
           <Link href={`/${locale}/category/technology`} prefetch={false} className="hover:text-[var(--secondary)] shrink-0">
             {locale === "kn" ? "ತಂತ್ರಜ್ಞಾನ" : "Technology"}
           </Link>
-          <Link href={`/${locale}/category/agriculture`} prefetch={false} className="hover:text-[var(--secondary)]">
-            {locale === "kn" ? "ಕೃಷಿ" : "Agriculture"}
-          </Link>
+          
         </div>
       </div>
     </header>
