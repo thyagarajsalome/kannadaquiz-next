@@ -10,8 +10,8 @@ export function Footer({ locale }: { locale: Locale }) {
           <p className="font-serif text-xl font-bold">KannadaQuiz</p>
           <p className="mt-1 max-w-2xl text-sm text-white/75">
             {locale === "kn"
-              ? "ಕನ್ನಡ ಓದುಗರಿಗೆ ಸಹಾಯ ಮಾಡಲು ಪ್ರಮುಖ ಜಾಗತಿಕ ಮತ್ತು ಕರ್ನಾಟಕ ಸುದ್ದಿಗಳ ಮುಖ್ಯಾಂಶಗಳು ಹಾಗೂ ನಿಖರ ಸಾರಾಂಶಗಳನ್ನು ಒದಗಿಸುವ ವೇದಿಕೆ."
-              : "Providing summaries and key updates of domestic and international news to help Kannada readers."}
+              ? "ಕನ್ನಡ ಓದುಗರಿಗೆ ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳ ತಯಾರಿ, ಉದ್ಯೋಗ ಮಾಹಿತಿ, ಮತ್ತು ರಸಪ್ರಶ್ನೆಗಳನ್ನು ಒದಗಿಸುವ ಶೈಕ್ಷಣಿಕ ವೇದಿಕೆ."
+              : "An educational platform providing competitive exam prep, job updates, and quizzes for Kannada readers."}
           </p>
           <p className="mt-2.5 text-xs text-white/50">
             {locale === "kn" ? "ಸಂಪರ್ಕ ಮತ್ತು ಬೆಂಬಲ: " : "Contact & Support: "}
