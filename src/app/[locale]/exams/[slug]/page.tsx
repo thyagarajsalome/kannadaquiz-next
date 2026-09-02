@@ -163,9 +163,20 @@ export default async function ExamSeoPage({ params }: { params: Promise<{ locale
                 </li>
               </ul>
             </div>
-            
-            
+
+            <div className="kq-card p-6 bg-[var(--surface-soft)]">
+              <h3 className="font-bold text-[var(--primary)] mb-2">
+                {isKn ? "ಹೆಚ್ಚಿನ ಮಾಹಿತಿಗಾಗಿ ಲಾಗಿನ್ ಆಗಿ" : "Login for More Info"}
+              </h3>
+              <p className="text-xs text-[var(--muted)] mb-4">
+                {isKn ? "ನಿಮ್ಮ ಪ್ರಗತಿಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಲು ಮತ್ತು ಹೆಚ್ಚಿನ ಉಚಿತ ಸ್ಟಡಿ ಮೆಟೀರಿಯಲ್ಸ್ ಪಡೆಯಲು ಖಾತೆಯನ್ನು ರಚಿಸಿ." : "Create an account to track your progress and unlock more free study materials."}
+              </p>
+              <Link href={`/${locale}/login`} className="block text-center w-full bg-[var(--primary)] hover:opacity-90 text-white font-bold py-2 rounded transition-colors text-sm">
+                {isKn ? "ಲಾಗಿನ್ / ರಿಜಿಸ್ಟರ್" : "Login / Register"}
+              </Link>
+            </div>
           </div>
+
           
         </div>
       </div>
