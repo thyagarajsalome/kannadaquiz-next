@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { isLocale, type Locale } from "@/lib/locales";
 import { getPublicPostsByCategory } from "@/lib/public-content";
 import { CategoryFilterList } from "@/components/CategoryFilterList";
@@ -6,7 +7,7 @@ import { CategoryFilterList } from "@/components/CategoryFilterList";
 export const revalidate = 86400;
 
 export function generateStaticParams() {
-  const categories = ["karnataka", "national", "international", "jobs", "agriculture", "education", "schemes", "tourism", "sports", "technology", "movies", "home-design", "general", "current-affairs", "expat"];
+  const categories = ["jobs", "education", "schemes", "technology", "current-affairs"];
   const params: { locale: string; category: string }[] = [];
   
   // Create paths for both locales and all standard categories
@@ -236,7 +237,14 @@ export default async function CategoryPage({
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
 
   const resolvedCategory = resolveCategoryKey(category);
+  const validCategories = ["jobs", "education", "schemes", "technology", "current-affairs"];
+  if (!validCategories.includes(resolvedCategory)) {
+    notFound();
+  }
   const posts = await getPublicPostsByCategory(locale, resolvedCategory, 120);
+  if (posts.length === 0) {
+    notFound();
+  }
 
   const catTitle = getLocalizedCategory(resolvedCategory, locale);
 

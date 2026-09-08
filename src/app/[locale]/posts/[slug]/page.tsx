@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getPublicPosts, getPublicPostBySlug, type PublicPost } from "@/lib/public-content";
 import { MiniQuizPlayer } from "@/components/MiniQuizPlayer";
 
@@ -94,12 +94,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     if (!post) {
       return {
-        title: locale === "kn" ? "ಸುದ್ದಿ | KannadaQuiz" : "Posts | KannadaQuiz",
+        title: "Page Not Found",
+        robots: { index: false, follow: false },
       };
     }
 
     return {
-      title: `${post.title} | KannadaQuiz`,
+      title: post.title,
       description: post.excerpt || post.title,
       alternates: {
         canonical: `/${locale}/posts/${post.slug}`,
@@ -150,29 +151,7 @@ export default async function PostDetailPage({ params }: PageProps) {
   }
 
   if (!post) {
-    return (
-      <main className="kq-container py-16 text-center">
-        <div className="max-w-md mx-auto kq-card p-8 rounded-2xl border border-[var(--border)] shadow-sm">
-          <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl">
-            📰
-          </div>
-          <h1 className="font-serif text-2xl font-bold text-[var(--primary)] mb-3">
-            {locale === "kn" ? "ಲೇಖನವನ್ನು ಹುಡುಕಲಾಗುತ್ತಿದೆ..." : "Article Loading or Moved"}
-          </h1>
-          <p className="text-sm text-[var(--muted)] leading-relaxed mb-6">
-            {locale === "kn"
-              ? "ನೀವು ವೀಕ್ಷಿಸುತ್ತಿರುವ ಲೇಖನವು ಅಪ್‌ಡೇಟ್ ಆಗುತ್ತಿದೆ ಅಥವಾ ಮುಖಪುಟದಲ್ಲಿದೆ. ಮುಖಪುಟಕ್ಕೆ ಹೋಗಿ ಇತ್ತೀಚಿನ ಸುದ್ದಿಗಳನ್ನು ವೀಕ್ಷಿಸಿ."
-              : "The requested article is being updated or has moved. Return to the home page to view the latest content."}
-          </p>
-          <Link
-            href={`/${locale}`}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[var(--secondary)] text-white font-extrabold text-sm hover:opacity-90 transition-opacity shadow-md"
-          >
-            <span>{locale === "kn" ? "ಮುಖಪುಟಕ್ಕೆ ಮರಳಿ ➔" : "Return to Home Page ➔"}</span>
-          </Link>
-        </div>
-      </main>
-    );
+    notFound();
   }
 
   const articleJsonLd = {

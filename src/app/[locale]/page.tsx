@@ -16,17 +16,18 @@ export function generateStaticParams() {
 // Simply copy and paste the Firestore article slugs into this array to highlight them.
 const FEATURED_POST_SLUGS: Record<Locale, string[]> = {
   kn: [
-    "house-construction-cost-estimation-guide-kannada", // Selected article 1
-    "ind-vs-afg-versatile-kl-rahul-key-to-indias-2027-odi-world-cup-plans---the-times-of-india" // Selected article 2
+    "gpstr-recruitment-2026-notification-out-for-15000-vacancies-check-exam-date-selection-proc",
+    "kea-vao-recruitment-2026-notification-out-apply-online-for-572-village-accountant-posts---"
   ],
   en: [
-    "how-trumps-white-house-ballroom-plan-has-doubled-in-size-and-cost-over-a-year", // Selected article 1
-    "ind-vs-afg-versatile-kl-rahul-key-to-indias-2027-odi-world-cup-plans---the-times-of-india" // Selected article 2
+    "gpstr-recruitment-2026-notification-out-for-15000-vacancies-check-exam-date-selection-proc",
+    "kea-vao-recruitment-2026-notification-out-apply-online-for-572-village-accountant-posts---"
   ]
 };
 
 const trendingTopics: Record<string, { name: string; url: string }[]> = {
   kn: [
+    { name: "ಪರೀಕ್ಷಾ ಮಾರ್ಗದರ್ಶಿಗಳು", url: "/kn/exams" },
     { name: "ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆ ಕ್ವಿಜ್", url: "/kn/quizzes" },
     { name: "ಉದ್ಯೋಗ ಮಾಹಿತಿ", url: "/kn/category/jobs" },
     { name: "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", url: "/kn/category/current-affairs" },
@@ -35,6 +36,7 @@ const trendingTopics: Record<string, { name: string; url: string }[]> = {
     
   ],
   en: [
+    { name: "Exam Guides 2026", url: "/en/exams" },
     { name: "Competitive Exam Quizzes", url: "/en/quizzes" },
     { name: "Government Jobs", url: "/en/category/jobs" },
     { name: "Current Affairs", url: "/en/category/current-affairs" },
@@ -52,31 +54,45 @@ export async function generateMetadata({
   const { locale } = await params;
   const lang = isLocale(locale) ? locale : "kn";
 
+  const titleText = lang === "kn"
+    ? "KannadaQuiz - ಕರ್ನಾಟಕ ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳ ತಯಾರಿ, ಉಚಿತ ಕ್ವಿಜ್ ಮತ್ತು ಉದ್ಯೋಗ ಮಾಹಿತಿ"
+    : "KannadaQuiz - Karnataka Competitive Exams Prep, Free Quizzes & Job Updates";
+
   return {
-    title:
-      lang === "kn"
-        ? "KannadaQuiz - ಪ್ರಮುಖ ಜಾಗತಿಕ ಮತ್ತು ಕರ್ನಾಟಕ ಸುದ್ದಿ ಸಾರಾಂಶಗಳು"
-        : "KannadaQuiz - Latest Global & Karnataka News Summaries",
+    title: {
+      absolute: titleText,
+    },
     description:
       lang === "kn"
-        ? "ಕನ್ನಡ ಓದುಗರಿಗೆ ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳ ತಯಾರಿ, ರಸಪ್ರಶ್ನೆಗಳು, ಕರ್ನಾಟಕ ಇತಿಹಾಸ, ತಂತ್ರಜ್ಞಾನ ಮತ್ತು ಉಪಯುಕ್ತ ಮಾಹಿತಿ ಮುಖ್ಯಾಂಶಗಳು."
-        : "Free competitive exam preparation, quizzes, Karnataka history, technology, and useful resources for Kannada readers.",
+        ? "KPSC KAS, ಪೊಲೀಸ್ ಕಾನ್‌ಸ್ಟೇಬಲ್, PSI, FDA, SDA, TET ಪರೀಕ್ಷೆಗಳ ತಯಾರಿಗಾಗಿ ಉಚಿತ ಕನ್ನಡ ರಸಪ್ರಶ್ನೆಗಳು, ಪಠ್ಯಕ್ರಮ, ದಿನನಿತ್ಯದ ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು ಮತ್ತು ಸರ್ಕಾರಿ ಉದ್ಯೋಗ ಮಾಹಿತಿ."
+        : "Free online quizzes, syllabus, daily current affairs, and government job notifications for KPSC KAS, Police, PSI, FDA, SDA, and Karnataka competitive exams.",
     keywords:
       lang === "kn"
         ? [
-            "ಕನ್ನಡ ರಸಪ್ರಶ್ನೆ", "ಕರ್ನಾಟಕ ಇತಿಹಾಸ", "ಮನೆ ವಿನ್ಯಾಸ", "ಕನ್ನಡ ಸಿನಿಮಾ",
-            "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", "ಕಂಪ್ಯೂಟರ್ ಶಿಕ್ಷಣ", "ಕೃಷಿ ಮಾಹಿತಿ", "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು"
+            "ಕನ್ನಡ ರಸಪ್ರಶ್ನೆ", "KPSC KAS ಪರೀಕ್ಷೆ", "ಪೊಲೀಸ್ ಕಾನ್‌ಸ್ಟೇಬಲ್ ಕ್ವಿಜ್", "PSI ಪರೀಕ್ಷಾ ತಯಾರಿ",
+            "FDA SDA ಪಠ್ಯಕ್ರಮ", "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು 2026", "ಕರ್ನಾಟಕ ಸರ್ಕಾರಿ ಉದ್ಯೋಗಗಳು", "GK ಕ್ವಿಜ್ ಕನ್ನಡ"
           ]
         : [
-            "Kannada Quiz", "Karnataka History", "Home Design", "Kannada Movies",
-            "GK Questions", "Computer Education", "Agriculture News", "Government Schemes"
+            "Kannada quiz", "KPSC KAS exam", "Karnataka police quiz", "PSI exam preparation",
+            "FDA SDA syllabus", "Karnataka current affairs 2026", "Karnataka govt jobs", "GK quiz Kannada"
           ],
     alternates: {
-      canonical: `/${lang}`,
+      canonical: `https://kannadaquiz.in/${lang}`,
       languages: {
-        kn: "/kn",
-        en: "/en",
+        kn: "https://kannadaquiz.in/kn",
+        en: "https://kannadaquiz.in/en",
       },
+    },
+    openGraph: {
+      title: titleText,
+      description:
+        lang === "kn"
+          ? "KPSC, ಪೊಲೀಸ್, FDA, SDA, TET ಮತ್ತು ಇತರ ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳ ಉಚಿತ ಕನ್ನಡ ಕ್ವಿಜ್ ಮತ್ತು ಅಧ್ಯಯನ ಮಾಹಿತಿ."
+          : "Free bilingual exam preparation portal for KPSC, PSI, FDA-SDA, TET, Bank, SSC, and general knowledge.",
+      url: `https://kannadaquiz.in/${lang}`,
+      siteName: "KannadaQuiz",
+      locale: lang === "kn" ? "kn_IN" : "en_US",
+      type: "website",
     },
   };
 }
@@ -624,6 +640,111 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
  
+      
+      {/* 3b. Karnataka Exam Preparation Guides Hub Showcase */}
+      <section className="py-10 bg-[var(--surface-soft)] border-y border-[var(--border)]">
+        <div className="kq-container">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b-2 border-[var(--secondary)] pb-4 mb-8">
+            <div>
+              <span className="text-xs font-black uppercase tracking-widest text-[var(--secondary)] mb-1 block">
+                {locale === "kn" ? "ವಿಶೇಷ ಪರೀಕ್ಷಾ ಮಾರ್ಗದರ್ಶಿಗಳು 2026" : "Exam Preparation Hub 2026"}
+              </span>
+              <h2 className="font-serif text-2xl md:text-3xl font-bold text-[var(--primary)] flex items-center gap-2">
+                <span>🎯</span> {locale === "kn" ? "ಕರ್ನಾಟಕ ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳ ಸಂಪೂರ್ಣ ಮಾಹಿತಿ" : "Karnataka Competitive Exam Guides"}
+              </h2>
+            </div>
+            <Link
+              href={`/${locale}/exams`}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--secondary)] hover:underline shrink-0"
+            >
+              <span>{locale === "kn" ? "ಎಲ್ಲಾ 190+ ಪರೀಕ್ಷಾ ಮಾರ್ಗದರ್ಶಿಗಳು" : "View All 190+ Exam Guides"}</span>
+              <span>➔</span>
+            </Link>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              {
+                slug: "kpsc-kas-syllabus",
+                title: locale === "kn" ? "KPSC KAS ಪಠ್ಯಕ್ರಮ & ಪರೀಕ್ಷಾ ಮಾದರಿ" : "KPSC KAS Syllabus & Pattern",
+                desc: locale === "kn" ? "ಪ್ರಿಲಿಮ್ಸ್ ಮತ್ತು ಮೇನ್ಸ್ ಪರೀಕ್ಷೆಯ ಸಂಪೂರ್ಣ ಪಠ್ಯಕ್ರಮ ಮತ್ತು ಅಂಕ ಹಂಚಿಕೆ." : "Complete Prelims and Mains exam syllabus and marking scheme.",
+                tag: "KPSC KAS",
+                icon: "🏛️"
+              },
+              {
+                slug: "police-constable-mock-tests",
+                title: locale === "kn" ? "ಪೊಲೀಸ್ ಕಾನ್‌ಸ್ಟೇಬಲ್ ಅಣಕು ಪರೀಕ್ಷೆಗಳು" : "Police Constable Mock Tests",
+                desc: locale === "kn" ? "ದಿನನಿತ್ಯದ ಅಭ್ಯಾಸಕ್ಕಾಗಿ ವಿಷಯವಾರು ಉಚಿತ ಮಾಕ್ ಟೆಸ್ಟ್‌ಗಳು ಮತ್ತು ಪ್ರಶ್ನೋತ್ತರಗಳು." : "Free practice quizzes and mock tests for Karnataka Police exam.",
+                tag: "POLICE",
+                icon: "👮"
+              },
+              {
+                slug: "psi-previous-papers",
+                title: locale === "kn" ? "PSI ಹಿಂದಿನ ವರ್ಷದ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳು" : "PSI Previous Year Papers",
+                desc: locale === "kn" ? "ಪೊಲೀಸ್ ಸಬ್-ಇನ್‌ಸ್ಪೆಕ್ಟರ್ ಪರೀಕ್ಷೆಯ ಹಿಂದಿನ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳು ಮತ್ತು ಉತ್ತರಗಳು." : "Previous year question papers with answer keys for PSI exam.",
+                tag: "PSI",
+                icon: "📜"
+              },
+              {
+                slug: "fda-previous-papers",
+                title: locale === "kn" ? "FDA ಹಿಂದಿನ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳು PDF" : "FDA Previous Year Question Papers",
+                desc: locale === "kn" ? "ಪ್ರಥಮ ದರ್ಜೆ ಸಹಾಯಕ (FDA) ಪರೀಕ್ಷೆಯ ಪ್ರಶ್ನೋತ್ತರಗಳ ವಿಶ್ಲೇಷಣೆ." : "First Division Assistant (FDA) papers with solutions.",
+                tag: "FDA",
+                icon: "📑"
+              },
+              {
+                slug: "sda-syllabus",
+                title: locale === "kn" ? "SDA ಪಠ್ಯಕ್ರಮ ಮತ್ತು ತಯಾರಿ ಮಾರ್ಗದರ್ಶಿ" : "SDA Syllabus & Exam Pattern",
+                desc: locale === "kn" ? "ದ್ವಿತೀಯ ದರ್ಜೆ ಸಹಾಯಕ ನೇಮಕಾತಿ ಪರೀಕ್ಷೆಯ ವಿವರವಾದ ಪಠ್ಯಕ್ರಮ." : "Detailed syllabus and preparation strategy for SDA posts.",
+                tag: "SDA",
+                icon: "📚"
+              },
+              {
+                slug: "tet-mock-tests",
+                title: locale === "kn" ? "ಕರ್ನಾಟಕ TET ಉಚಿತ ಅಣಕು ಪರೀಕ್ಷೆಗಳು" : "Karnataka TET Free Mock Tests",
+                desc: locale === "kn" ? "ಶಿಕ್ಷಕರ ಅರ್ಹತಾ ಪರೀಕ್ಷೆ (KARTET) ಪೇಪರ್ 1 ಮತ್ತು 2 ಕ್ಕಾಗಿ ಉಚಿತ ರಸಪ್ರಶ್ನೆಗಳು." : "Free subject-wise quizzes for KARTET Paper 1 and Paper 2.",
+                tag: "TET",
+                icon: "🎓"
+              }
+            ].map((item) => (
+              <Link
+                key={item.slug}
+                href={`/${locale}/exams/${item.slug}`}
+                className="kq-card p-5 rounded-xl border border-[var(--border)] bg-white hover:border-[var(--secondary)] hover:shadow-md transition-all group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-2xl">{item.icon}</span>
+                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-[var(--surface-soft)] text-[var(--secondary)]">
+                      {item.tag}
+                    </span>
+                  </div>
+                  <h3 className="font-serif text-base font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors line-clamp-1 mb-1.5">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-[var(--muted)] leading-relaxed line-clamp-2">
+                    {item.desc}
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-[var(--border)]/50 flex items-center justify-between text-xs font-semibold text-[var(--secondary)]">
+                  <span>{locale === "kn" ? "ತಯಾರಿ ಪ್ರಾರಂಭಿಸಿ" : "Start Preparation"}</span>
+                  <span className="group-hover:translate-x-1 transition-transform">➔</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-6 text-center">
+            <Link
+              href={`/${locale}/exams`}
+              className="inline-block bg-[var(--secondary)] hover:bg-[var(--secondary)]/90 text-white font-bold text-xs uppercase tracking-wider py-3 px-8 rounded-lg shadow-sm transition-all"
+            >
+              {locale === "kn" ? "ಎಲ್ಲಾ 190+ ಪರೀಕ್ಷಾ ಮತ್ತು ಜಿಲ್ಲಾವಾರು ಮಾರ್ಗದರ್ಶಿಗಳನ್ನು ನೋಡಿ ➔" : "Explore All 190+ Exam Guides & District Info ➔"}
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* 4. Categorized News Sections */}
       <section className="py-10 bg-white">
         <div className="kq-container flex flex-col gap-10">

@@ -14,6 +14,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     `/${locale}`,
     `/${locale}/quizzes`,
     `/${locale}/posts`,
+    `/${locale}/exams`,
+    `/${locale}/category/current-affairs`,
     `/${locale}/syllabus`,
     `/${locale}/syllabus/kas`,
     `/${locale}/syllabus/psi`,
