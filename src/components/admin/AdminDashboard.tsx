@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import {
   browserLocalPersistence,
   onAuthStateChanged,
@@ -31,7 +32,6 @@ import {
 } from "firebase/storage";
 import { firebaseAuth, firebaseStorage, firestore, hasFirebaseConfig } from "@/lib/firebase";
 import { firestoreCollections } from "@/lib/firestore-schema";
-import { ServicesInfrastructure } from "./ServicesInfrastructure";
 
 type ContentKind = "posts" | "jobs" | "currentAffairs" | "quizzes";
 
@@ -53,34 +53,47 @@ type PublishedItem = {
   updatedAt?: string;
 };
 
-const kindLabels: Record<ContentKind, string> = {
-  posts: "Article",
-  jobs: "Job alert",
-  currentAffairs: "Current affair",
-  quizzes: "Quiz",
+const kindLabels: Record<ContentKind, { label: string; icon: string; kn: string }> = {
+  posts: { label: "Articles", icon: "📰", kn: "ಲೇಖನಗಳು" },
+  quizzes: { label: "Quizzes", icon: "🎯", kn: "ರಸಪ್ರಶ್ನೆಗಳು" },
+  jobs: { label: "Job Alerts", icon: "💼", kn: "ಉದ್ಯೋಗ ಮಾಹಿತಿ" },
+  currentAffairs: { label: "Current Affairs", icon: "🌐", kn: "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನ" },
 };
+
+const POST_CATEGORIES = [
+  { value: "Jobs", label: "Jobs & Recruitment (ಉದ್ಯೋಗ)" },
+  { value: "Current Affairs", label: "Current Affairs (ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನ)" },
+  { value: "College Guide", label: "Education & Guidance (ಶಿಕ್ಷಣ ಮಾರ್ಗದರ್ಶಿ)" },
+  { value: "Government Schemes", label: "Govt Schemes (ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು)" },
+  { value: "Technology", label: "Technology & AI (ತಂತ್ರಜ್ಞಾನ)" },
+  { value: "Syllabus", label: "Syllabus & Pattern (ಪರೀಕ್ಷಾ ಪಠ್ಯಕ್ರಮ)" },
+  { value: "Hall Ticket", label: "Admit Card & Hall Ticket (ಪ್ರವೇಶ ಪತ್ರ)" },
+  { value: "General", label: "General Knowledge (ಸಾಮಾನ್ಯ ಜ್ಞಾನ)" },
+];
 
 export function AdminDashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [authReady, setAuthReady] = useState(!firebaseAuth);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [authError, setAuthError] = useState("");
+
   const [kind, setKind] = useState<ContentKind>("posts");
   const [locale, setLocale] = useState<"kn" | "en">("kn");
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [body, setBody] = useState("");
-  const [category, setCategory] = useState("General");
+  const [category, setCategory] = useState("Jobs");
   const [organization, setOrganization] = useState("");
   const [deadline, setDeadline] = useState("");
   const [sourceUrl, setSourceUrl] = useState("");
   const [sourceName, setSourceName] = useState("");
   const [isFeaturedPost, setIsFeaturedPost] = useState(false);
-  
+
   // Quiz specific states
   const [exam, setExam] = useState("KPSC");
-  const [subject, setSubject] = useState("");
+  const [subject, setSubject] = useState("General Knowledge");
   const [difficulty, setDifficulty] = useState<"Easy" | "Medium" | "Hard">("Easy");
   const [timeLimitMinutes, setTimeLimitMinutes] = useState("5");
   const [questions, setQuestions] = useState<AdminQuestion[]>([
@@ -94,165 +107,164 @@ export function AdminDashboard() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
 
-  const [message, setMessage] = useState("");
+  // UI state
+  const [saving, setSaving] = useState(false);
+  const [alert, setAlert] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [items, setItems] = useState<PublishedItem[]>([]);
+  const [loadingItems, setLoadingItems] = useState(false);
+
+  // Counts summary
+  const [counts, setCounts] = useState({ posts: 0, quizzes: 0, jobs: 0, currentAffairs: 0 });
+
+  // Filters & Pagination
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("All");
   const [selectedLocaleFilter, setSelectedLocaleFilter] = useState("All");
   const [selectedStatusFilter, setSelectedStatusFilter] = useState("All");
-  const [selectedSourceFilter, setSelectedSourceFilter] = useState("All");
-  const [saving, setSaving] = useState(false);
-
-  // Telemetry & Stats states
-  const activeTab = "content";
-  const [syncLogs, setSyncLogs] = useState<any[]>([]);
-  const [loadingLogs, setLoadingLogs] = useState(false);
-  const [cleaningDb, setCleaningDb] = useState(false);
-  const [cleanMessage, setCleanMessage] = useState("");
-  const [stats, setStats] = useState({
-    posts: 0,
-    manualPosts: 0,
-    jobs: 0,
-    manualJobs: 0,
-    currentAffairs: 0,
-    quizzes: 0,
-  });
-
-  // Speed Performance Metrics
-  const [perfMetrics, setPerfMetrics] = useState({
-    loadTimeMs: 0,
-    ttfbMs: 0,
-    domReadyMs: 0,
-    renderTimeMs: 0,
-  });
-
-  // SEO Analyzer
-  const [seoSlug, setSeoSlug] = useState("/");
-  const [seoResult, setSeoResult] = useState<any | null>(null);
-  const [analyzingSeo, setAnalyzingSeo] = useState(false);
-  const [seoError, setSeoError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 12;
 
   const canUseFirebase = hasFirebaseConfig && firebaseAuth && firestore;
 
-  const totalPosts = stats.posts;
-  const manualPosts = stats.manualPosts;
-  const autoPosts = Math.max(0, totalPosts - manualPosts);
-  const manualPct = totalPosts > 0 ? Math.round((manualPosts / totalPosts) * 100) : 0;
-  const autoPct = totalPosts > 0 ? 100 - manualPct : 0;
+  // Auto-generate safe slug
+  const generatedSlug = useMemo(() => {
+    const latinized = title
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .slice(0, 80);
 
-  const syncStats = useMemo(() => {
-    const now = new Date();
-    const fourHoursAgo = new Date(now.getTime() - 4 * 60 * 60 * 1000);
-    const twelveHoursAgo = new Date(now.getTime() - 12 * 60 * 60 * 1000);
-    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-
-    let fourFeeds = 0, fourCalls = 0, fourPosts = 0;
-    let twelveFeeds = 0, twelveCalls = 0, twelvePosts = 0;
-    let dayFeeds = 0, dayCalls = 0, dayPosts = 0;
-    let weekFeeds = 0, weekCalls = 0, weekPosts = 0;
-
-    syncLogs.forEach((log) => {
-      const d = log.dateObj;
-      if (!d) return;
-
-      if (d >= fourHoursAgo) {
-        fourFeeds += log.feedItemsChecked;
-        fourCalls += log.geminiCalls;
-        fourPosts += log.postsCreated;
-      }
-      if (d >= twelveHoursAgo) {
-        twelveFeeds += log.feedItemsChecked;
-        twelveCalls += log.geminiCalls;
-        twelvePosts += log.postsCreated;
-      }
-      if (d >= oneDayAgo) {
-        dayFeeds += log.feedItemsChecked;
-        dayCalls += log.geminiCalls;
-        dayPosts += log.postsCreated;
-      }
-      if (d >= sevenDaysAgo) {
-        weekFeeds += log.feedItemsChecked;
-        weekCalls += log.geminiCalls;
-        weekPosts += log.postsCreated;
-      }
-    });
-
-    return {
-      fourHours: { feeds: fourFeeds, calls: fourCalls, posts: fourPosts },
-      twelveHours: { feeds: twelveFeeds, calls: twelveCalls, posts: twelvePosts },
-      day: { feeds: dayFeeds, calls: dayCalls, posts: dayPosts },
-      week: { feeds: weekFeeds, calls: weekCalls, posts: weekPosts },
-    };
-  }, [syncLogs]);
-
-  const failureAlert = useMemo(() => {
-    if (syncLogs.length === 0) return null;
-
-    const sortedLogs = [...syncLogs].sort((a, b) => b.dateObj.getTime() - a.dateObj.getTime());
-    const latestLog = sortedLogs[0];
-
-    const now = new Date();
-    const twelveHoursAgo = new Date(now.getTime() - 12 * 60 * 60 * 1000);
-
-    const isLatestFailed = latestLog.status === "error";
-    const isStale = latestLog.dateObj < twelveHoursAgo;
-
-    if (isLatestFailed) {
-      return {
-        type: "error",
-        title: "Latest Auto-Sync Failed!",
-        message: latestLog.errorMessage || "Unknown script execution crash during RSS parsing or database write.",
-        timestamp: latestLog.timestamp,
-      };
+    if (latinized.length >= 3) {
+      return latinized;
     }
+    // Fallback if title is purely non-Latin (Kannada)
+    return `${kind === "quizzes" ? "quiz" : kind === "jobs" ? "job" : "post"}-${Date.now().toString(36)}`;
+  }, [title, kind]);
 
-    if (isStale) {
-      return {
-        type: "stale",
-        title: "Sync System Dormant / Stale!",
-        message: `The last successful sync occurred on ${latestLog.timestamp}. The system has not executed a sync script in the last 12 hours. Please check GitHub Actions scheduled cron logs.`,
-        timestamp: latestLog.timestamp,
-      };
-    }
-
-    return null;
-  }, [syncLogs]);
-
+  // Listen to Auth State
   useEffect(() => {
     if (!firebaseAuth) {
+      setAuthReady(true);
       return;
     }
 
-    const unsubscribe = onAuthStateChanged(firebaseAuth, (currentUser) => {
-      setUser(currentUser);
+    const unsubscribe = onAuthStateChanged(firebaseAuth, (nextUser) => {
+      setUser(nextUser);
       setAuthReady(true);
     });
 
     return () => unsubscribe();
   }, []);
 
+  // Load counts summary
+  async function loadCounts() {
+    if (!firestore) return;
+    try {
+      const [postsSnap, quizzesSnap, jobsSnap, caSnap] = await Promise.all([
+        getDocs(query(collection(firestore, firestoreCollections.posts), limit(1000))),
+        getDocs(query(collection(firestore, firestoreCollections.quizzes), limit(1000))),
+        getDocs(query(collection(firestore, firestoreCollections.jobs), limit(1000))),
+        getDocs(query(collection(firestore, firestoreCollections.currentAffairs), limit(1000))),
+      ]);
+      setCounts({
+        posts: postsSnap.size,
+        quizzes: quizzesSnap.size,
+        jobs: jobsSnap.size,
+        currentAffairs: caSnap.size,
+      });
+    } catch (e) {
+      console.warn("Failed to fetch inventory counts:", e);
+    }
+  }
+
+  // Load Items when tab or user changes
   useEffect(() => {
-    setSelectedCategoryFilter("All");
-    setSelectedLocaleFilter("All");
-    setSelectedStatusFilter("All");
-    setSelectedSourceFilter("All");
-    setSearchQuery("");
     if (user) {
       void loadItems(kind);
+      void loadCounts();
     }
   }, [kind, user]);
 
-  const generatedSlug = useMemo(
-    () =>
-      title
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9\s-]/g, "")
-        .replace(/\s+/g, "-")
-        .slice(0, 90),
-    [title],
-  );
+  async function loadItems(nextKind: ContentKind) {
+    if (!firestore) return;
+    setLoadingItems(true);
+
+    try {
+      let snapshot;
+      try {
+        const docsQuery = query(
+          collection(firestore, firestoreCollections[nextKind]),
+          orderBy("updatedAt", "desc"),
+          limit(1000)
+        );
+        snapshot = await getDocs(docsQuery);
+      } catch {
+        const fallbackQuery = query(
+          collection(firestore, firestoreCollections[nextKind]),
+          limit(1000)
+        );
+        snapshot = await getDocs(fallbackQuery);
+      }
+
+      const nextItems = snapshot.docs.map((docSnap) => {
+        const data = docSnap.data();
+        return {
+          id: docSnap.id,
+          title: String(data.title ?? data.headline ?? "Untitled"),
+          slug: typeof data.slug === "string" ? data.slug : undefined,
+          locale: typeof data.locale === "string" ? data.locale : undefined,
+          status: typeof data.status === "string" && data.status ? data.status : "published",
+          isManual: data.isManual === true,
+          category: typeof data.category === "string" ? data.category : undefined,
+          updatedAt: data.updatedAt?.toDate?.() ? data.updatedAt.toDate().toLocaleDateString() : undefined,
+        };
+      });
+
+      setItems(nextItems);
+      setCurrentPage(1);
+    } catch (error) {
+      console.error("Error loading items:", error);
+    } finally {
+      setLoadingItems(false);
+    }
+  }
+
+  async function handleLogin(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!firebaseAuth) {
+      setAuthError("Firebase Auth is not configured.");
+      return;
+    }
+
+    setAuthError("");
+    try {
+      await setPersistence(firebaseAuth, browserLocalPersistence);
+      await signInWithEmailAndPassword(firebaseAuth, email.trim(), password);
+    } catch (error) {
+      setAuthError(readFirebaseError(error));
+    }
+  }
+
+  async function uploadImage(file: File, targetSlug: string): Promise<string> {
+    if (!firebaseStorage) return "";
+    const cleanFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+    const storagePath = `featured-images/${targetSlug}-${Date.now()}-${cleanFileName}`;
+    const storageRef = ref(firebaseStorage, storagePath);
+    const snapshot = await uploadBytes(storageRef, file);
+    return getDownloadURL(snapshot.ref);
+  }
+
+  async function deleteOldImage(url: string) {
+    if (!firebaseStorage || !url) return;
+    try {
+      const storageRef = ref(firebaseStorage, url);
+      await deleteObject(storageRef);
+    } catch {
+      // Image may have already been deleted or be external URL
+    }
+  }
 
   function handleAddQuestion() {
     setQuestions((prev) => [
@@ -262,455 +274,106 @@ export function AdminDashboard() {
   }
 
   function handleRemoveQuestion(index: number) {
+    if (questions.length <= 1) return;
     setQuestions((prev) => prev.filter((_, i) => i !== index));
   }
 
   function handleQuestionChange(index: number, field: keyof AdminQuestion, value: any) {
-    setQuestions((prev) =>
-      prev.map((q, i) => (i === index ? { ...q, [field]: value } : q))
-    );
-  }
-
-  function handleOptionChange(qIndex: number, optIndex: number, value: string) {
-    setQuestions((prev) =>
-      prev.map((q, i) => {
-        if (i === qIndex) {
-          const nextOptions = [...q.options];
-          nextOptions[optIndex] = value;
-          return { ...q, options: nextOptions };
-        }
-        return q;
-      })
-    );
-  }
-
-  async function handleLogin(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    if (!firebaseAuth) {
-      setMessage("Firebase environment variables are not configured yet.");
-      return;
-    }
-
-    try {
-      await setPersistence(firebaseAuth, browserLocalPersistence);
-      await signInWithEmailAndPassword(firebaseAuth, email, password);
-      setPassword("");
-      setMessage("");
-    } catch (error) {
-      setMessage(readFirebaseError(error));
-    }
-  }
-
-  async function loadItems(nextKind: ContentKind) {
-    if (!firestore) {
-      return;
-    }
-
-    try {
-      let snapshot;
-      try {
-        // Fetch up to 3000 items ordered by the most recently updated first.
-        // This guarantees that newly published or modified drafts are fetched without wasting Firestore reads.
-        const docsQuery = query(
-          collection(firestore, firestoreCollections[nextKind]),
-          orderBy("updatedAt", "desc"),
-          limit(3000)
-        );
-        snapshot = await getDocs(docsQuery);
-      } catch (indexError) {
-        console.warn("Index not found or sorting failed, falling back to unordered fetch:", indexError);
-        // Fallback to fetch up to 3000 items without sorting at the database level.
-        const docsQuery = query(
-          collection(firestore, firestoreCollections[nextKind]),
-          limit(3000)
-        );
-        snapshot = await getDocs(docsQuery);
-      }
-
-      const nextItems = snapshot.docs
-        .map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            title: String(data.title ?? data.headline ?? "Untitled"),
-            slug: typeof data.slug === "string" ? data.slug : undefined,
-            locale: typeof data.locale === "string" ? data.locale : undefined,
-            status: typeof data.status === "string" && data.status ? data.status : "published",
-            isManual: data.isManual === true,
-            category: typeof data.category === "string" ? data.category : "General",
-            updatedAt:
-              typeof data.updatedAt === "string"
-                ? data.updatedAt
-                : typeof data.updatedAt?.toDate === "function"
-                  ? data.updatedAt.toDate().toISOString()
-                  : "",
-          };
-        })
-        .filter((item) => {
-          const s = (item.status || "").toLowerCase();
-          return !s || s === "published" || s === "draft";
-        })
-        .sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
-
-      setItems(nextItems);
-    } catch (error) {
-      setMessage(readFirebaseError(error));
-    }
-  }
-
-  async function loadSyncLogs() {
-    if (!firestore) return;
-    setLoadingLogs(true);
-    try {
-      const q = query(
-        collection(firestore, firestoreCollections.syncLogs),
-        orderBy("timestamp", "desc"),
-        limit(150)
-      );
-      const snapshot = await getDocs(q);
-      const logs = snapshot.docs.map((docSnap) => {
-        const data = docSnap.data();
-        let formattedDate = "";
-        let dateObj = new Date();
-        try {
-          const t = data.timestamp;
-          if (t && typeof t.toDate === "function") {
-            dateObj = t.toDate();
-            formattedDate = dateObj.toLocaleString();
-          } else if (t && t.seconds) {
-            dateObj = new Date(t.seconds * 1000);
-            formattedDate = dateObj.toLocaleString();
-          }
-        } catch {
-          formattedDate = "Unknown";
-        }
-        return {
-          id: docSnap.id,
-          timestamp: formattedDate,
-          dateObj: dateObj,
-          status: data.status || "success",
-          durationSeconds: Number(data.durationSeconds || 0),
-          geminiCalls: Number(data.geminiCalls || 0),
-          feedItemsChecked: Number(data.feedItemsChecked || 0),
-          postsCreated: Number(data.postsCreated || 0),
-          errorMessage: data.errorMessage || "",
-        };
-      });
-      // Sort client-side by timestamp descending
-      logs.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
-      setSyncLogs(logs);
-    } catch (error) {
-      console.error("Failed to load sync logs:", error);
-    } finally {
-      setLoadingLogs(false);
-    }
-  }
-
-  async function loadStats() {
-    if (!firestore) return;
-    try {
-      const [postsSnap, jobsSnap, caSnap, quizzesSnap] = await Promise.all([
-        getDocs(query(collection(firestore, firestoreCollections.posts), limit(100))),
-        getDocs(query(collection(firestore, firestoreCollections.jobs), limit(100))),
-        getDocs(query(collection(firestore, firestoreCollections.currentAffairs), limit(100))),
-        getDocs(query(collection(firestore, firestoreCollections.quizzes), limit(100))),
-      ]);
-
-      const manualPosts = postsSnap.docs.filter((d) => d.data().isManual === true).length;
-      const manualJobs = jobsSnap.docs.filter((d) => d.data().isManual === true).length;
-
-      setStats({
-        posts: postsSnap.size,
-        manualPosts,
-        jobs: jobsSnap.size,
-        manualJobs,
-        currentAffairs: caSnap.size,
-        quizzes: quizzesSnap.size,
-      });
-    } catch (error) {
-      console.error("Failed to load stats:", error);
-    }
-  }
-
-  useEffect(() => {
-    if (false && user) {
-      void loadSyncLogs();
-      void loadStats();
-    }
-  }, [activeTab, user]);
-
-  useEffect(() => {
-    if (false) {
-      const getMetrics = () => {
-        setTimeout(() => {
-          const navigationEntries = performance.getEntriesByType("navigation");
-          const [entry] = navigationEntries.length > 0 ? (navigationEntries as any[]) : [null];
-          if (entry) {
-            setPerfMetrics({
-              loadTimeMs: Math.round(entry.duration),
-              ttfbMs: Math.round(entry.responseStart - entry.requestStart),
-              domReadyMs: Math.round(entry.domContentLoadedEventEnd - entry.responseStart),
-              renderTimeMs: Math.round(entry.loadEventEnd - entry.domContentLoadedEventEnd),
-            });
-          } else {
-            const t = window.performance.timing;
-            if (t) {
-              setPerfMetrics({
-                loadTimeMs: t.loadEventEnd - t.navigationStart,
-                ttfbMs: t.responseStart - t.requestStart,
-                domReadyMs: t.domContentLoadedEventEnd - t.responseStart,
-                renderTimeMs: t.loadEventEnd - t.domContentLoadedEventEnd,
-              });
-            }
-          }
-        }, 300);
-      };
-
-      if (document.readyState === "complete") {
-        getMetrics();
-      } else {
-        window.addEventListener("load", getMetrics);
-        return () => window.removeEventListener("load", getMetrics);
-      }
-    }
-  }, [activeTab]);
-
-  async function analyzeSeoPage() {
-    setAnalyzingSeo(true);
-    setSeoError("");
-    setSeoResult(null);
-
-    let targetUrl = seoSlug.trim();
-    if (!targetUrl.startsWith("/")) {
-      targetUrl = "/" + targetUrl;
-    }
-
-    try {
-      const response = await fetch(targetUrl);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch page: ${response.status} ${response.statusText}`);
-      }
-
-      const html = await response.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, "text/html");
-
-      // Title audit
-      const title = doc.title || "";
-      const titleLength = title.length;
-      const titleScore = titleLength > 0 ? (titleLength >= 30 && titleLength <= 65 ? 25 : 18) : 0;
-
-      // Meta description audit
-      const metaDescEl = doc.querySelector('meta[name="description"]');
-      const metaDesc = metaDescEl ? metaDescEl.getAttribute("content") || "" : "";
-      const descLength = metaDesc.length;
-      const descScore = descLength > 0 ? (descLength >= 110 && descLength <= 160 ? 25 : 18) : 0;
-
-      // Headings audit (H1)
-      const h1s = doc.querySelectorAll("h1");
-      const h1Count = h1s.length;
-      let h1Score = 0;
-      if (h1Count === 1) h1Score = 20;
-      else if (h1Count > 1) h1Score = 10;
-
-      // Images alt audit
-      const imgs = doc.querySelectorAll("img");
-      const imgCount = imgs.length;
-      let missingAltCount = 0;
-      imgs.forEach((img) => {
-        if (!img.hasAttribute("alt") || !img.getAttribute("alt")?.trim()) {
-          missingAltCount++;
-        }
-      });
-      const altScore = imgCount > 0 ? Math.max(0, 15 - missingAltCount * 3) : 15;
-
-      // JSON-LD schemas
-      const schemas = doc.querySelectorAll('script[type="application/ld+json"]');
-      const schemaCount = schemas.length;
-      const schemaScore = schemaCount > 0 ? 15 : 0;
-
-      // Calculate total score
-      const totalScore = titleScore + descScore + h1Score + altScore + schemaScore;
-
-      // Generate suggestions list
-      const suggestions: string[] = [];
-      if (titleLength === 0) {
-        suggestions.push("Critical: Title tag is missing. Add a descriptive title to rank in search results.");
-      } else if (titleLength < 30 || titleLength > 65) {
-        suggestions.push(`Warning: Title tag is ${titleLength} characters. Keep it between 30 and 65 characters to avoid truncation in SERPs.`);
-      }
-
-      if (descLength === 0) {
-        suggestions.push("Critical: Meta description is missing. Add one to describe page summaries in search listings.");
-      } else if (descLength < 110 || descLength > 160) {
-        suggestions.push(`Warning: Meta description is ${descLength} characters. Keep it between 110 and 160 characters for optimal display.`);
-      }
-
-      if (h1Count === 0) {
-        suggestions.push("Critical: H1 tag is missing. Every page should have exactly one H1 tag defining the primary heading.");
-      } else if (h1Count > 1) {
-        suggestions.push(`Warning: Found ${h1Count} H1 tags. Keep exactly one H1 per page and use H2/H3 for sub-sections.`);
-      }
-
-      if (missingAltCount > 0) {
-        suggestions.push(`Warning: Found ${missingAltCount} image(s) missing 'alt' descriptions. Add 'alt' tags to all images to improve accessibility and image SEO.`);
-      }
-
-      if (schemaCount === 0) {
-        suggestions.push("Tip: JSON-LD structured data schema not found. Implement Article or FAQ schema markup to enable rich snippets in Google Search.");
-      }
-
-      setSeoResult({
-        score: totalScore,
-        title,
-        titleLength,
-        metaDesc,
-        descLength,
-        h1Count,
-        imgCount,
-        missingAltCount,
-        schemaCount,
-        suggestions,
-      });
-    } catch (err: any) {
-      setSeoError(err.message || "Failed to analyze page.");
-    } finally {
-      setAnalyzingSeo(false);
-    }
-  }
-
-  async function compressToWebp(file: File, maxWidth = 900, quality = 0.75): Promise<Blob> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          let width = img.width;
-          let height = img.height;
-
-          if (width > maxWidth) {
-            height = Math.round((height * maxWidth) / width);
-            width = maxWidth;
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-
-          const ctx = canvas.getContext("2d");
-          if (!ctx) {
-            reject(new Error("Failed to get 2D canvas context"));
-            return;
-          }
-
-          ctx.drawImage(img, 0, 0, width, height);
-          canvas.toBlob(
-            (blob) => {
-              if (blob) {
-                resolve(blob);
-              } else {
-                reject(new Error("Blob conversion failed"));
-              }
-            },
-            "image/webp",
-            quality
-          );
-        };
-        img.onerror = (err) => reject(err);
-        img.src = event.target?.result as string;
-      };
-      reader.onerror = (err) => reject(err);
-      reader.readAsDataURL(file);
+    setQuestions((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: value };
+      return updated;
     });
   }
 
-  async function uploadImage(file: File, fileSlug: string): Promise<string> {
-    if (!firebaseStorage) return "";
-
-    let uploadData: Blob | File = file;
-    let fileName = file.name;
-
-    try {
-      console.log(`Compressing original image (${(file.size / 1024).toFixed(1)} KB) to optimized WebP...`);
-      const compressedBlob = await compressToWebp(file, 900, 0.75);
-      uploadData = compressedBlob;
-      
-      const dotIndex = file.name.lastIndexOf('.');
-      const baseName = dotIndex !== -1 ? file.name.substring(0, dotIndex) : file.name;
-      fileName = `${baseName}.webp`;
-      
-      console.log(`Successfully compressed. New size: ${(compressedBlob.size / 1024).toFixed(1)} KB`);
-    } catch (compressionError) {
-      console.warn("Image compression failed, uploading original file:", compressionError);
-    }
-
-    const cleanFileName = fileName.replace(/[^a-zA-Z0-9.]/g, "_");
-    const uniqueId = Date.now();
-    const storagePath = `public/${kind}/${fileSlug}-${uniqueId}-${cleanFileName}`;
-    const fileRef = ref(firebaseStorage, storagePath);
-
-    const metadata = {
-      contentType: "image/webp",
-      cacheControl: "public, max-age=31536000",
-    };
-
-    await uploadBytes(fileRef, uploadData, metadata);
-    return getDownloadURL(fileRef);
+  function handleOptionChange(qIndex: number, optIndex: number, value: string) {
+    setQuestions((prev) => {
+      const updated = [...prev];
+      const nextOptions = [...updated[qIndex].options];
+      nextOptions[optIndex] = value;
+      updated[qIndex] = { ...updated[qIndex], options: nextOptions };
+      return updated;
+    });
   }
 
-  async function deleteOldImage(oldUrl: string) {
-    if (!firebaseStorage || !oldUrl) return;
-    try {
-      const oldRef = ref(firebaseStorage, oldUrl);
-      await deleteObject(oldRef);
-    } catch (error) {
-      console.warn("Failed to delete old image from storage:", error);
-    }
+  function resetForm() {
+    setTitle("");
+    setSlug("");
+    setExcerpt("");
+    setBody("");
+    setOrganization("");
+    setDeadline("");
+    setSourceUrl("");
+    setSourceName("");
+    setIsFeaturedPost(false);
+    setExam("KPSC");
+    setSubject("General Knowledge");
+    setDifficulty("Easy");
+    setTimeLimitMinutes("5");
+    setQuestions([{ question: "", options: ["", "", "", ""], correctOptionIndex: 0, explanation: "" }]);
+    setImageFile(null);
+    setImageUrl("");
+    setEditingId(null);
   }
 
-  async function handleEditInit(itemId: string) {
+  async function handleEdit(item: PublishedItem) {
     if (!firestore) return;
-
     setSaving(true);
-    setMessage("");
+    setAlert(null);
 
     try {
-      const docRef = doc(firestore, firestoreCollections[kind], itemId);
+      const docRef = doc(firestore, firestoreCollections[kind], item.id);
       const docSnap = await getDoc(docRef);
-
       if (!docSnap.exists()) {
-        setMessage("Error: Document not found.");
+        setAlert({ type: "error", text: "Item not found in Firestore." });
         return;
       }
 
       const data = docSnap.data();
-
-      setEditingId(itemId);
-      setLocale((data.locale as "kn" | "en") ?? "kn");
+      setEditingId(item.id);
       setTitle(String(data.title ?? data.headline ?? ""));
       setSlug(String(data.slug ?? ""));
-      setExcerpt(String(data.excerpt ?? data.description ?? ""));
-      setBody(String(data.body ?? ""));
-      setCategory(String(data.category ?? "General"));
-      setOrganization(String(data.organization ?? ""));
-      setDeadline(String(data.deadline ?? ""));
-      setSourceUrl(String(data.sourceUrl ?? ""));
-      setSourceName(String(data.sourceName ?? ""));
-      setImageUrl(String(data.featuredImageUrl ?? ""));
-      setIsFeaturedPost(Boolean(data.isFeatured ?? false));
-      setImageFile(null); // Reset new file input
+      setLocale((data.locale as "kn" | "en") ?? "kn");
+
+      if (data.featuredImageUrl) {
+        setImageUrl(String(data.featuredImageUrl));
+      } else {
+        setImageUrl("");
+      }
+      setImageFile(null);
+
+      if (kind === "posts") {
+        setExcerpt(String(data.excerpt ?? ""));
+        setBody(String(data.body ?? ""));
+        setCategory(String(data.category ?? "Jobs"));
+        setSourceUrl(String(data.sourceUrl ?? ""));
+        setSourceName(String(data.sourceName ?? ""));
+        setIsFeaturedPost(Boolean(data.isFeatured));
+      }
+
+      if (kind === "jobs") {
+        setOrganization(String(data.organization ?? ""));
+        setDeadline(String(data.deadline ?? ""));
+        setBody(String(data.body ?? ""));
+      }
+
+      if (kind === "currentAffairs") {
+        setExcerpt(String(data.summary ?? ""));
+        setSourceUrl(String(data.sourceUrl ?? ""));
+        setSourceName(String(data.sourceName ?? ""));
+      }
 
       if (kind === "quizzes") {
+        setExcerpt(String(data.description ?? ""));
         setExam(String(data.exam ?? "KPSC"));
-        setSubject(String(data.subject ?? ""));
+        setSubject(String(data.subject ?? "General Knowledge"));
         setDifficulty((data.difficulty as "Easy" | "Medium" | "Hard") ?? "Easy");
         const minutes = data.timeLimitSeconds ? Math.ceil(Number(data.timeLimitSeconds) / 60) : 5;
         setTimeLimitMinutes(String(minutes));
 
         const qQuery = query(
           collection(firestore, firestoreCollections.quizQuestions),
-          where("quizId", "==", itemId)
+          where("quizId", "==", item.id)
         );
         const qSnapshot = await getDocs(qQuery);
         const nextQuestions = qSnapshot.docs
@@ -732,53 +395,26 @@ export function AdminDashboard() {
           setQuestions([{ question: "", options: ["", "", "", ""], correctOptionIndex: 0, explanation: "" }]);
         }
       }
+
+      // Scroll smoothly to form
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
-      setMessage(readFirebaseError(error));
+      setAlert({ type: "error", text: readFirebaseError(error) });
     } finally {
       setSaving(false);
     }
   }
 
-  function handleCancelEdit() {
-    setEditingId(null);
-    setTitle("");
-    setSlug("");
-    setExcerpt("");
-    setBody("");
-    setCategory("General");
-    setOrganization("");
-    setDeadline("");
-    setSourceUrl("");
-    setSourceName("");
-    setIsFeaturedPost(false);
-
-    setExam("KPSC");
-    setSubject("");
-    setDifficulty("Easy");
-    setTimeLimitMinutes("5");
-    setQuestions([
-      { question: "", options: ["", "", "", ""], correctOptionIndex: 0, explanation: "" },
-    ]);
-    
-    // Reset image states
-    setImageFile(null);
-    setImageUrl("");
-    setMessage("");
-  }
-
   async function handleDelete(itemId: string) {
     if (!firestore) return;
-
     const confirm = window.confirm("Are you sure you want to delete this item? This action cannot be undone.");
     if (!confirm) return;
 
     setSaving(true);
-    setMessage("");
+    setAlert(null);
 
     try {
       const docRef = doc(firestore, firestoreCollections[kind], itemId);
-      
-      // Fetch document to delete the image from storage if it exists
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const data = docSnap.data();
@@ -789,6 +425,7 @@ export function AdminDashboard() {
 
       await deleteDoc(docRef);
 
+      // Clean up quiz questions if kind is quizzes
       if (kind === "quizzes") {
         const qQuery = query(
           collection(firestore, firestoreCollections.quizQuestions),
@@ -800,156 +437,33 @@ export function AdminDashboard() {
         }
       }
 
-      setMessage("Item deleted successfully.");
-      if (editingId === itemId) {
-        handleCancelEdit();
-      }
+      setAlert({ type: "success", text: "Item permanently deleted." });
+      if (editingId === itemId) resetForm();
       await loadItems(kind);
+      await loadCounts();
     } catch (error) {
-      setMessage(readFirebaseError(error));
+      setAlert({ type: "error", text: readFirebaseError(error) });
     } finally {
       setSaving(false);
     }
   }
 
-  async function handleDeletePakistanArticles() {
-    if (!firestore) return;
-    const confirm = window.confirm("Are you sure you want to delete all Pakistan-related articles?");
-    if (!confirm) return;
-
-    setCleaningDb(true);
-    setCleanMessage("Scanning database for Pakistan-related articles...");
-
-    try {
-      let deleted = 0;
-      const postsRef = collection(firestore, firestoreCollections.posts);
-      const snapshot = await getDocs(postsRef);
-
-      for (const docSnap of snapshot.docs) {
-        const data = docSnap.data();
-        const text = String(data.title || "") + " " + String(data.body || "") + " " + String(data.slug || "");
-        if (text.toLowerCase().includes("pakistan") || text.includes("ಪಾಕಿಸ್ತಾನ")) {
-          await deleteDoc(doc(firestore, firestoreCollections.posts, docSnap.id));
-          deleted++;
-        }
-      }
-
-      setCleanMessage(`✅ Success! Found and deleted ${deleted} articles related to Pakistan.`);
-      void loadStats();
-      void loadItems(kind);
-    } catch (error: any) {
-      setCleanMessage(`❌ Error: ${error.message}`);
-    } finally {
-      setCleaningDb(false);
-    }
-  }
-  async function handleCleanAutomatedContent() {
-    if (!firestore) return;
-
-    const confirm = window.confirm(
-      "⚠️ WARNING: This will permanently and irreversibly delete all automated RSS/translated articles and jobs from your Firestore database.\n\nAre you absolutely sure you want to proceed?"
-    );
-    if (!confirm) return;
-
-    setCleaningDb(true);
-    setCleanMessage("Initializing database cleanup...");
-
-    try {
-      let postsDeleted = 0;
-      let jobsDeleted = 0;
-
-      // 1. Clean posts
-      setCleanMessage("Scanning posts collection for automated articles...");
-      const postsSnapshot = await getDocs(
-        collection(firestore, firestoreCollections.posts)
-      );
-      
-      const automatedPosts = postsSnapshot.docs.filter(
-        (docSnap) => docSnap.data().isManual !== true
-      );
-
-      if (automatedPosts.length > 0) {
-        setCleanMessage(`Found ${automatedPosts.length} automated posts. Deleting...`);
-        for (const docSnap of automatedPosts) {
-          await deleteDoc(doc(firestore, firestoreCollections.posts, docSnap.id));
-          postsDeleted++;
-          if (postsDeleted % 10 === 0 || postsDeleted === automatedPosts.length) {
-            setCleanMessage(`Deleting posts: ${postsDeleted}/${automatedPosts.length}...`);
-          }
-        }
-      }
-
-      // 2. Clean jobs
-      setCleanMessage("Scanning jobs collection for automated job alerts...");
-      const jobsSnapshot = await getDocs(
-        collection(firestore, firestoreCollections.jobs)
-      );
-      
-      const automatedJobs = jobsSnapshot.docs.filter(
-        (docSnap) => docSnap.data().isManual !== true
-      );
-
-      if (automatedJobs.length > 0) {
-        setCleanMessage(`Found ${automatedJobs.length} automated jobs. Deleting...`);
-        for (const docSnap of automatedJobs) {
-          await deleteDoc(doc(firestore, firestoreCollections.jobs, docSnap.id));
-          jobsDeleted++;
-          if (jobsDeleted % 10 === 0 || jobsDeleted === automatedJobs.length) {
-            setCleanMessage(`Deleting jobs: ${jobsDeleted}/${automatedJobs.length}...`);
-          }
-        }
-      }
-
-      setCleanMessage(
-        `🎉 Cleanup complete! Successfully deleted ${postsDeleted} automated posts and ${jobsDeleted} automated jobs from Firestore.`
-      );
-      void loadStats();
-      void loadItems(kind);
-    } catch (error: any) {
-      console.error("Cleanup failed:", error);
-      setCleanMessage(`❌ Error during cleanup: ${error.message || error}`);
-    } finally {
-      setCleaningDb(false);
-    }
-  }
-
-  async function handleVerifyItem(itemId: string) {
-    if (!firestore) return;
-    try {
-      const docRef = doc(firestore, firestoreCollections[kind], itemId);
-      await setDoc(docRef, {
-        isManual: true,
-        updatedAt: serverTimestamp(),
-      }, { merge: true });
-      
-      setItems((prev) =>
-        prev.map((item) => (item.id === itemId ? { ...item, isManual: true } : item))
-      );
-      void loadStats();
-      setMessage("Item successfully verified & marked as manual-reviewed.");
-    } catch (error) {
-      setMessage(readFirebaseError(error));
-    }
-  }
-
-  async function handleCreate(event: FormEvent<HTMLFormElement>) {
+  async function handleSave(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!firestore) return;
 
-    if (!firestore) {
-      setMessage("Firestore is not configured yet.");
+    const finalSlug = (slug.trim() || generatedSlug).trim();
+    if (!title.trim()) {
+      setAlert({ type: "error", text: "Title is required." });
       return;
     }
 
-    const finalSlug = slug.trim() || generatedSlug;
     setSaving(true);
-    setMessage("");
+    setAlert(null);
 
     try {
       let finalImageUrl = imageUrl;
-
-      // Handle image upload / replacement
       if (imageFile) {
-        // If editing and has an old image, delete it
         if (editingId && imageUrl) {
           await deleteOldImage(imageUrl);
         }
@@ -962,7 +476,6 @@ export function AdminDashboard() {
         slug: finalSlug,
         status: "published",
         updatedAt: serverTimestamp(),
-        // Save image if present
         ...((kind === "posts" || kind === "quizzes") && finalImageUrl
           ? { featuredImageUrl: finalImageUrl }
           : {}),
@@ -970,63 +483,63 @@ export function AdminDashboard() {
 
       if (editingId) {
         const docRef = doc(firestore, firestoreCollections[kind], editingId);
-        
-        // Retrieve old document to verify if we need to clean up image from storage
-        const docSnap = await getDoc(docRef);
-        const oldData = docSnap.data();
-        const oldImageUrl = oldData?.featuredImageUrl;
-
-        // If the old image URL was cleared or replaced, delete the old image
-        if (oldImageUrl && oldImageUrl !== finalImageUrl) {
-          await deleteOldImage(oldImageUrl);
-        }
-
         if (kind === "posts") {
-          // If the image was removed completely, delete the field or update to empty string
-          await setDoc(docRef, {
-            ...base,
-            excerpt: excerpt.trim(),
-            body: body.trim(),
-            category: category.trim(),
-            featuredImageUrl: finalImageUrl || "",
-            isManual: true,
-            sourceUrl: sourceUrl.trim() || "",
-            sourceName: sourceName.trim() || "",
-            isFeatured: isFeaturedPost,
-          }, { merge: true });
-        }
+          await setDoc(
+            docRef,
+            {
+              ...base,
+              excerpt: excerpt.trim(),
+              body: body.trim(),
+              category: category.trim(),
+              isManual: true,
+              sourceUrl: sourceUrl.trim() || "",
+              sourceName: sourceName.trim() || "",
+              isFeatured: isFeaturedPost,
+            },
+            { merge: true }
+          );
+        } else if (kind === "jobs") {
+          await setDoc(
+            docRef,
+            {
+              ...base,
+              organization: organization.trim(),
+              deadline: deadline.trim(),
+              body: body.trim(),
+              isManual: true,
+            },
+            { merge: true }
+          );
+        } else if (kind === "currentAffairs") {
+          await setDoc(
+            docRef,
+            {
+              locale,
+              headline: title.trim(),
+              summary: excerpt.trim(),
+              slug: finalSlug,
+              status: "published",
+              updatedAt: serverTimestamp(),
+              sourceUrl: sourceUrl.trim() || "",
+              sourceName: sourceName.trim() || "",
+            },
+            { merge: true }
+          );
+        } else if (kind === "quizzes") {
+          await setDoc(
+            docRef,
+            {
+              ...base,
+              description: excerpt.trim(),
+              exam: exam.trim(),
+              subject: subject.trim(),
+              difficulty,
+              timeLimitSeconds: Number(timeLimitMinutes) * 60,
+            },
+            { merge: true }
+          );
 
-        if (kind === "jobs") {
-          await setDoc(docRef, {
-            ...base,
-            organization: organization.trim(),
-            deadline: deadline.trim(),
-            body: body.trim(),
-            isManual: true,
-          }, { merge: true });
-        }
-
-        if (kind === "currentAffairs") {
-          await setDoc(docRef, {
-            locale,
-            headline: title.trim(),
-            status: "published",
-            updatedAt: serverTimestamp(),
-            isManual: true,
-          }, { merge: true });
-        }
-
-        if (kind === "quizzes") {
-          await setDoc(docRef, {
-            ...base,
-            description: excerpt.trim(),
-            exam: exam.trim(),
-            subject: subject.trim(),
-            difficulty,
-            timeLimitSeconds: Number(timeLimitMinutes) * 60,
-            featuredImageUrl: finalImageUrl || "",
-          }, { merge: true });
-
+          // Overwrite questions
           const qQuery = query(
             collection(firestore, firestoreCollections.quizQuestions),
             where("quizId", "==", editingId)
@@ -1049,8 +562,7 @@ export function AdminDashboard() {
           }
         }
 
-        setMessage(`${kindLabels[kind]} updated in Firestore.`);
-        setEditingId(null);
+        setAlert({ type: "success", text: "Changes saved successfully!" });
       } else {
         const createBase = {
           ...base,
@@ -1068,9 +580,7 @@ export function AdminDashboard() {
             sourceName: sourceName.trim() || "",
             isFeatured: isFeaturedPost,
           });
-        }
-
-        if (kind === "jobs") {
+        } else if (kind === "jobs") {
           await addDoc(collection(firestore, firestoreCollections.jobs), {
             ...createBase,
             organization: organization.trim(),
@@ -1078,20 +588,19 @@ export function AdminDashboard() {
             body: body.trim(),
             isManual: true,
           });
-        }
-
-        if (kind === "currentAffairs") {
+        } else if (kind === "currentAffairs") {
           await addDoc(collection(firestore, firestoreCollections.currentAffairs), {
             locale,
             headline: title.trim(),
+            summary: excerpt.trim(),
+            slug: finalSlug,
             status: "published",
             publishedAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
-            isManual: true,
+            sourceUrl: sourceUrl.trim() || "",
+            sourceName: sourceName.trim() || "",
           });
-        }
-
-        if (kind === "quizzes") {
+        } else if (kind === "quizzes") {
           const quizDocRef = await addDoc(collection(firestore, firestoreCollections.quizzes), {
             ...createBase,
             description: excerpt.trim(),
@@ -1114,1060 +623,811 @@ export function AdminDashboard() {
           }
         }
 
-        setMessage(`${kindLabels[kind]} saved to Firestore.`);
+        setAlert({ type: "success", text: `${kindLabels[kind].label} published successfully!` });
       }
 
-      setTitle("");
-      setSlug("");
-      setExcerpt("");
-      setBody("");
-      setOrganization("");
-      setDeadline("");
-      setSourceUrl("");
-      setSourceName("");
-      setIsFeaturedPost(false);
-      setExam("KPSC");
-      setSubject("");
-      setDifficulty("Easy");
-      setTimeLimitMinutes("5");
-      setQuestions([
-        { question: "", options: ["", "", "", ""], correctOptionIndex: 0, explanation: "" },
-      ]);
-      // Reset image upload states
-      setImageFile(null);
-      setImageUrl("");
+      resetForm();
       await loadItems(kind);
+      await loadCounts();
     } catch (error) {
-      setMessage(readFirebaseError(error));
+      setAlert({ type: "error", text: readFirebaseError(error) });
     } finally {
       setSaving(false);
     }
   }
 
-  if (!authReady) {
-    return <AdminFrame>Loading admin...</AdminFrame>;
-  }
+  // Filter items
+  const filteredItems = useMemo(() => {
+    const search = searchQuery.toLowerCase().trim();
+    return items.filter((item) => {
+      const matchSearch =
+        !search ||
+        item.title.toLowerCase().includes(search) ||
+        (item.slug && item.slug.toLowerCase().includes(search));
+
+      const matchLocale = selectedLocaleFilter === "All" || item.locale === selectedLocaleFilter;
+      const matchStatus = selectedStatusFilter === "All" || item.status === selectedStatusFilter;
+
+      let matchCategory = true;
+      if (kind === "posts" && selectedCategoryFilter !== "All") {
+        matchCategory = (item.category || "").toLowerCase() === selectedCategoryFilter.toLowerCase();
+      }
+
+      return matchSearch && matchLocale && matchStatus && matchCategory;
+    });
+  }, [items, searchQuery, selectedLocaleFilter, selectedStatusFilter, selectedCategoryFilter, kind]);
+
+  // Paginated items
+  const totalPages = Math.max(1, Math.ceil(filteredItems.length / ITEMS_PER_PAGE));
+  const paginatedItems = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredItems.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredItems, currentPage]);
 
   if (!canUseFirebase) {
     return (
-      <AdminFrame>
-        <h1 className="font-serif text-3xl font-bold text-[var(--primary)]">Admin setup needed</h1>
-        <p className="mt-3 max-w-2xl leading-7 text-[var(--muted)]">
-          Add the Firebase web app values to Firebase App Hosting environment variables and to
-          `.env.local` for local development.
-        </p>
-      </AdminFrame>
+      <main className="min-h-screen bg-[var(--background)] p-8">
+        <div className="max-w-md mx-auto kq-card p-6 text-center">
+          <p className="text-xl font-bold text-rose-600">Firebase configuration missing</p>
+          <p className="mt-2 text-sm text-[var(--muted)]">Please verify your Firebase environment variables.</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (!authReady) {
+    return (
+      <main className="min-h-screen bg-[var(--background)] flex items-center justify-center p-8">
+        <div className="flex items-center gap-3 text-[var(--muted)] font-semibold text-sm">
+          <div className="w-5 h-5 border-2 border-[var(--secondary)] border-t-transparent rounded-full animate-spin"></div>
+          Checking authentication...
+        </div>
+      </main>
     );
   }
 
   if (!user) {
     return (
-      <AdminFrame>
-        <form onSubmit={handleLogin} className="kq-card max-w-md p-6">
-          <h1 className="font-serif text-3xl font-bold text-[var(--primary)]">Admin login</h1>
-          <label className="mt-5 block text-sm font-bold text-[var(--primary)]">
-            Email
-            <input
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2"
-              required
-            />
-          </label>
-          <label className="mt-4 block text-sm font-bold text-[var(--primary)]">
-            Password
-            <input
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2"
-              required
-            />
-          </label>
-          <button className="mt-5 rounded-md bg-[var(--primary)] px-5 py-3 text-sm font-bold text-white">
-            Sign in
-          </button>
-          {message ? <p className="mt-3 text-sm text-[var(--secondary)]">{message}</p> : null}
+      <main className="min-h-screen bg-[var(--background)] flex items-center justify-center p-6">
+        <form onSubmit={handleLogin} className="kq-card max-w-md w-full p-8 rounded-2xl shadow-sm border border-[var(--border)]">
+          <div className="text-center mb-6">
+            <span className="text-xs font-black uppercase tracking-widest text-[var(--secondary)]">KannadaQuiz</span>
+            <h1 className="font-serif text-3xl font-bold text-[var(--primary)] mt-1">Admin Sign In</h1>
+            <p className="text-xs text-[var(--muted)] mt-1">Sign in with authorized administrator credentials</p>
+          </div>
+
+          {authError && (
+            <div className="mb-4 p-3 rounded-lg bg-rose-50 border border-rose-200 text-xs font-semibold text-rose-700">
+              {authError}
+            </div>
+          )}
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--muted)] mb-1">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-lg border border-[var(--border)] px-3.5 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
+                placeholder="admin@kannadaquiz.in"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--muted)] mb-1">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-lg border border-[var(--border)] px-3.5 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full mt-2 rounded-lg bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white font-bold py-3 text-sm transition-colors shadow-sm"
+            >
+              Sign In to Dashboard
+            </button>
+          </div>
         </form>
-      </AdminFrame>
+      </main>
     );
   }
 
   return (
-    <AdminFrame>
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <p className="text-sm font-bold text-[var(--secondary)]">KannadaQuiz</p>
-          <h1 className="font-serif text-4xl font-bold text-[var(--primary)]">Content admin</h1>
-        </div>
-        
-          <a
-            href="/admin/seo"
-            className="text-sm text-[var(--muted)] hover:text-[var(--primary)] font-medium mr-4"
-          >
-            SEO Link Checker
-          </a>
-          <button
-          onClick={() => firebaseAuth && signOut(firebaseAuth)}
-          className="rounded-md border border-[var(--border)] px-4 py-2 text-sm font-bold"
-        >
-          Sign out
-        </button>
-      </div>
-
-      {/* Failure Alert Panel */}
-      {failureAlert && (
-        <div className={`mt-6 p-4 rounded-xl border flex gap-4 items-start ${
-          failureAlert.type === "error"
-            ? "bg-rose-50 border-rose-200 text-rose-800 shadow-sm"
-            : "bg-amber-50 border-amber-200 text-amber-800 shadow-sm"
-        }`}>
-          <div className="mt-0.5 shrink-0">
-            {failureAlert.type === "error" ? (
-              <svg className="w-6 h-6 text-rose-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
-            ) : (
-              <svg className="w-6 h-6 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-            )}
-          </div>
-          <div className="flex-1">
-            <h4 className="font-extrabold text-sm uppercase tracking-wide">{failureAlert.title}</h4>
-            <p className="text-xs mt-1.5 leading-relaxed font-medium">{failureAlert.message}</p>
-            <div className="mt-2.5 flex items-center gap-4 text-[10px] font-bold opacity-80">
-              <span>Failed At: {failureAlert.timestamp}</span>
-              <span>•</span>
-              <button 
-                type="button" 
-                className="underline cursor-pointer hover:opacity-100 bg-transparent border-0 p-0 text-[10px] font-bold text-inherit" 
-                onClick={() => { void loadSyncLogs(); void loadStats(); }}
-              >
-                Refresh System Logs
-              </button>
+    <main className="min-h-screen bg-[var(--background)] pb-20">
+      {/* Top Admin Header */}
+      <header className="bg-white border-b border-[var(--border)] sticky top-0 z-30 shadow-xs">
+        <div className="kq-container py-3.5 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <span className="w-8 h-8 rounded-lg bg-[var(--secondary)] text-white flex items-center justify-center font-bold text-sm">
+              KQ
+            </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="font-serif text-xl font-bold text-[var(--primary)]">Admin Control Center</h1>
+                <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full border border-emerald-200">
+                  Live
+                </span>
+              </div>
+              <p className="text-xs text-[var(--muted)]">{user.email}</p>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* Tabs */}
-      <div className="mt-6 flex border-b border-[var(--border)] gap-4 select-none">
-        
-        
-        
-      </div>
-
-      {activeTab === "content" ? (
-        <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_0.8fr]">
-        <form onSubmit={handleCreate} className="kq-card p-5">
-          <div className="grid gap-4 md:grid-cols-3">
-            <label className="block text-sm font-bold">
-              Type
-              <select
-                value={kind}
-                onChange={(event) => {
-                  setKind(event.target.value as ContentKind);
-                  handleCancelEdit();
-                }}
-                className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2"
-              >
-                <option value="posts">Article</option>
-                <option value="jobs">Job alert</option>
-                <option value="currentAffairs">Current affair</option>
-                <option value="quizzes">Quiz</option>
-              </select>
-            </label>
-            <label className="block text-sm font-bold">
-              Language
-              <select
-                value={locale}
-                onChange={(event) => setLocale(event.target.value as "kn" | "en")}
-                className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2"
-              >
-                <option value="kn">Kannada</option>
-                <option value="en">English</option>
-              </select>
-            </label>
-            <label className="block text-sm font-bold">
-              Slug
-              <input
-                value={slug}
-                onChange={(event) => setSlug(event.target.value)}
-                placeholder={generatedSlug}
-                className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2"
-              />
-            </label>
-          </div>
-
-          <label className="mt-4 block text-sm font-bold">
-            Title
-            <input
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-              className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2"
-              required
-            />
-          </label>
-
-          {kind === "posts" ? (
-            <label className="mt-4 block text-sm font-bold">
-              Category
-              <select
-                value={category}
-                onChange={(event) => setCategory(event.target.value)}
-                className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2 bg-white"
-              >
-                <option value="General">General News</option>
-                <option value="Jobs">Jobs & Careers</option>
-                <option value="Current Affairs">Current Affairs</option>
-                <option value="College Guide">College & Education Guide</option>
-                <option value="Government Schemes">Government Schemes</option>
-                <option value="Technology">Technology & AI</option>
-                <option value="Syllabus">Syllabus & Exam Pattern</option>
-                <option value="Hall Ticket">Admit Card & Hall Ticket</option>
-                
-              </select>
-            </label>
-          ) : null}
-
-          {kind === "posts" || kind === "quizzes" ? (
-            <label className="mt-4 block text-sm font-bold">
-              {kind === "quizzes" ? "Description" : "SEO excerpt"}
-              <textarea
-                value={excerpt}
-                onChange={(event) => setExcerpt(event.target.value)}
-                className="mt-2 min-h-24 w-full rounded-md border border-[var(--border)] px-3 py-2"
-                required={kind === "quizzes"}
-              />
-            </label>
-          ) : null}
-
-          {kind === "posts" || kind === "quizzes" ? (
-            <div className="mt-4 p-4 border border-[var(--border)] rounded-md bg-[var(--surface-soft)]">
-              <label className="block text-sm font-bold">
-                Featured Image
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setImageFile(file);
-                    }
-                  }}
-                  className="mt-2 w-full text-sm text-[var(--muted)]"
-                />
-              </label>
-
-              {imageFile ? (
-                <p className="mt-2 text-xs text-[var(--secondary)] font-semibold">
-                  Selected new file: {imageFile.name} (upload on save)
-                </p>
-              ) : null}
-
-              {imageUrl ? (
-                <div className="mt-3 flex items-center gap-4">
-                  <img
-                    src={imageUrl}
-                    alt="Featured preview"
-                    className="w-20 h-20 object-cover rounded border border-[var(--border)]"
-                  />
-                  <div>
-                    <p className="text-xs text-[var(--muted)]">Current Image stored</p>
-                    <button
-                      type="button"
-                      onClick={() => setImageUrl("")}
-                      className="mt-1 cursor-pointer text-xs text-[var(--secondary)] font-bold hover:underline block"
-                    >
-                      Remove Image
-                    </button>
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          ) : null}
-
-          {kind === "jobs" ? (
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
-              <label className="block text-sm font-bold">
-                Organization
-                <input
-                  value={organization}
-                  onChange={(event) => setOrganization(event.target.value)}
-                  className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2"
-                />
-              </label>
-              <label className="block text-sm font-bold">
-                Deadline
-                <input
-                  type="date"
-                  value={deadline}
-                  onChange={(event) => setDeadline(event.target.value)}
-                  className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2"
-                />
-              </label>
-            </div>
-          ) : null}
-
-          {kind === "quizzes" ? (
-            <div className="mt-4 grid gap-4 md:grid-cols-3">
-              <label className="block text-sm font-bold">
-                Exam
-                <input
-                  value={exam}
-                  onChange={(event) => setExam(event.target.value)}
-                  placeholder="e.g. KPSC"
-                  className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2"
-                  required
-                />
-              </label>
-              <label className="block text-sm font-bold">
-                Subject
-                <input
-                  value={subject}
-                  onChange={(event) => setSubject(event.target.value)}
-                  placeholder="e.g. Current Affairs"
-                  className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2"
-                  required
-                />
-              </label>
-              <div className="grid gap-2 grid-cols-2">
-                <label className="block text-sm font-bold">
-                  Difficulty
-                  <select
-                    value={difficulty}
-                    onChange={(event) => setDifficulty(event.target.value as "Easy" | "Medium" | "Hard")}
-                    className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2"
-                  >
-                    <option value="Easy">Easy</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Hard">Hard</option>
-                  </select>
-                </label>
-                <label className="block text-sm font-bold">
-                  Time Limit (min)
-                  <input
-                    type="number"
-                    value={timeLimitMinutes}
-                    onChange={(event) => setTimeLimitMinutes(event.target.value)}
-                    className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2"
-                    min="1"
-                    required
-                  />
-                </label>
-              </div>
-            </div>
-          ) : null}
-
-          {kind !== "currentAffairs" && kind !== "quizzes" ? (
-            <label className="mt-4 block text-sm font-bold">
-              Body
-              <textarea
-                value={body}
-                onChange={(event) => setBody(event.target.value)}
-                className="mt-2 min-h-44 w-full rounded-md border border-[var(--border)] px-3 py-2"
-              />
-            </label>
-          ) : null}
-
-          {kind === "posts" ? (
-            <div className="mt-5 p-4 border border-[var(--border)] rounded-md bg-[var(--surface-soft)] shadow-sm">
-              <h4 className="text-sm font-bold text-[var(--primary)] mb-3 flex items-center gap-1.5 select-none">
-                <span className="text-base">🔗</span> External Reference Link (Optional)
-              </h4>
-              <div className="grid gap-4 md:grid-cols-2">
-                <label className="block text-sm font-semibold text-[var(--primary)]">
-                  External Link URL
-                  <input
-                    type="url"
-                    placeholder="e.g. https://architect.com/project-listing"
-                    value={sourceUrl}
-                    onChange={(event) => setSourceUrl(event.target.value)}
-                    className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2 bg-white font-normal"
-                  />
-                </label>
-                <label className="block text-sm font-semibold text-[var(--primary)]">
-                  Link Label / Website Name
-                  <input
-                    type="text"
-                    placeholder="e.g. Visit Architectural Site, View Floor Plan"
-                    value={sourceName}
-                    onChange={(event) => setSourceName(event.target.value)}
-                    className="mt-2 w-full rounded-md border border-[var(--border)] px-3 py-2 bg-white font-normal"
-                  />
-                </label>
-              </div>
-              <p className="mt-2.5 text-xs text-[var(--muted)] leading-relaxed">
-                Provide these details so users can easily visit the given external site (e.g., real estate portfolios, interior design services, or product promotions).
-              </p>
-            </div>
-          ) : null}
-
-          {kind === "posts" ? (
-            <div className="mt-5 p-4 border border-[var(--border)] rounded-md bg-[var(--surface-soft)] shadow-sm">
-              <h4 className="text-sm font-bold text-[var(--primary)] mb-3 flex items-center gap-1.5 select-none">
-                <span className="text-base">⭐</span> Homepage Highlights / Pinned Story
-              </h4>
-              <label className="flex items-center gap-3 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  id="pinToHighlightsCheckbox"
-                  checked={isFeaturedPost}
-                  onChange={(event) => setIsFeaturedPost(event.target.checked)}
-                  className="w-5 h-5 rounded text-[var(--secondary)] border-[var(--border)] focus:ring-[var(--secondary)] cursor-pointer"
-                />
-                <div>
-                  <span className="text-sm font-semibold text-[var(--primary)]">
-                    Pin to Homepage Slider (Highlights)
-                  </span>
-                  <p className="text-xs text-[var(--muted)] leading-relaxed mt-0.5">
-                    Check this box to highlight/pin this article in the sliding hero section at the top of the homepage. If checked, this article will appear in the slider carousel.
-                  </p>
-                </div>
-              </label>
-            </div>
-          ) : null}
-
-          {kind === "quizzes" ? (
-            <div className="mt-6 border-t border-[var(--border)] pt-6">
-              <h3 className="text-lg font-serif font-bold text-[var(--primary)] mb-4">Quiz Questions ({questions.length})</h3>
-
-              <div className="grid gap-6">
-                {questions.map((q, qIndex) => (
-                  <div key={qIndex} className="p-4 rounded-md border border-[var(--border)] bg-[var(--surface-soft)] relative">
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="text-sm font-bold text-[var(--primary)]">Question {qIndex + 1}</span>
-                      {questions.length > 1 ? (
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveQuestion(qIndex)}
-                          className="text-xs text-[var(--secondary)] font-bold hover:underline"
-                        >
-                          Remove Question
-                        </button>
-                      ) : null}
-                    </div>
-
-                    <label className="block text-sm font-bold mb-3">
-                      Question Text
-                      <input
-                        value={q.question}
-                        onChange={(e) => handleQuestionChange(qIndex, "question", e.target.value)}
-                        className="mt-1 w-full rounded-md border border-[var(--border)] bg-white px-3 py-2"
-                        required
-                      />
-                    </label>
-
-                    <div className="grid gap-3 md:grid-cols-2 mb-3">
-                      {q.options.map((opt, optIndex) => (
-                        <label key={optIndex} className="block text-sm font-semibold">
-                          Option {String.fromCharCode(65 + optIndex)}
-                          <input
-                            value={opt}
-                            onChange={(e) => handleOptionChange(qIndex, optIndex, e.target.value)}
-                            className="mt-1 w-full rounded-md border border-[var(--border)] bg-white px-3 py-2"
-                            required
-                          />
-                        </label>
-                      ))}
-                    </div>
-
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <label className="block text-sm font-bold">
-                        Correct Option
-                        <select
-                          value={q.correctOptionIndex}
-                          onChange={(e) => handleQuestionChange(qIndex, "correctOptionIndex", Number(e.target.value))}
-                          className="mt-1 w-full rounded-md border border-[var(--border)] bg-white px-3 py-2"
-                        >
-                          <option value={0}>Option A</option>
-                          <option value={1}>Option B</option>
-                          <option value={2}>Option C</option>
-                          <option value={3}>Option D</option>
-                        </select>
-                      </label>
-
-                      <label className="block text-sm font-bold">
-                        Explanation
-                        <input
-                          value={q.explanation}
-                          onChange={(e) => handleQuestionChange(qIndex, "explanation", e.target.value)}
-                          className="mt-1 w-full rounded-md border border-[var(--border)] bg-white px-3 py-2"
-                          placeholder="Why is this option correct?"
-                        />
-                      </label>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <button
-                type="button"
-                onClick={handleAddQuestion}
-                className="mt-4 rounded-md border border-[var(--border)] bg-white px-4 py-2 text-sm font-bold hover:bg-[var(--surface-soft)]"
-              >
-                + Add Question
-              </button>
-            </div>
-          ) : null}
-
-          <div className="mt-5 flex gap-3">
-            <button className="rounded-md bg-[var(--secondary)] px-5 py-3 text-sm font-bold text-white">
-              {saving ? "Saving..." : editingId ? "Save Changes" : "Save published content"}
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <Link
+              href="/kn"
+              target="_blank"
+              className="rounded-lg border border-[var(--border)] bg-white px-3 py-1.5 text-xs font-bold hover:bg-[var(--surface-soft)] transition-colors inline-flex items-center gap-1 text-[var(--muted)] hover:text-[var(--primary)]"
+            >
+              <span>View Site</span>
+              <span>↗</span>
+            </Link>
+            <Link
+              href="/admin/seo"
+              className="rounded-lg border border-[var(--secondary)]/30 bg-[var(--surface-soft)] px-3 py-1.5 text-xs font-bold text-[var(--secondary)] hover:bg-[var(--secondary)] hover:text-white transition-all inline-flex items-center gap-1.5"
+            >
+              <span>⚡ SEO Link Checker</span>
+            </Link>
+            <button
+              type="button"
+              onClick={() => firebaseAuth && signOut(firebaseAuth)}
+              className="rounded-lg border border-[var(--border)] bg-white px-3 py-1.5 text-xs font-bold hover:bg-rose-50 hover:text-rose-700 hover:border-rose-200 transition-colors"
+            >
+              Sign Out
             </button>
-            {editingId ? (
-              <button
-                type="button"
-                onClick={handleCancelEdit}
-                className="rounded-md border border-[var(--border)] bg-white px-5 py-3 text-sm font-bold"
-              >
-                Cancel Edit
-              </button>
-            ) : null}
           </div>
-          {message ? <p className="mt-3 text-sm font-semibold text-[var(--primary)]">{message}</p> : null}
-        </form>
+        </div>
+      </header>
 
-        <aside className="kq-card p-5">
-          <div className="flex flex-col gap-4">
-            <div className="flex justify-between items-center border-b border-[var(--border)] pb-2">
-              <h2 className="font-serif text-2xl font-bold text-[var(--primary)]">Published & Draft Content</h2>
-              <span className="text-xs bg-[var(--surface-soft)] text-[var(--muted)] border border-[var(--border)] px-2.5 py-1 rounded-full font-bold">
-                Pool Size: {items.length}
-              </span>
+      <div className="kq-container mt-6">
+        {/* Quick Inventory Summary Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-6">
+          <div className="kq-card p-4 rounded-xl border border-[var(--border)] bg-white">
+            <span className="text-xs font-bold text-[var(--muted)] block mb-1">📰 Published Articles</span>
+            <span className="text-2xl font-black text-[var(--primary)]">{counts.posts}</span>
+          </div>
+          <div className="kq-card p-4 rounded-xl border border-[var(--border)] bg-white">
+            <span className="text-xs font-bold text-[var(--muted)] block mb-1">🎯 Active Quizzes</span>
+            <span className="text-2xl font-black text-amber-600">{counts.quizzes}</span>
+          </div>
+          <div className="kq-card p-4 rounded-xl border border-[var(--border)] bg-white">
+            <span className="text-xs font-bold text-[var(--muted)] block mb-1">💼 Job Alerts</span>
+            <span className="text-2xl font-black text-emerald-600">{counts.jobs}</span>
+          </div>
+          <div className="kq-card p-4 rounded-xl border border-[var(--border)] bg-white">
+            <span className="text-xs font-bold text-[var(--muted)] block mb-1">🌐 Current Affairs</span>
+            <span className="text-2xl font-black text-blue-600">{counts.currentAffairs}</span>
+          </div>
+        </div>
+
+        {/* Content Type Selector Tabs */}
+        <div className="flex gap-2 overflow-x-auto pb-2 mb-6 border-b border-[var(--border)]">
+          {(["posts", "quizzes", "jobs", "currentAffairs"] as ContentKind[]).map((tabKind) => {
+            const meta = kindLabels[tabKind];
+            const isActive = kind === tabKind;
+            return (
+              <button
+                key={tabKind}
+                type="button"
+                onClick={() => {
+                  setKind(tabKind);
+                  resetForm();
+                  setAlert(null);
+                }}
+                className={`px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 cursor-pointer shrink-0 ${
+                  isActive
+                    ? "bg-[var(--secondary)] text-white shadow-sm"
+                    : "bg-white text-[var(--muted)] hover:text-[var(--foreground)] border border-[var(--border)] hover:bg-[var(--surface-soft)]"
+                }`}
+              >
+                <span>{meta.icon}</span>
+                <span>{meta.label}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? "bg-white/20 text-white" : "bg-[var(--surface-soft)] text-[var(--muted)]"}`}>
+                  {meta.kn}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Action Alert Banner */}
+        {alert && (
+          <div
+            className={`mb-6 p-4 rounded-xl border flex items-center justify-between gap-3 text-sm font-medium ${
+              alert.type === "success"
+                ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+                : "bg-rose-50 border-rose-200 text-rose-800"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <span>{alert.type === "success" ? "✅" : "⚠️"}</span>
+              <span>{alert.text}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setAlert(null)}
+              className="text-xs font-bold opacity-60 hover:opacity-100"
+            >
+              ✕ Dismiss
+            </button>
+          </div>
+        )}
+
+        {/* Main 2-Column Editor + Content Pool Layout */}
+        <div className="grid lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column: Editor Form (5 cols) */}
+          <div className="lg:col-span-5 kq-card p-6 rounded-2xl border border-[var(--border)] bg-white shadow-xs">
+            <div className="flex items-center justify-between border-b border-[var(--border)] pb-3 mb-5">
+              <div>
+                <h2 className="font-serif text-xl font-bold text-[var(--primary)]">
+                  {editingId ? `Edit ${kindLabels[kind].label}` : `New ${kindLabels[kind].label}`}
+                </h2>
+                <p className="text-xs text-[var(--muted)]">
+                  {editingId ? "Update existing content and save" : "Publish fresh content to Firestore"}
+                </p>
+              </div>
+              {editingId && (
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200">
+                  Editing Mode
+                </span>
+              )}
             </div>
 
-            {/* Filter & Search Bar Controls */}
-            <div className="bg-[var(--surface-soft)] p-4 rounded-lg border border-[var(--border)]/60 space-y-3">
-              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-2">
-                <div className="flex flex-col">
-                  <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Search Title or Slug</label>
-                  <input
-                    type="text"
-                    placeholder="Type to search..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
-                  />
+            <form onSubmit={handleSave} className="space-y-4">
+              {/* Language Selector */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[var(--muted)] mb-1">
+                    Language
+                  </label>
+                  <select
+                    value={locale}
+                    onChange={(e) => setLocale(e.target.value as "kn" | "en")}
+                    className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-xs bg-white font-semibold"
+                  >
+                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                    <option value="en">English</option>
+                  </select>
                 </div>
 
                 {kind === "posts" && (
-                  <div className="flex flex-col">
-                    <label className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1">Filter Category</label>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[var(--muted)] mb-1">
+                      Category
+                    </label>
                     <select
-                      value={selectedCategoryFilter}
-                      onChange={(e) => setSelectedCategoryFilter(e.target.value)}
-                      className="w-full truncate rounded-md border border-[var(--border)] px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)] cursor-pointer font-medium"
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-xs bg-white font-semibold"
                     >
-                      <option value="All">All Categories</option>
-                      <option value="General">General News</option>
-                      <option value="Jobs">Jobs & Careers</option>
-                      <option value="Current Affairs">Current Affairs</option>
-                      <option value="College Guide">College & Education Guide</option>
-                      <option value="Government Schemes">Government Schemes</option>
-                      <option value="Technology">Technology & AI</option>
-                      <option value="Syllabus">Syllabus & Exam Pattern</option>
-                      <option value="Hall Ticket">Admit Card & Hall Ticket</option>
-                      
+                      {POST_CATEGORIES.map((cat) => (
+                        <option key={cat.value} value={cat.value}>
+                          {cat.label}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 )}
+              </div>
 
-                {(searchQuery || selectedCategoryFilter !== "All" || selectedStatusFilter !== "All" || selectedLocaleFilter !== "All" || selectedSourceFilter !== "All") && (
-                  <div className="flex flex-col justify-end sm:col-span-2 md:col-span-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSearchQuery("");
-                        setSelectedCategoryFilter("All");
-                        setSelectedStatusFilter("All");
-                        setSelectedLocaleFilter("All");
-                        setSelectedSourceFilter("All");
-                      }}
-                      className="w-full py-2 px-3 text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-md transition-colors cursor-pointer text-center"
-                    >
-                      ✕ Reset Filters
-                    </button>
+              {/* Title Input */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-[var(--muted)] mb-1">
+                  {kind === "currentAffairs" ? "Headline" : "Title"} *
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Enter clear, compelling title..."
+                  className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm bg-white font-medium focus:ring-2 focus:ring-[var(--secondary)] focus:outline-none"
+                  required
+                />
+              </div>
+
+              {/* Slug Input */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-bold uppercase tracking-wider text-[var(--muted)]">URL Slug</label>
+                  <span className="text-[10px] text-[var(--muted)]">Auto: {generatedSlug}</span>
+                </div>
+                <input
+                  type="text"
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                  placeholder={generatedSlug}
+                  className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-xs bg-white font-mono text-[var(--muted)] focus:text-[var(--foreground)] focus:ring-2 focus:ring-[var(--secondary)] focus:outline-none"
+                />
+              </div>
+
+              {/* Job specific fields */}
+              {kind === "jobs" && (
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[var(--muted)] mb-1">
+                      Organization / Dept
+                    </label>
+                    <input
+                      type="text"
+                      value={organization}
+                      onChange={(e) => setOrganization(e.target.value)}
+                      placeholder="e.g. KPSC / Police / KEA"
+                      className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-xs bg-white"
+                    />
                   </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[var(--muted)] mb-1">
+                      Deadline
+                    </label>
+                    <input
+                      type="text"
+                      value={deadline}
+                      onChange={(e) => setDeadline(e.target.value)}
+                      placeholder="e.g. 30 September 2026"
+                      className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-xs bg-white"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Quiz specific fields */}
+              {kind === "quizzes" && (
+                <div className="space-y-4 p-4 rounded-xl bg-[var(--surface-soft)] border border-[var(--border)]">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    <div>
+                      <label className="block text-[11px] font-bold text-[var(--muted)] mb-1">Exam</label>
+                      <input
+                        type="text"
+                        value={exam}
+                        onChange={(e) => setExam(e.target.value)}
+                        placeholder="KPSC"
+                        className="w-full rounded-lg border border-[var(--border)] px-2.5 py-1.5 text-xs bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-[var(--muted)] mb-1">Subject</label>
+                      <input
+                        type="text"
+                        value={subject}
+                        onChange={(e) => setSubject(e.target.value)}
+                        placeholder="History"
+                        className="w-full rounded-lg border border-[var(--border)] px-2.5 py-1.5 text-xs bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-[var(--muted)] mb-1">Difficulty</label>
+                      <select
+                        value={difficulty}
+                        onChange={(e) => setDifficulty(e.target.value as "Easy" | "Medium" | "Hard")}
+                        className="w-full rounded-lg border border-[var(--border)] px-2 py-1.5 text-xs bg-white"
+                      >
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-[var(--muted)] mb-1">Time (mins)</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="60"
+                        value={timeLimitMinutes}
+                        onChange={(e) => setTimeLimitMinutes(e.target.value)}
+                        className="w-full rounded-lg border border-[var(--border)] px-2.5 py-1.5 text-xs bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Questions Builder */}
+                  <div className="space-y-4 pt-2">
+                    <div className="flex items-center justify-between border-b border-[var(--border)] pb-2">
+                      <span className="text-xs font-bold text-[var(--primary)]">
+                        Questions ({questions.length})
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleAddQuestion}
+                        className="text-xs font-bold text-[var(--secondary)] hover:underline"
+                      >
+                        + Add Question
+                      </button>
+                    </div>
+
+                    {questions.map((q, qIndex) => (
+                      <div key={qIndex} className="p-3.5 bg-white rounded-lg border border-[var(--border)] space-y-2.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-[var(--secondary)]">Q{qIndex + 1}</span>
+                          {questions.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveQuestion(qIndex)}
+                              className="text-[11px] text-rose-600 font-bold hover:underline"
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </div>
+
+                        <input
+                          type="text"
+                          value={q.question}
+                          onChange={(e) => handleQuestionChange(qIndex, "question", e.target.value)}
+                          placeholder="Type question here..."
+                          className="w-full rounded border border-[var(--border)] px-2.5 py-1.5 text-xs"
+                          required
+                        />
+
+                        <div className="grid grid-cols-2 gap-2">
+                          {q.options.map((opt, optIndex) => (
+                            <div key={optIndex} className="flex items-center gap-1.5">
+                              <input
+                                type="radio"
+                                name={`correct-${qIndex}`}
+                                checked={q.correctOptionIndex === optIndex}
+                                onChange={() => handleQuestionChange(qIndex, "correctOptionIndex", optIndex)}
+                                className="shrink-0"
+                              />
+                              <input
+                                type="text"
+                                value={opt}
+                                onChange={(e) => handleOptionChange(qIndex, optIndex, e.target.value)}
+                                placeholder={`Option ${String.fromCharCode(65 + optIndex)}`}
+                                className="w-full rounded border border-[var(--border)] px-2 py-1 text-xs"
+                                required
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        <input
+                          type="text"
+                          value={q.explanation}
+                          onChange={(e) => handleQuestionChange(qIndex, "explanation", e.target.value)}
+                          placeholder="Optional explanation / rationale..."
+                          className="w-full rounded border border-[var(--border)] px-2 py-1 text-[11px] text-[var(--muted)]"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Excerpt / Summary */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-[var(--muted)] mb-1">
+                  {kind === "currentAffairs" ? "Summary" : kind === "quizzes" ? "Description" : "Short Excerpt"}
+                </label>
+                <textarea
+                  rows={2}
+                  value={excerpt}
+                  onChange={(e) => setExcerpt(e.target.value)}
+                  placeholder="Short 1-2 sentence overview..."
+                  className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-xs bg-white"
+                />
+              </div>
+
+              {/* Body Textarea */}
+              {(kind === "posts" || kind === "jobs") && (
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[var(--muted)] mb-1">
+                    Full Content / Details
+                  </label>
+                  <textarea
+                    rows={6}
+                    value={body}
+                    onChange={(e) => setBody(e.target.value)}
+                    placeholder="Full article or job details (supports plain text or paragraphs)..."
+                    className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-xs bg-white leading-relaxed"
+                  />
+                </div>
+              )}
+
+              {/* Image Upload & Preview */}
+              {(kind === "posts" || kind === "quizzes") && (
+                <div className="p-3.5 rounded-xl bg-[var(--surface-soft)] border border-[var(--border)] space-y-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[var(--muted)]">
+                    Featured Image
+                  </label>
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] || null;
+                        setImageFile(file);
+                        if (file) setImageUrl(URL.createObjectURL(file));
+                      }}
+                      className="text-xs text-[var(--muted)] file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-white file:text-[var(--primary)] file:border file:border-[var(--border)]"
+                    />
+                    {imageUrl && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setImageFile(null);
+                          setImageUrl("");
+                        }}
+                        className="text-[11px] text-rose-600 font-bold hover:underline shrink-0"
+                      >
+                        Clear Image
+                      </button>
+                    )}
+                  </div>
+                  {imageUrl && (
+                    <div className="mt-2 relative w-full h-28 rounded-lg overflow-hidden border border-[var(--border)] bg-black/5">
+                      <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Source & Home Feature Toggle */}
+              {kind === "posts" && (
+                <div className="space-y-3 pt-1">
+                  <div className="grid grid-cols-2 gap-3">
+                    <input
+                      type="text"
+                      value={sourceName}
+                      onChange={(e) => setSourceName(e.target.value)}
+                      placeholder="Source Name (optional)"
+                      className="rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs bg-white"
+                    />
+                    <input
+                      type="url"
+                      value={sourceUrl}
+                      onChange={(e) => setSourceUrl(e.target.value)}
+                      placeholder="Source URL (optional)"
+                      className="rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs bg-white"
+                    />
+                  </div>
+                  <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--foreground)]">
+                    <input
+                      type="checkbox"
+                      checked={isFeaturedPost}
+                      onChange={(e) => setIsFeaturedPost(e.target.checked)}
+                      className="rounded border-[var(--border)]"
+                    />
+                    <span>Highlight / Pin on Homepage</span>
+                  </label>
+                </div>
+              )}
+
+              {/* Submit Buttons */}
+              <div className="flex gap-2.5 pt-2">
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="flex-1 rounded-xl bg-[var(--secondary)] hover:bg-[var(--secondary)]/90 text-white font-bold py-3 text-xs uppercase tracking-wider transition-all disabled:opacity-50 shadow-sm"
+                >
+                  {saving ? "Saving to Database..." : editingId ? "Save Changes" : `Publish ${kindLabels[kind].label}`}
+                </button>
+                {editingId && (
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className="rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-xs font-bold text-[var(--muted)] hover:bg-[var(--surface-soft)]"
+                  >
+                    Cancel
+                  </button>
                 )}
               </div>
-            </div>
+            </form>
           </div>
 
-          <div className="mt-4 grid gap-3">
-            {(() => {
-              const filteredItems = items.filter((item) => {
-                const search = searchQuery.toLowerCase().trim();
-                const titleMatch = !search || 
-                                   item.title.toLowerCase().includes(search) || 
-                                   (item.slug || "").toLowerCase().includes(search) ||
-                                   search.includes((item.slug || "").toLowerCase());
-                
-                let categoryMatch = true;
-                if (selectedCategoryFilter !== "All" && kind === "posts") {
-                  const filterKey = selectedCategoryFilter.toLowerCase().trim();
-                  const itemCategory = (item.category || "").toLowerCase().trim();
-                  
-                  const categoryGroups: Record<string, string[]> = {
-                    general: ["general", "general news", "ಸಾಮಾನ್ಯ"],
-                    jobs: ["jobs", "jobs & careers", "kpsc", "exam notifications", "ಉದ್ಯೋಗ"],
-                    "current affairs": ["current affairs", "ಚಾಲ್ತಿ"],
-                    agriculture: ["agriculture", "agriculture info", "ಕೃಷಿ"],
-                    "college guide": ["college guide", "education", "education & college guide", "college & education guide", "ಶಿಕ್ಷಣ"],
-                    "government schemes": ["government schemes", "schemes", "ಯೋಜನೆ"],
-                    "heritage & tourism": ["heritage & tourism", "tourism", "ಪ್ರವಾಸ"],
-                    "sports news": ["sports news", "sports", "ಕ್ರೀಡೆ"],
-                    "home design": ["home design", "real estate", "interior", "house plans", "promotion", "services", "home design & real estate", "ರಿಯಲ್ ಎಸ್ಟೇಟ್"],
-                    syllabus: ["syllabus", "exam pattern", "syllabus & exam pattern", "ಪಠ್ಯಕ್ರಮ"],
-                    "question papers": ["question papers", "previous year", "old question papers", "ಹಿಂದಿನ ಪ್ರಶ್ನೆ"],
-                    "study materials": ["study materials", "notes", "study materials & notes", "ಸ್ಟಡಿ ನೋಟ್ಸ್"],
-                    "hall ticket": ["hall ticket", "admit card", "admit card & hall ticket", "ಪ್ರವೇಶ ಪತ್ರ"],
-                    results: ["results", "cut-off", "results & cut-off", "ಫಲಿತಾಂಶ"],
-                    "preparation guides": ["preparation", "how to prepare", "guides", "preparation guides", "ತಯಾರಿ ಹೇಗೆ"]
-                  };
-
-                  const groupSynonyms = categoryGroups[filterKey] || [filterKey];
-                  categoryMatch = groupSynonyms.some(syn => itemCategory.includes(syn) || syn.includes(itemCategory)) ||
-                                  itemCategory.includes(filterKey) ||
-                                  filterKey.includes(itemCategory);
-                }
-                
-                let localeMatch = true;
-                if (selectedLocaleFilter !== "All") {
-                  localeMatch = (item.locale || "").toLowerCase() === selectedLocaleFilter.toLowerCase();
-                }
-
-                let statusMatch = true;
-                if (selectedStatusFilter !== "All") {
-                  statusMatch = (item.status || "published").toLowerCase() === selectedStatusFilter.toLowerCase();
-                }
-
-                let sourceMatch = true;
-                if (selectedSourceFilter === "Manual") {
-                  sourceMatch = item.isManual === true;
-                } else if (selectedSourceFilter === "Auto") {
-                  sourceMatch = item.isManual !== true;
-                }
-                
-                return titleMatch && categoryMatch && localeMatch && statusMatch && sourceMatch;
-              });
-
-              if (filteredItems.length) {
-                return (
-                  <>
-                    <p className="text-xs text-[var(--muted)] font-semibold px-1 mb-1">
-                      Showing {filteredItems.length} of {items.length} records
-                    </p>
-                    {filteredItems.map((item) => {
-                      const liveRoute = kind === "jobs" ? "jobs" : kind === "quizzes" ? "quizzes" : "posts";
-                      const itemLiveUrl = item.slug ? `/${item.locale || "kn"}/${liveRoute}/${item.slug}` : `/${item.locale || "kn"}`;
-
-                      return (
-                        <article key={item.id} className="rounded-md border border-[var(--border)] p-3 flex justify-between items-start gap-4 hover:bg-slate-50 transition-colors">
-                          <div>
-                            <p className="font-bold text-[var(--primary)] flex flex-wrap gap-1.5 items-center">
-                              {item.slug ? (
-                                <a
-                                  href={itemLiveUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="hover:text-[var(--secondary)] hover:underline flex items-center gap-1"
-                                  title="Click to view live page"
-                                >
-                                  {item.title}
-                                </a>
-                              ) : (
-                                <span>{item.title}</span>
-                              )}
-                              {item.status?.toLowerCase() === "draft" && (
-                                <span className="inline-block rounded bg-amber-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-amber-800 border border-amber-200">
-                                  Draft
-                                </span>
-                              )}
-                              {(kind === "posts" || kind === "jobs") && (
-                                item.isManual ? (
-                                  <span className="inline-block rounded bg-emerald-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-emerald-800 border border-emerald-200">
-                                    Manual
-                                  </span>
-                                ) : (
-                                  <span className="inline-block rounded bg-violet-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-violet-800 border border-violet-200">
-                                    Auto
-                                  </span>
-                                )
-                              )}
-                            </p>
-                            <p className="mt-1 text-xs text-[var(--muted)]">
-                              {item.locale ?? "n/a"} {item.category ? `• ${item.category}` : ""} {item.slug ? `• ${item.slug}` : ""}
-                            </p>
-                          </div>
-                          <div className="flex gap-2 shrink-0 items-center">
-                            {item.slug && (
-                              <a
-                                href={itemLiveUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-xs text-blue-600 font-bold hover:underline flex items-center gap-0.5"
-                                title="Open public live page in new tab"
-                              >
-                                View Live ↗
-                              </a>
-                            )}
-                            {(kind === "posts" || kind === "jobs") && !item.isManual && (
-                              <button
-                                type="button"
-                                onClick={() => handleVerifyItem(item.id)}
-                                className="text-xs text-emerald-600 font-bold hover:underline cursor-pointer"
-                                title="Mark as human reviewed & manual equivalent"
-                              >
-                                Verify
-                              </button>
-                            )}
-                            <button
-                              type="button"
-                              onClick={() => handleEditInit(item.id)}
-                              className="text-xs text-[var(--primary)] font-bold hover:underline cursor-pointer"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleDelete(item.id)}
-                              className="text-xs text-[var(--secondary)] font-bold hover:underline cursor-pointer"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </article>
-                      );
-                    })}
-                  </>
-                );
-              }
-
-              return (
-                <p className="text-sm leading-6 text-[var(--muted)] bg-[var(--surface-soft)] p-4 rounded-md text-center border border-dashed border-[var(--border)]">
-                  No records match your search or filter settings.
-                </p>
-              );
-            })()}
-          </div>
-        </aside>
-      </div>
-      ) : false ? (
-        <div className="mt-8 grid gap-6">
-
-            {/* Content Balance & API Fetching Data Visualizations */}
-          <div className="grid gap-6 lg:grid-cols-3">
-            {/* Card 1: Content Balance Donut Chart */}
-            <div className="kq-card p-6 border border-[var(--border)] bg-white flex flex-col items-center justify-between">
-              <div className="text-center w-full">
-                <h3 className="font-serif text-lg font-bold text-[var(--primary)]">Content Balance</h3>
-                <p className="text-xs text-[var(--muted)] mt-1">Manual vs. Automated Article Ratio</p>
-              </div>
-
-              <div className="relative my-6 flex items-center justify-center">
-                {/* SVG Donut Chart */}
-                <svg width="140" height="140" viewBox="0 0 140 140" className="transform -rotate-90">
-                  {/* Outer circle track (grey) if no content */}
-                  {totalPosts === 0 ? (
-                    <circle cx="70" cy="70" r="50" fill="transparent" stroke="#e2e8f0" strokeWidth="14" />
-                  ) : (
-                    <>
-                      {/* Automated content (Purple) */}
-                      <circle
-                        cx="70"
-                        cy="70"
-                        r="50"
-                        fill="transparent"
-                        stroke="#8b5cf6"
-                        strokeWidth="14"
-                      />
-                      {/* Manual content overlay (Orange) */}
-                      <circle
-                        cx="70"
-                        cy="70"
-                        r="50"
-                        fill="transparent"
-                        stroke="#f97316"
-                        strokeWidth="14"
-                        strokeDasharray="314.16"
-                        strokeDashoffset={314.16 - (314.16 * manualPct) / 100}
-                        className="transition-all duration-1000 ease-out"
-                      />
-                    </>
-                  )}
-                </svg>
-                {/* Center Percentage Display */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-3xl font-black text-[var(--primary)]">{manualPct}%</span>
-                  <span className="text-[10px] uppercase font-black tracking-wider text-[var(--muted)]">Manual</span>
-                </div>
-              </div>
-
-              {/* Color Code Labels */}
-              <div className="flex gap-4 justify-center text-xs font-semibold">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-3.5 h-3.5 rounded bg-orange-500 inline-block"></span>
-                  <span className="text-[var(--primary)]">Manual ({manualPosts})</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-3.5 h-3.5 rounded bg-violet-500 inline-block"></span>
-                  <span className="text-[var(--primary)]">Automated ({autoPosts})</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 2: API Data Fetching Stats */}
-            <div className="kq-card p-6 border border-[var(--border)] bg-white flex flex-col justify-between">
+          {/* Right Column: Content Pool & Filters (7 cols) */}
+          <div className="lg:col-span-7 kq-card p-6 rounded-2xl border border-[var(--border)] bg-white shadow-xs space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
               <div>
-                <h3 className="font-serif text-lg font-bold text-[var(--primary)]">API Fetching Statistics</h3>
-                <p className="text-xs text-[var(--muted)] mt-1">Volume of data fetched & summarized via Gemini API</p>
-                
-                <div className="mt-4 space-y-4">
-                  {/* Last 4 Hours */}
-                  <div>
-                    <div className="flex justify-between text-xs font-bold text-[var(--primary)] mb-1">
-                      <span>Last 4 Hours</span>
-                      <span className="text-violet-600 font-extrabold">{syncStats.fourHours.calls} Gemini calls</span>
-                    </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2 border border-slate-200 overflow-hidden relative">
-                      <div className="bg-blue-500 h-full inline-block" style={{ width: `${Math.min(100, (syncStats.fourHours.feeds / 200) * 100)}%` }} title="Scanned feeds"></div>
-                    </div>
-                    <div className="flex justify-between text-[9px] text-[var(--muted)] font-bold mt-1">
-                      <span>{syncStats.fourHours.feeds} Items Scanned</span>
-                      <span>{syncStats.fourHours.posts} Articles Created</span>
-                    </div>
-                  </div>
-
-                  {/* Last 12 Hours */}
-                  <div>
-                    <div className="flex justify-between text-xs font-bold text-[var(--primary)] mb-1">
-                      <span>Last 12 Hours</span>
-                      <span className="text-violet-600 font-extrabold">{syncStats.twelveHours.calls} Gemini calls</span>
-                    </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2 border border-slate-200 overflow-hidden relative">
-                      <div className="bg-blue-500 h-full inline-block" style={{ width: `${Math.min(100, (syncStats.twelveHours.feeds / 500) * 100)}%` }} title="Scanned feeds"></div>
-                    </div>
-                    <div className="flex justify-between text-[9px] text-[var(--muted)] font-bold mt-1">
-                      <span>{syncStats.twelveHours.feeds} Items Scanned</span>
-                      <span>{syncStats.twelveHours.posts} Articles Created</span>
-                    </div>
-                  </div>
-
-                  {/* Last 24 Hours */}
-                  <div>
-                    <div className="flex justify-between text-xs font-bold text-[var(--primary)] mb-1">
-                      <span>Last 24 Hours</span>
-                      <span className="text-violet-600 font-extrabold">{syncStats.day.calls} Gemini calls</span>
-                    </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2 border border-slate-200 overflow-hidden relative">
-                      <div className="bg-blue-500 h-full inline-block" style={{ width: `${Math.min(100, (syncStats.day.feeds / 1000) * 100)}%` }} title="Scanned feeds"></div>
-                    </div>
-                    <div className="flex justify-between text-[9px] text-[var(--muted)] font-bold mt-1">
-                      <span>{syncStats.day.feeds} Items Scanned</span>
-                      <span>{syncStats.day.posts} Articles Created</span>
-                    </div>
-                  </div>
-
-                  {/* Last 7 Days */}
-                  <div>
-                    <div className="flex justify-between text-xs font-bold text-[var(--primary)] mb-1">
-                      <span>Last 7 Days</span>
-                      <span className="text-violet-600 font-extrabold">{syncStats.week.calls} Gemini calls</span>
-                    </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2 border border-slate-200 overflow-hidden relative">
-                      <div className="bg-blue-500 h-full inline-block" style={{ width: `${Math.min(100, (syncStats.week.feeds / 6000) * 100)}%` }} title="Scanned feeds"></div>
-                    </div>
-                    <div className="flex justify-between text-[9px] text-[var(--muted)] font-bold mt-1">
-                      <span>{syncStats.week.feeds} Items Scanned</span>
-                      <span>{syncStats.week.posts} Articles Created</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="text-[10px] text-center text-[var(--muted)] font-bold border-t border-[var(--border)] pt-3 mt-3">
-                Calculated dynamically from {syncLogs.length} logged runs.
-              </div>
-            </div>
-
-            {/* Card 3: Google Policy & SEO Compliance Advice */}
-            <div className="kq-card p-6 border border-[var(--border)] bg-white flex flex-col justify-between">
-              <div>
-                <h3 className="font-serif text-lg font-bold text-[var(--primary)] font-bold">Google & SEO Compliance</h3>
-                <p className="text-xs text-[var(--muted)] mt-1">Status of your platform&apos;s publisher quality and monetization index</p>
-                
-                {/* Status Badge */}
-                <div className="mt-4 flex items-center gap-3">
-                  <span className="text-xs font-bold text-[var(--primary)]">Status:</span>
-                  <span className={`inline-block rounded-full px-3 py-1 text-xs font-black uppercase tracking-wider border ${
-                    totalPosts === 0
-                      ? "bg-gray-50 border-gray-200 text-gray-800"
-                      : manualPct >= 45 && manualPct <= 55
-                        ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-                        : manualPct > 55
-                          ? "bg-sky-50 border-sky-200 text-sky-800"
-                          : "bg-amber-50 border-amber-200 text-amber-800 animate-pulse"
-                  }`}>
-                    {totalPosts === 0
-                      ? "No Data"
-                      : manualPct >= 45 && manualPct <= 55
-                        ? "Perfect 50/50 Balance"
-                        : manualPct > 55
-                          ? "High Manual Content (Safe)"
-                          : "High Automated Content (Warning)"}
-                  </span>
-                </div>
-
-                {/* Balance Meter Bar */}
-                <div className="mt-4">
-                  <div className="w-full bg-slate-100 rounded-full h-3 border border-[var(--border)] relative overflow-hidden">
-                    <div className="bg-violet-500 h-full w-full absolute top-0 left-0"></div>
-                    <div 
-                      className="bg-orange-500 h-full absolute top-0 left-0 transition-all duration-500" 
-                      style={{ width: `${manualPct}%` }}
-                    ></div>
-                    <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-white opacity-80" title="50% Target"></div>
-                  </div>
-                  <div className="flex justify-between text-[9px] font-bold mt-1">
-                    <span className="text-orange-600">Manual ({manualPct}%)</span>
-                    <span className="text-violet-600">Automated ({autoPct}%)</span>
-                  </div>
-                </div>
-
-                {/* Health Advice Paragraph */}
-                <p className="mt-3 text-xs text-[var(--muted)] leading-relaxed">
-                  {totalPosts === 0
-                    ? "Upload some articles manually or run the RSS synchronization script to calculate your compliance status."
-                    : manualPct >= 45 && manualPct <= 55
-                      ? "Excellent! Your site maintains a healthy 50% automated / 50% manual ratio. This satisfies Google&apos;s Helpful Content guidelines."
-                      : manualPct > 55
-                        ? `Good! You have a robust manual ratio of ${manualPct}%. Your site is in a very safe zone for SEO.`
-                        : `Warning: Automated content makes up ${autoPct}% of your articles. Google may flag your site for &quot;Low-value&quot; content. Please manually upload some high-quality articles or guides.`}
+                <h2 className="font-serif text-xl font-bold text-[var(--primary)]">
+                  {kindLabels[kind].label} Pool
+                </h2>
+                <p className="text-xs text-[var(--muted)]">
+                  Found {filteredItems.length} matching {kindLabels[kind].label.toLowerCase()}
                 </p>
               </div>
 
-              {/* Quick Checklist */}
-              <div className="border-t border-[var(--border)] pt-3 mt-3 grid gap-1.5 grid-cols-2 text-[10px] font-bold text-[var(--muted)]">
-                <div className="flex items-center gap-1">
-                  <svg className={`w-3.5 h-3.5 shrink-0 ${totalPosts > 0 && manualPct >= 45 ? "text-emerald-500" : "text-amber-500"}`} fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-                  </svg>
-                  <span>Min. 45% Manual</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <svg className="w-3.5 h-3.5 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-                  </svg>
-                  <span>Bilingual RSS Credit</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Sync History Logs Table */}
-          <div className="kq-card p-5 border border-[var(--border)]">
-            <div className="flex items-center justify-between border-b border-[var(--border)] pb-3 mb-4">
-              <div>
-                <h3 className="font-serif text-xl font-bold text-[var(--primary)]">API Sync Telemetry</h3>
-                <p className="text-xs text-[var(--muted)]">RSS feeds parser, Gemini translation & database write execution logs</p>
-              </div>
+              {/* Refresh items */}
               <button
                 type="button"
-                onClick={() => {
-                  void loadSyncLogs();
-                  void loadStats();
-                }}
-                className="rounded-md border border-[var(--border)] px-3 py-1.5 text-xs font-bold bg-white hover:bg-[var(--surface-soft)] cursor-pointer select-none transition-colors"
+                onClick={() => loadItems(kind)}
+                disabled={loadingItems}
+                className="rounded-lg border border-[var(--border)] px-2.5 py-1 text-xs font-semibold bg-white hover:bg-[var(--surface-soft)] text-[var(--muted)]"
               >
-                Refresh Data
+                {loadingItems ? "Refreshing..." : "↻ Refresh"}
               </button>
             </div>
 
-            {loadingLogs ? (
-              <div className="py-8 text-center text-sm text-[var(--muted)]">Loading telemetry data...</div>
-            ) : syncLogs.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-sm">
-                  <thead>
-                    <tr className="border-b border-[var(--border)] text-[var(--muted)] font-semibold text-xs uppercase tracking-wider">
-                      <th className="pb-3 pr-4">Timestamp</th>
-                      <th className="pb-3 px-4">Status</th>
-                      <th className="pb-3 px-4">Duration</th>
-                      <th className="pb-3 px-4 text-center">Gemini Calls</th>
-                      <th className="pb-3 px-4 text-center">Feeds Scanned</th>
-                      <th className="pb-3 px-4 text-center">Docs Published</th>
-                      <th className="pb-3 pl-4">Details / Errors</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[var(--border)]">
-                    {syncLogs.map((log) => (
-                      <tr key={log.id} className="hover:bg-[var(--surface-soft)] transition-colors">
-                        <td className="py-3 pr-4 font-mono text-xs whitespace-nowrap">{log.timestamp}</td>
-                        <td className="py-3 px-4">
-                          <span
-                            className={`inline-block rounded px-2 py-0.5 text-xs font-black uppercase tracking-wider ${
-                              log.status === "success"
-                                ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
-                                : "bg-rose-100 text-rose-800 border border-rose-200"
-                            }`}
-                          >
-                            {log.status}
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 whitespace-nowrap">{log.durationSeconds}s</td>
-                        <td className="py-3 px-4 text-center font-semibold text-[var(--primary)]">{log.geminiCalls}</td>
-                        <td className="py-3 px-4 text-center">{log.feedItemsChecked}</td>
-                        <td className="py-3 px-4 text-center font-bold text-[var(--secondary)]">{log.postsCreated}</td>
-                        <td className="py-3 pl-4 text-xs text-[var(--muted)] max-w-xs truncate" title={log.errorMessage}>
-                          {log.errorMessage || <span className="italic opacity-50">None</span>}
-                        </td>
-                      </tr>
+            {/* Filter Bar */}
+            <div className="p-3.5 bg-[var(--surface-soft)] rounded-xl border border-[var(--border)]/60 grid sm:grid-cols-3 gap-2.5">
+              <div className="sm:col-span-3">
+                <input
+                  type="text"
+                  placeholder="Search by title or slug..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]"
+                />
+              </div>
+
+              {kind === "posts" && (
+                <div>
+                  <select
+                    value={selectedCategoryFilter}
+                    onChange={(e) => {
+                      setSelectedCategoryFilter(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="w-full rounded-lg border border-[var(--border)] px-2.5 py-1.5 text-xs bg-white font-medium"
+                  >
+                    <option value="All">All Categories</option>
+                    {POST_CATEGORIES.map((cat) => (
+                      <option key={cat.value} value={cat.value}>
+                        {cat.label}
+                      </option>
                     ))}
-                  </tbody>
-                </table>
+                  </select>
+                </div>
+              )}
+
+              <div>
+                <select
+                  value={selectedLocaleFilter}
+                  onChange={(e) => {
+                    setSelectedLocaleFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="w-full rounded-lg border border-[var(--border)] px-2.5 py-1.5 text-xs bg-white font-medium"
+                >
+                  <option value="All">All Languages</option>
+                  <option value="kn">Kannada (kn)</option>
+                  <option value="en">English (en)</option>
+                </select>
+              </div>
+
+              <div>
+                <select
+                  value={selectedStatusFilter}
+                  onChange={(e) => {
+                    setSelectedStatusFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="w-full rounded-lg border border-[var(--border)] px-2.5 py-1.5 text-xs bg-white font-medium"
+                >
+                  <option value="All">All Statuses</option>
+                  <option value="published">Published</option>
+                  <option value="draft">Draft</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Content List */}
+            {loadingItems ? (
+              <div className="py-12 text-center text-xs text-[var(--muted)] flex items-center justify-center gap-2">
+                <div className="w-4 h-4 border-2 border-[var(--secondary)] border-t-transparent rounded-full animate-spin"></div>
+                Loading content pool...
+              </div>
+            ) : paginatedItems.length === 0 ? (
+              <div className="py-12 text-center text-xs text-[var(--muted)]">
+                No matching items found. Try adjusting your search query or filters.
               </div>
             ) : (
-              <div className="py-8 text-center text-sm text-[var(--muted)]">No execution telemetry logs found. Run the synchronization script to log stats.</div>
+              <div className="space-y-2.5">
+                {paginatedItems.map((item) => {
+                  const liveRoute = kind === "jobs" ? "jobs" : kind === "quizzes" ? "quizzes" : "posts";
+                  const liveUrl = item.slug ? `/${item.locale || "kn"}/${liveRoute}/${item.slug}` : `/${item.locale || "kn"}`;
+
+                  return (
+                    <div
+                      key={item.id}
+                      className={`p-3.5 rounded-xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                        editingId === item.id
+                          ? "bg-amber-50/60 border-amber-300 ring-1 ring-amber-300"
+                          : "bg-white border-[var(--border)] hover:border-[var(--secondary)]/50 hover:bg-[var(--surface-soft)]/40"
+                      }`}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap mb-1">
+                          <a
+                            href={liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-bold text-xs text-[var(--primary)] hover:text-[var(--secondary)] hover:underline truncate"
+                          >
+                            {item.title}
+                          </a>
+                          <span className="text-[10px] text-[var(--secondary)]">↗</span>
+                        </div>
+
+                        <div className="flex items-center gap-2 flex-wrap text-[10px] text-[var(--muted)]">
+                          <span className="uppercase font-mono font-bold bg-[var(--surface-soft)] px-1.5 py-0.2 rounded border border-[var(--border)]">
+                            {item.locale || "kn"}
+                          </span>
+                          {item.category && (
+                            <span className="bg-slate-100 text-slate-700 px-1.5 py-0.2 rounded font-semibold">
+                              {item.category}
+                            </span>
+                          )}
+                          {item.isManual && (
+                            <span className="bg-emerald-50 text-emerald-700 px-1.5 py-0.2 rounded font-semibold border border-emerald-200">
+                              Manual
+                            </span>
+                          )}
+                          {item.updatedAt && <span>Updated: {item.updatedAt}</span>}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => handleEdit(item)}
+                          className="px-3 py-1.5 rounded-lg border border-[var(--border)] bg-white text-xs font-bold text-[var(--primary)] hover:bg-[var(--secondary)] hover:text-white hover:border-[var(--secondary)] transition-colors"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(item.id)}
+                          className="px-3 py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-xs font-bold text-rose-700 hover:bg-rose-600 hover:text-white transition-colors"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between pt-4 border-t border-[var(--border)] text-xs text-[var(--muted)]">
+                <span>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={currentPage <= 1}
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    className="px-3 py-1 rounded border border-[var(--border)] bg-white font-bold disabled:opacity-40 hover:bg-[var(--surface-soft)]"
+                  >
+                    Previous
+                  </button>
+                  <button
+                    type="button"
+                    disabled={currentPage >= totalPages}
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    className="px-3 py-1 rounded border border-[var(--border)] bg-white font-bold disabled:opacity-40 hover:bg-[var(--surface-soft)]"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         </div>
-      ) : (
-        <div className="mt-8">
-          null
-        </div>
-      )}
-    </AdminFrame>
-  );
-}
-
-function AdminFrame({ children }: { children: React.ReactNode }) {
-  return (
-    <main className="min-h-screen bg-[var(--background)]">
-      <div className="kq-container py-8">{children}</div>
+      </div>
     </main>
   );
 }
 
 function readFirebaseError(error: unknown) {
   if (typeof error === "object" && error && "code" in error && "message" in error) {
-    const code = String((error as { code?: unknown }).code ?? "unknown");
-    const message = String((error as { message?: unknown }).message ?? "Unknown Firebase error");
-    
-    if (code === "auth/invalid-credential" || code === "auth/wrong-password" || code === "auth/user-not-found") {
-      return "Incorrect email or password. Please verify your administrator credentials.";
-    }
-    if (code === "auth/too-many-requests") {
-      return "Too many failed login attempts. Please try again later.";
-    }
-    if (code === "storage/unauthorized" || code === "storage/retry-limit-exceeded" || message.includes("unauthorized") || message.includes("permission-denied")) {
-      return "Permission Denied: You do not have authorization to upload files or modify this resource. If you recently registered or had permissions updated, please log out and sign back in to refresh your administrative access token.";
-    }
-    
-    return `${code}: ${message}`;
+    const code = String((error as { code: string }).code);
+    if (code.includes("auth/invalid-credential")) return "Invalid email or password.";
+    if (code.includes("auth/user-not-found")) return "No account found with this email.";
+    if (code.includes("auth/wrong-password")) return "Incorrect password.";
+    if (code.includes("permission-denied")) return "Permission denied. Check Firestore security rules.";
+    return (error as { message: string }).message;
   }
-
-  return "An unexpected error occurred. Please try again.";
+  return String(error ?? "An unexpected error occurred.");
 }
