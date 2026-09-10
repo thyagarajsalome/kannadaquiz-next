@@ -68,13 +68,19 @@ export default function RootLayout({
       lang="kn"
       className={`${publicSans.variable} ${sourceSerif.variable} ${notoKannada.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preload" as="image" href="/images/hero-ka-mobile.webp" type="image/webp" media="(max-width: 640px)" fetchPriority="high" />
+        <link rel="preload" as="image" href="/images/hero-ka.webp" type="image/webp" media="(min-width: 641px)" fetchPriority="high" />
+      </head>
       <body className="min-h-full flex flex-col">
         <Script 
           id="adsense-script"
           async 
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1813097110898475" 
           crossOrigin="anonymous"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
         {children}
         {gaId && (
