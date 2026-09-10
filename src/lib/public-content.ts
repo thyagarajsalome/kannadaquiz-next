@@ -980,6 +980,23 @@ function toPublicQuizQuestion(doc: FirestoreDocument): PublicQuizQuestion | null
   };
 }
 
+function getQuizThumbnail(slug: string, subject: string, explicitUrl?: unknown): string {
+  if (typeof explicitUrl === "string" && explicitUrl.trim() && explicitUrl.startsWith("/")) {
+    return explicitUrl;
+  }
+  const s = `${slug} ${subject}`.toLowerCase();
+  if (s.includes("science")) return "/images/quizzes/science.webp";
+  if (s.includes("food") || s.includes("nutrition")) return "/images/quizzes/food.webp";
+  if (s.includes("sport") || s.includes("game")) return "/images/quizzes/sports.webp";
+  if (s.includes("animal") || s.includes("bird") || s.includes("wildlife")) return "/images/quizzes/animal-birds.webp";
+  if (s.includes("history") || s.includes("itihasa") || s.includes("constitution") || s.includes("freedom") || s.includes("heritage")) return "/images/quizzes/historical.webp";
+  if (s.includes("world") || s.includes("geography")) return "/images/quizzes/world.webp";
+  if (s.includes("math") || s.includes("aptitude") || s.includes("reasoning")) return "/images/quizzes/math.webp";
+  if (s.includes("ai") || s.includes("artificial")) return "/images/quizzes/ai.webp";
+  if (s.includes("computer") || s.includes("tech") || s.includes("technology")) return "/images/quizzes/computer.webp";
+  return "/images/quizzes/general.webp";
+}
+
 function toPublicQuiz(doc: FirestoreDocument): Omit<PublicQuiz, "questions"> | null {
   const data = parseFields(doc.fields);
   const locale = parseLocale(data.locale);
@@ -992,6 +1009,7 @@ function toPublicQuiz(doc: FirestoreDocument): Omit<PublicQuiz, "questions"> | n
 
   const timeLimitSeconds = typeof data.timeLimitSeconds === "number" ? data.timeLimitSeconds : 300;
   const timeLimitMinutes = Math.ceil(timeLimitSeconds / 60);
+  const subject = stringOrDefault(data.subject, "General");
 
   return {
     id: docId(doc),
@@ -1000,12 +1018,12 @@ function toPublicQuiz(doc: FirestoreDocument): Omit<PublicQuiz, "questions"> | n
     title,
     description: stringOrEmpty(data.description),
     exam: stringOrDefault(data.exam, "KPSC"),
-    subject: stringOrDefault(data.subject, "General"),
+    subject,
     difficulty: (data.difficulty === "Easy" || data.difficulty === "Medium" || data.difficulty === "Hard")
       ? data.difficulty
       : "Easy",
     timeLimitMinutes,
-    featuredImageUrl: typeof data.featuredImageUrl === "string" ? data.featuredImageUrl : undefined,
+    featuredImageUrl: getQuizThumbnail(slug, subject, data.featuredImageUrl),
   };
 }
 
@@ -1020,7 +1038,7 @@ function fallbackQuizzes(locale: Locale): PublicQuiz[] {
     subject: quiz.subject,
     difficulty: quiz.difficulty,
     timeLimitMinutes: quiz.timeLimitMinutes,
-    featuredImageUrl: quiz.featuredImageUrl,
+    featuredImageUrl: getQuizThumbnail(quiz.slug, quiz.subject, quiz.featuredImageUrl),
     questions: quiz.questions.map((q) => ({
       id: q.id,
       question: q.question[locale],

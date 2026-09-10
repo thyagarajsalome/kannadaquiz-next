@@ -271,7 +271,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const [currentAffairs, posts, quizzes, technologyPosts, dbFeaturedPosts] = await Promise.all([
     getPublicCurrentAffairs(locale, 8),
     getPublicPosts(locale, 45),
-    getPublicQuizzes(locale, 6),
+    getPublicQuizzes(locale, 20),
     getPublicPostsByCategory(locale, "technology", 3),
     getPublicFeaturedPosts(locale, 5),
   ]);
@@ -480,19 +480,39 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {quizzes.length > 0 && (
         <section className="py-10 bg-white border-b border-[var(--border)]">
           <div className="kq-container">
-            <div className="flex items-center justify-between border-b-2 border-[var(--secondary)] pb-2 mb-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between border-b-2 border-[var(--secondary)] pb-3 mb-6 gap-3">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-6 bg-[var(--secondary)] inline-block"></span>
-                <h3 className="font-serif text-2xl font-bold text-[var(--primary)]">
+                <h3 className="font-serif text-2xl md:text-3xl font-bold text-[var(--primary)]">
                   {text.featuredQuizzes}
                 </h3>
               </div>
-              <Link
-                href={`/${locale}/quizzes`}
-                className="text-xs font-bold text-[var(--secondary)] hover:underline uppercase tracking-wider flex items-center gap-1 select-none"
-              >
-                {locale === "kn" ? "ಎಲ್ಲಾ ಕ್ವಿಜ್‌ಗಳು ನೋಡಿ" : "View All Quizzes"} ➔
-              </Link>
+              <div className="flex flex-wrap items-center gap-2">
+                <Link
+                  href={`/${locale}/quizzes#gk-history`}
+                  className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[var(--surface-soft)] hover:bg-[var(--secondary)] hover:text-white border border-[var(--border)] transition-all select-none"
+                >
+                  🏛️ {locale === "kn" ? "ಸಾಮಾನ್ಯ ಜ್ಞಾನ & ಇತಿಹಾಸ" : "GK & History"}
+                </Link>
+                <Link
+                  href={`/${locale}/quizzes#science-tech`}
+                  className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[var(--surface-soft)] hover:bg-[var(--secondary)] hover:text-white border border-[var(--border)] transition-all select-none"
+                >
+                  🔬 {locale === "kn" ? "ವಿಜ್ಞಾನ & AI" : "Science & AI"}
+                </Link>
+                <Link
+                  href={`/${locale}/quizzes#math-aptitude`}
+                  className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[var(--surface-soft)] hover:bg-[var(--secondary)] hover:text-white border border-[var(--border)] transition-all select-none"
+                >
+                  📐 {locale === "kn" ? "ಗಣಿತ & ಆಪ್ಟಿಟ್ಯೂಡ್" : "Math & Aptitude"}
+                </Link>
+                <Link
+                  href={`/${locale}/quizzes`}
+                  className="text-xs font-bold text-[var(--secondary)] hover:underline uppercase tracking-wider flex items-center gap-1 select-none ml-2"
+                >
+                  {locale === "kn" ? "ಎಲ್ಲಾ ವರ್ಗಗಳು" : "All Categories"} ➔
+                </Link>
+              </div>
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -503,20 +523,18 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   className="kq-card group overflow-hidden flex flex-col justify-between hover:border-[var(--secondary)] hover:shadow-lg transition-all duration-300 rounded-2xl border border-[var(--border)] bg-white"
                 >
                   <div>
-                    {quiz.featuredImageUrl && (
-                      <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-100 border-b border-[var(--border)]/70">
-                        <Image
-                          src={quiz.featuredImageUrl}
-                          alt={quiz.title}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                        <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow">
-                          {quiz.difficulty}
-                        </div>
+                    <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-100 border-b border-[var(--border)]/70">
+                      <Image
+                        src={quiz.featuredImageUrl || "/images/quizzes/general.webp"}
+                        alt={quiz.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow">
+                        {quiz.difficulty}
                       </div>
-                    )}
+                    </div>
 
                     <div className="p-5">
                       <p className="text-xs font-bold uppercase tracking-wider text-[var(--secondary)]">
