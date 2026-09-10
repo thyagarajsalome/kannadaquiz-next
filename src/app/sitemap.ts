@@ -13,9 +13,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = locales.flatMap((locale) => [
     `/${locale}`,
     `/${locale}/quizzes`,
-    `/${locale}/posts`,
     `/${locale}/exams`,
-    `/${locale}/category/current-affairs`,
+    `/${locale}/posts`,
+    `/${locale}/education`,
     `/${locale}/syllabus`,
     `/${locale}/syllabus/kas`,
     `/${locale}/syllabus/psi`,
@@ -24,9 +24,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     `/${locale}/syllabus/sslc`,
     `/${locale}/syllabus/puc`,
     `/${locale}/category/jobs`,
+    `/${locale}/category/current-affairs`,
     `/${locale}/category/schemes`,
     `/${locale}/category/education`,
     `/${locale}/category/technology`,
+    `/${locale}/category/agriculture`,
+    `/${locale}/category/karnataka`,
+    `/${locale}/category/sports`,
+    `/${locale}/services`,
+    `/${locale}/services/railway`,
+    `/${locale}/games/gadhe`,
+    `/${locale}/games/worldcup`,
+    `/${locale}/about`,
+    `/${locale}/contact`,
+    `/${locale}/privacy`,
+    `/${locale}/terms`,
+    `/${locale}/disclaimer`,
   ]);
 
   const contentByLocale = await Promise.all(
@@ -54,10 +67,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Failed to load SEO pages for sitemap:", error);
   }
 
-  return [...staticRoutes, ...contentRoutes, ...seoRoutes].map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified: new Date(),
-    changeFrequency: route.includes("/quizzes/") ? "weekly" : "daily",
-    priority: route === "/kn" || route === "/en" ? 1 : 0.8,
-  }));
+  const now = new Date();
+
+  return [...staticRoutes, ...contentRoutes, ...seoRoutes].map((route) => {
+    const isHome = route === "/kn" || route === "/en";
+    const isQuiz = route.includes("/quizzes");
+    const isJob = route.includes("/jobs") || route.includes("/current-affairs");
+    const isPolicy = ["/privacy", "/terms", "/disclaimer", "/about", "/contact"].some((p) => route.endsWith(p));
+
+    return {
+      url: `${baseUrl}${route}`,
+      lastModified: now,
+      changeFrequency: isHome || isJob ? "daily" : isQuiz ? "weekly" : isPolicy ? "monthly" : "weekly",
+      priority: isHome ? 1.0 : isQuiz || isJob ? 0.9 : isPolicy ? 0.5 : 0.8,
+    };
+  });
 }
