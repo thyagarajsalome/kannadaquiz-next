@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { onAuthStateChanged, signOut, type User } from "firebase/auth";
-import { firebaseAuth } from "@/lib/firebase";
+import type { User } from "firebase/auth";
 import Link from "next/link";
 import type { Locale } from "@/lib/locales";
 
@@ -11,15 +10,43 @@ export function HeaderAuth({ locale }: { locale: Locale }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!firebaseAuth) {
-      setLoading(false);
-      return;
-    }
-    return onAuthStateChanged(firebaseAuth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
+    let unsubscribe: (() => void) | undefined;
+    const timer = setTimeout(() => {
+      Promise.all([
+        import("@/lib/firebase"),
+        import("firebase/auth"),
+      ]).then(([{ firebaseAuth }, { onAuthStateChanged }]) => {
+        if (!firebaseAuth) {
+          setLoading(false);
+          return;
+        }
+        unsubscribe = onAuthStateChanged(firebaseAuth, (currentUser) => {
+          setUser(currentUser);
+          setLoading(false);
+        });
+      }).catch(() => {
+        setLoading(false);
+      });
+    }, 50);
+
+    return () => {
+      clearTimeout(timer);
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
+
+  async function handleLogout() {
+    try {
+      const [{ firebaseAuth }, { signOut }] = await Promise.all([
+        import("@/lib/firebase"),
+        import("firebase/auth"),
+      ]);
+      if (firebaseAuth) {
+        await signOut(firebaseAuth);
+        setUser(null);
+      }
+    } catch {}
+  }
 
   if (loading) {
     return <span className="text-sm font-semibold text-[var(--muted)] opacity-50">...</span>;
@@ -35,7 +62,7 @@ export function HeaderAuth({ locale }: { locale: Locale }) {
           {locale === "kn" ? "ಪ್ರೊಫೈಲ್" : "Profile"}
         </Link>
         <button
-          onClick={() => firebaseAuth && signOut(firebaseAuth)}
+          onClick={handleLogout}
           className="cursor-pointer text-sm font-semibold text-[var(--secondary)] hover:underline"
         >
           {locale === "kn" ? "ನಿರ್ಗಮಿಸಿ" : "Logout"}

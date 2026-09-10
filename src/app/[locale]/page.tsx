@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { siteText } from "@/data/content";
-import { HeroSlider } from "@/components/HeroSlider";
 import { isLocale, locales, type Locale } from "@/lib/locales";
 import { getPublicCurrentAffairs, getPublicPosts, getPublicQuizzes, getPublicPostsByCategory, getPublicPostBySlug, getPublicFeaturedPosts, type PublicPost } from "@/lib/public-content";
 

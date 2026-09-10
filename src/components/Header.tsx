@@ -28,10 +28,7 @@ export function Header({ locale }: { locale: Locale }) {
           >
             {locale === "kn" ? "ಅಭ್ಯಾಸ ಕ್ವಿಜ್‌ಗಳು" : "Practice Quizzes"}
           </Link>
-                    <Link href={`/${locale}/exams`} prefetch={false} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap font-bold text-[var(--secondary)]">
-            {locale === "kn" ? "ಪರೀಕ್ಷೆಗಳು" : "Exams"}
-          </Link>
-                    <Link href={`/${locale}/exams`} prefetch={false} className="hover:text-[var(--secondary)] text-[var(--secondary)] font-extrabold shrink-0">
+          <Link href={`/${locale}/exams`} prefetch={false} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap font-bold text-[var(--secondary)]">
             {locale === "kn" ? "ಪರೀಕ್ಷೆಗಳು" : "Exams"}
           </Link>
           <Link href={`/${locale}/jobs`} prefetch={false} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
