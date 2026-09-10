@@ -93,6 +93,23 @@ export async function generateMetadata({
       siteName: "KannadaQuiz",
       locale: lang === "kn" ? "kn_IN" : "en_US",
       type: "website",
+      images: [
+        {
+          url: "https://kannadaquiz.in/images/hero-ka.webp",
+          width: 2816,
+          height: 1536,
+          alt: "KannadaQuiz - ಕರ್ನಾಟಕ ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳಿಗೆ ವೇಗವಾದ ಅಭ್ಯಾಸ ವೇದಿಕೆ",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: titleText,
+      description:
+        lang === "kn"
+          ? "KPSC, ಪೊಲೀಸ್, FDA, SDA, TET ಮತ್ತು ಇತರ ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳ ಉಚಿತ ಕನ್ನಡ ಕ್ವಿಜ್ ಮತ್ತು ಅಧ್ಯಯನ ಮಾಹಿತಿ."
+          : "Free bilingual exam preparation portal for KPSC, PSI, FDA-SDA, TET, Bank, SSC, and general knowledge.",
+      images: ["https://kannadaquiz.in/images/hero-ka.webp"],
     },
   };
 }
@@ -379,51 +396,71 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </div>
 
-      {/* 1c. Welcome Hero & Quiz CTA Banner */}
-      <div className="py-6 bg-[var(--surface-soft)] border-b border-[var(--border)]">
+      {/* 1c. Welcome Hero Image Banner */}
+      <section className="py-4 md:py-6 bg-[var(--surface-soft)] border-b border-[var(--border)]">
         <div className="kq-container">
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#1e293b] via-[#131b2e] to-[#0f172a] text-white p-6 md:p-10 shadow-md">
-            {/* Background design accents */}
-            <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -mr-20 -mt-20 pointer-events-none blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-[var(--secondary)]/10 rounded-full -ml-16 -mb-16 pointer-events-none blur-2xl"></div>
+          <h1 className="sr-only">
+            {locale === "kn"
+              ? "ಕರ್ನಾಟಕ ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳಿಗೆ ವೇಗವಾದ ಅಭ್ಯಾಸ ವೇದಿಕೆ - KPSC, PSI, FDA-SDA, TET"
+              : "KannadaQuiz - Fast Exam Practice Platform for Karnataka Competitive Exams"}
+          </h1>
 
-            <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-              <div className="max-w-2xl">
-                <span className="inline-block bg-[var(--secondary)] text-white text-[10px] md:text-xs font-black uppercase px-3 py-1 rounded-full tracking-widest select-none shadow-sm mb-4">
-                  {locale === "kn" ? "ಉಚಿತ ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳ ತಯಾರಿ" : "FREE STATE EXAM PREPARATION"}
+          <div className="relative overflow-hidden rounded-2xl md:rounded-3xl border border-slate-800/20 bg-slate-950 shadow-xl group">
+            {/* The Hero Banner Image */}
+            <Link
+              href={`/${locale}/quizzes`}
+              title={locale === "kn" ? "ಕರ್ನಾಟಕ ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳಿಗೆ ವೇಗವಾದ ಅಭ್ಯಾಸ ವೇದಿಕೆ - ಈಗಲೇ ಅಭ್ಯಾಸ ಮಾಡಿ" : "Start Practicing Quizzes"}
+              className="block relative w-full aspect-[2816/1536] overflow-hidden"
+            >
+              <Image
+                src="/images/hero-ka.webp"
+                alt={
+                  locale === "kn"
+                    ? "ಕರ್ನಾಟಕ ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆಗಳಿಗೆ ವೇಗವಾದ ಅಭ್ಯಾಸ ವೇದಿಕೆ - KPSC, PSI, FDA-SDA, TET ಮತ್ತು ಸಾಮಾನ್ಯ ಜ್ಞಾನಕ್ಕಾಗಿ ಕನ್ನಡ ಮತ್ತು ಇಂಗ್ಲಿಷ್ ಪ್ರಶ್ನೆಗಳು, ಪ್ರಚಲಿತ ಘಟನೆಗಳು ಮತ್ತು ಉದ್ಯೋಗ ಮಾಹಿತಿ"
+                    : "KannadaQuiz - Karnataka Competitive Exams Practice Platform"
+                }
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 95vw, 1200px"
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.01]"
+              />
+            </Link>
+
+            {/* Quick Action Navigation Bar */}
+            <div className="bg-slate-900 border-t border-white/10 px-4 sm:px-6 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-white">
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-medium text-white/90 text-center sm:text-left">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0 hidden sm:inline-block"></span>
+                <span>
+                  {locale === "kn"
+                    ? "KPSC, PSI, FDA-SDA, TET ಮತ್ತು ಸಾಮಾನ್ಯ ಜ್ಞಾನಕ್ಕಾಗಿ ಉಚಿತ ಅಣಕು ಪರೀಕ್ಷೆಗಳು"
+                    : "Free Mock Tests for KPSC, PSI, FDA-SDA, TET & General Knowledge"}
                 </span>
-                <h2 className="font-serif text-2xl md:text-4xl font-extrabold leading-tight text-white tracking-tight">
-                  {text.heroTitle}
-                </h2>
-                <p className="mt-3 text-white/80 text-sm md:text-base leading-relaxed font-normal">
-                  {text.heroLead}
-                </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 shrink-0 w-full lg:w-auto">
+              <div className="flex items-center gap-2.5 shrink-0 w-full sm:w-auto">
                 <Link
                   href={`/${locale}/quizzes`}
-                  className="bg-[var(--secondary)] hover:bg-[var(--secondary)]/90 text-white text-center font-bold px-8 py-4 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 text-base whitespace-nowrap select-none flex items-center justify-center gap-2"
+                  className="flex-1 sm:flex-initial bg-[var(--secondary)] hover:bg-[var(--secondary)]/90 text-white text-xs sm:text-sm font-bold px-5 py-2.5 rounded-xl shadow-md transition-all text-center whitespace-nowrap"
                 >
-                  <svg className="w-5 h-5 shrink-0 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 21l8.904-4.473L21 9l-3.487-3.49-8.7 8.394zM16.5 7.5L18 9"></path>
-                  </svg>
                   {text.primaryCta}
                 </Link>
                 <Link
                   href={`/${locale}/syllabus`}
-                  className="bg-white/10 hover:bg-white/20 text-white text-center font-bold px-8 py-4 rounded-xl border border-white/20 transition-all duration-300 text-base whitespace-nowrap select-none flex items-center justify-center gap-2"
+                  className="flex-1 sm:flex-initial bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl border border-white/15 transition-all text-center whitespace-nowrap"
                 >
-                  <svg className="w-5 h-5 shrink-0 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
                   {locale === "kn" ? "ಪಠ್ಯಕ್ರಮ ಮಾಹಿತಿ" : "Exam Syllabus"}
+                </Link>
+                <Link
+                  href={`/${locale}/exams`}
+                  className="flex-1 sm:flex-initial bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl border border-white/15 transition-all text-center whitespace-nowrap hidden md:inline-block"
+                >
+                  {locale === "kn" ? "ಪರೀಕ್ಷಾ ಮಾರ್ಗದರ್ಶಿ" : "Exam Guides"}
                 </Link>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Trust & Stats Bar */}
       <div className="py-4 bg-white border-b border-[var(--border)]">
