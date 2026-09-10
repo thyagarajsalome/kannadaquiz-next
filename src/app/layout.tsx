@@ -69,6 +69,7 @@ export default function RootLayout({
       className={`${publicSans.variable} ${sourceSerif.variable} ${notoKannada.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        {children}
         <Script id="deferred-third-party-loader" strategy="lazyOnload">
           {`
             (function() {
