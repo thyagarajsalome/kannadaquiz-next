@@ -984,12 +984,29 @@ function getQuizThumbnail(slug: string, subject: string, explicitUrl?: unknown):
   if (typeof explicitUrl === "string" && explicitUrl.trim() && explicitUrl.startsWith("/")) {
     return explicitUrl;
   }
+  const slugLower = slug.toLowerCase();
+  if (slugLower.includes("constitution")) return "/images/quizzes/constitution.webp";
+  if (slugLower.includes("dynasties") || slugLower.includes("freedom-struggle")) return "/images/quizzes/dynasties-heritage.webp";
+  if (slugLower.includes("general-science-practice-quiz")) return "/images/quizzes/kpsc-science.webp";
+  if (slugLower.includes("quantitative-aptitude") || slugLower.includes("logical-reasoning")) return "/images/quizzes/logical-reasoning.webp";
+  if (slugLower.includes("science-technology-computers") || slugLower.includes("tech-innovations")) return "/images/quizzes/tech-innovations.webp";
+  if (slugLower.includes("general-knowledge")) return "/images/quizzes/general.webp";
+  if (slugLower.includes("general-science")) return "/images/quizzes/science.webp";
+  if (slugLower.includes("food-and-nutrition")) return "/images/quizzes/food.webp";
+  if (slugLower.includes("sports-and-games")) return "/images/quizzes/sports.webp";
+  if (slugLower.includes("wildlife-animals-birds")) return "/images/quizzes/animal-birds.webp";
+  if (slugLower.includes("karnataka-and-indian-history")) return "/images/quizzes/historical.webp";
+  if (slugLower.includes("world-geography")) return "/images/quizzes/world.webp";
+  if (slugLower.includes("mathematics-mental-ability")) return "/images/quizzes/math.webp";
+  if (slugLower.includes("computer-literacy")) return "/images/quizzes/computer.webp";
+  if (slugLower.includes("artificial-intelligence")) return "/images/quizzes/ai.webp";
+
   const s = `${slug} ${subject}`.toLowerCase();
   if (s.includes("science")) return "/images/quizzes/science.webp";
   if (s.includes("food") || s.includes("nutrition")) return "/images/quizzes/food.webp";
   if (s.includes("sport") || s.includes("game")) return "/images/quizzes/sports.webp";
   if (s.includes("animal") || s.includes("bird") || s.includes("wildlife")) return "/images/quizzes/animal-birds.webp";
-  if (s.includes("history") || s.includes("itihasa") || s.includes("constitution") || s.includes("freedom") || s.includes("heritage")) return "/images/quizzes/historical.webp";
+  if (s.includes("history") || s.includes("itihasa")) return "/images/quizzes/historical.webp";
   if (s.includes("world") || s.includes("geography")) return "/images/quizzes/world.webp";
   if (s.includes("math") || s.includes("aptitude") || s.includes("reasoning")) return "/images/quizzes/math.webp";
   if (s.includes("ai") || s.includes("artificial")) return "/images/quizzes/ai.webp";
