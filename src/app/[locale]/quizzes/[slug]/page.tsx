@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound, redirect } from "next/navigation";
 import { QuizPlayer } from "@/components/QuizPlayer";
 import { quizzes } from "@/data/content";
@@ -49,6 +50,16 @@ export async function generateMetadata({
       title: quiz.title,
       description: quiz.description,
       type: "article",
+      images: quiz.featuredImageUrl
+        ? [
+            {
+              url: `https://kannadaquiz.in${quiz.featuredImageUrl}`,
+              width: 800,
+              height: 600,
+              alt: quiz.title,
+            },
+          ]
+        : undefined,
     },
   };
 }
@@ -98,6 +109,17 @@ export default async function QuizDetailPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <header>
+        {quiz.featuredImageUrl && (
+          <div className="relative mb-6 overflow-hidden rounded-2xl aspect-[16/9] border border-[var(--border)] shadow-sm bg-slate-100">
+            <Image
+              src={quiz.featuredImageUrl}
+              alt={quiz.title}
+              fill
+              priority
+              className="object-cover"
+            />
+          </div>
+        )}
         <p className="text-xs font-bold uppercase tracking-wide text-[var(--secondary)]">
           {quiz.exam && quiz.exam.toLowerCase() !== "general" ? `${quiz.exam} • ` : ""}
           {quiz.subject} • {quiz.difficulty}

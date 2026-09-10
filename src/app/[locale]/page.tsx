@@ -271,7 +271,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const [currentAffairs, posts, quizzes, technologyPosts, dbFeaturedPosts] = await Promise.all([
     getPublicCurrentAffairs(locale, 8),
     getPublicPosts(locale, 45),
-    getPublicQuizzes(locale, 4),
+    getPublicQuizzes(locale, 6),
     getPublicPostsByCategory(locale, "technology", 3),
     getPublicFeaturedPosts(locale, 5),
   ]);
@@ -430,7 +430,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <div className="kq-container">
           <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12 md:gap-20 text-center">
             <div className="flex flex-col items-center">
-              <span className="text-2xl font-black text-[var(--secondary)]">100+</span>
+              <span className="text-2xl font-black text-[var(--secondary)]">150+</span>
               <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider mt-1">{locale === 'kn' ? 'ಅಭ್ಯಾಸ ಪ್ರಶ್ನೆಗಳು' : 'Practice Questions'}</span>
             </div>
             <div className="flex flex-col items-center">
@@ -475,6 +475,91 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
         </div>
       </section>
+
+      {/* 1d-2. Featured Quizzes Showcase Section */}
+      {quizzes.length > 0 && (
+        <section className="py-10 bg-white border-b border-[var(--border)]">
+          <div className="kq-container">
+            <div className="flex items-center justify-between border-b-2 border-[var(--secondary)] pb-2 mb-6">
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-6 bg-[var(--secondary)] inline-block"></span>
+                <h3 className="font-serif text-2xl font-bold text-[var(--primary)]">
+                  {text.featuredQuizzes}
+                </h3>
+              </div>
+              <Link
+                href={`/${locale}/quizzes`}
+                className="text-xs font-bold text-[var(--secondary)] hover:underline uppercase tracking-wider flex items-center gap-1 select-none"
+              >
+                {locale === "kn" ? "ಎಲ್ಲಾ ಕ್ವಿಜ್‌ಗಳು ನೋಡಿ" : "View All Quizzes"} ➔
+              </Link>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {quizzes.slice(0, 6).map((quiz) => (
+                <Link
+                  key={quiz.slug}
+                  href={`/${locale}/quizzes/${quiz.slug}`}
+                  className="kq-card group overflow-hidden flex flex-col justify-between hover:border-[var(--secondary)] hover:shadow-lg transition-all duration-300 rounded-2xl border border-[var(--border)] bg-white"
+                >
+                  <div>
+                    {quiz.featuredImageUrl && (
+                      <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-100 border-b border-[var(--border)]/70">
+                        <Image
+                          src={quiz.featuredImageUrl}
+                          alt={quiz.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow">
+                          {quiz.difficulty}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="p-5">
+                      <p className="text-xs font-bold uppercase tracking-wider text-[var(--secondary)]">
+                        {quiz.exam && quiz.exam.toLowerCase() !== "general" ? `${quiz.exam} • ` : ""}
+                        {quiz.subject}
+                      </p>
+
+                      <h4 className="mt-2 font-serif text-lg font-bold text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors leading-snug line-clamp-2">
+                        {quiz.title}
+                      </h4>
+
+                      <p className="mt-2 text-sm leading-relaxed text-[var(--muted)] line-clamp-2">
+                        {quiz.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-5 pt-3 border-t border-[var(--border)]/60 bg-[var(--surface-soft)]/40 flex items-center justify-between">
+                    <span className="text-xs font-semibold text-[var(--muted)] flex items-center gap-1.5">
+                      <svg
+                        className="w-4 h-4 text-[var(--secondary)]"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </svg>
+                      {quiz.timeLimitMinutes} {text.minutes}
+                    </span>
+
+                    <span className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--secondary)] px-3.5 py-1.5 text-xs font-black uppercase tracking-wider text-white group-hover:bg-[var(--secondary)]/90 transition-all shadow-sm select-none">
+                      {text.quizStart}
+                      <span className="group-hover:translate-x-0.5 transition-transform">➔</span>
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 1e. Pinned/Featured Articles Section (Developer Feature) */}
       {featuredPosts.length > 0 && (

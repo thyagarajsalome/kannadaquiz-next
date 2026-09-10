@@ -106,6 +106,10 @@ export async function getPublicQuizzes(locale: Locale, count = 20): Promise<Publ
     .map(toPublicQuiz)
     .filter((quiz): quiz is Omit<PublicQuiz, "questions"> => Boolean(quiz));
 
+  if (mapped.length === 0) {
+    return fallbackQuizzes(locale).slice(0, count);
+  }
+
   return mapped.map((quiz) => ({
     ...quiz,
     questions: [], // Optimize: List views do not require questions. Saves N extra database reads.
@@ -114,16 +118,29 @@ export async function getPublicQuizzes(locale: Locale, count = 20): Promise<Publ
 
 export async function getPublicQuizBySlug(locale: Locale, slug: string): Promise<PublicQuiz | null> {
   const doc = await querySingleBySlug("quizzes", slug, locale);
-  if (!doc) return null;
+  if (!doc) {
+    const fallback = fallbackQuizzes(locale).find((q) => q.slug === slug);
+    return fallback || null;
+  }
 
   const quiz = toPublicQuiz(doc);
-  if (!quiz) return null;
+  if (!quiz) {
+    const fallback = fallbackQuizzes(locale).find((q) => q.slug === slug);
+    return fallback || null;
+  }
 
   const qDocs = await queryQuestionsForQuiz(quiz.id);
   const questions = qDocs
     .map(toPublicQuizQuestion)
     .filter((q): q is PublicQuizQuestion => Boolean(q))
     .sort((a, b) => a.sortOrder - b.sortOrder);
+
+  if (questions.length === 0) {
+    const fallback = fallbackQuizzes(locale).find((q) => q.slug === slug);
+    if (fallback && fallback.questions.length > 0) {
+      return fallback;
+    }
+  }
 
   return {
     ...quiz,
@@ -1003,6 +1020,7 @@ function fallbackQuizzes(locale: Locale): PublicQuiz[] {
     subject: quiz.subject,
     difficulty: quiz.difficulty,
     timeLimitMinutes: quiz.timeLimitMinutes,
+    featuredImageUrl: quiz.featuredImageUrl,
     questions: quiz.questions.map((q) => ({
       id: q.id,
       question: q.question[locale],
