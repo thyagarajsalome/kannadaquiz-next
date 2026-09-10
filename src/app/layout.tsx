@@ -75,32 +75,40 @@ export default function RootLayout({
         <link rel="preload" as="image" href="/images/hero-ka.webp" type="image/webp" media="(min-width: 641px)" fetchPriority="high" />
       </head>
       <body className="min-h-full flex flex-col">
-        <Script 
-          id="adsense-script"
-          async 
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1813097110898475" 
-          crossOrigin="anonymous"
-          strategy="lazyOnload"
-        />
-        {children}
-        {gaId && (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-              strategy="lazyOnload"
-            />
-            <Script id="google-analytics" strategy="lazyOnload">
-              {`
+        <Script id="deferred-third-party-loader" strategy="lazyOnload">
+          {`
+            (function() {
+              var loaded = false;
+              function loadDeferred() {
+                if (loaded) return;
+                loaded = true;
+                
+                var adScript = document.createElement('script');
+                adScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1813097110898475";
+                adScript.crossOrigin = "anonymous";
+                adScript.async = true;
+                document.head.appendChild(adScript);
+
+                var gaScript = document.createElement('script');
+                gaScript.src = "https://www.googletagmanager.com/gtag/js?id=${gaId}";
+                gaScript.async = true;
+                document.head.appendChild(gaScript);
+
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
+                window.gtag = gtag;
                 gtag('js', new Date());
-                gtag('config', '${gaId}', {
-                  page_path: window.location.pathname,
-                });
-              `}
-            </Script>
-          </>
-        )}
+                gtag('config', '${gaId}', { page_path: window.location.pathname });
+              }
+
+              var events = ['scroll', 'touchstart', 'mousemove', 'click', 'keydown'];
+              events.forEach(function(e) {
+                window.addEventListener(e, loadDeferred, { once: true, passive: true });
+              });
+              setTimeout(loadDeferred, 3500);
+            })();
+          `}
+        </Script>
       </body>
     </html>
   );
