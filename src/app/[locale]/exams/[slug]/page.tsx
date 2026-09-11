@@ -289,8 +289,8 @@ export default async function ExamSeoPage({ params }: { params: Promise<{ locale
                   </Link>
                 </li>
                 <li>
-                  <Link href="/kn/category/current-affairs" className="text-[var(--secondary)] hover:underline font-medium text-sm flex items-center gap-2">
-                    <span>➔</span> ದಿನನಿತ್ಯದ ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು
+                  <Link href="/kn/category/question-papers" className="text-[var(--secondary)] hover:underline font-medium text-sm flex items-center gap-2">
+                    <span>➔</span> ಹಿಂದಿನ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳು
                   </Link>
                 </li>
               </ul>

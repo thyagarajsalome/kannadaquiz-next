@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { siteText } from "@/data/content";
 import { isLocale, locales, type Locale } from "@/lib/locales";
-import { getPublicCurrentAffairs, getPublicPosts, getPublicQuizzes, getPublicPostsByCategory, getPublicPostBySlug, getPublicFeaturedPosts, type PublicPost } from "@/lib/public-content";
+import { getPublicPosts, getPublicQuizzes, getPublicPostsByCategory, getPublicPostBySlug, getPublicFeaturedPosts, type PublicPost } from "@/lib/public-content";
 
 export const revalidate = 86400; // Aggressive 1-hour cache to save Firestore reads
 
@@ -29,19 +29,17 @@ const trendingTopics: Record<string, { name: string; url: string }[]> = {
     { name: "ಪರೀಕ್ಷಾ ಮಾರ್ಗದರ್ಶಿಗಳು", url: "/kn/exams" },
     { name: "ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆ ಕ್ವಿಜ್", url: "/kn/quizzes" },
     { name: "ಉದ್ಯೋಗ ಮಾಹಿತಿ", url: "/kn/category/jobs" },
-    { name: "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು", url: "/kn/category/current-affairs" },
+    { name: "ಹಿಂದಿನ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳು", url: "/kn/category/question-papers" },
     { name: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು", url: "/kn/category/schemes" },
     { name: "ಪರೀಕ್ಷಾ ಪಠ್ಯಕ್ರಮ", url: "/kn/syllabus" },
-    
   ],
   en: [
     { name: "Exam Guides 2026", url: "/en/exams" },
     { name: "Competitive Exam Quizzes", url: "/en/quizzes" },
     { name: "Government Jobs", url: "/en/category/jobs" },
-    { name: "Current Affairs", url: "/en/category/current-affairs" },
+    { name: "Question Papers", url: "/en/category/question-papers" },
     { name: "Government Schemes", url: "/en/category/schemes" },
     { name: "Exam Syllabus", url: "/en/syllabus" },
-    
   ]
 };
 
@@ -284,8 +282,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
   const text = siteText[locale];
   
-  const [currentAffairs, posts, quizzes, technologyPosts, dbFeaturedPosts] = await Promise.all([
-    getPublicCurrentAffairs(locale, 8),
+  const [posts, quizzes, technologyPosts, dbFeaturedPosts] = await Promise.all([
     getPublicPosts(locale, 45),
     getPublicQuizzes(locale, 20),
     getPublicPostsByCategory(locale, "technology", 3),
@@ -356,21 +353,20 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <>
-      {/* 1. Breaking News Ticker */}
-      {posts.length > 0 && (
-        <div className="bg-[var(--primary)] text-white text-sm py-2">
-          <div className="kq-container flex items-center gap-3">
-            <span className="bg-[var(--secondary)] text-white text-xs font-bold uppercase px-2 py-0.5 rounded shrink-0">
-              {locale === "kn" ? "ನೇರ ಸುದ್ದಿ" : "BREAKING"}
-            </span>
-            <div className="flex-1 truncate font-medium">
-              <Link href={`/${locale}/posts/${posts[0].slug}`} className="hover:underline">
-                {posts[0].title}
-              </Link>
-            </div>
+      {/* 1. Exam Prep & Practice Banner */}
+      <div className="bg-[var(--primary)] text-white text-xs md:text-sm py-2.5 shadow-xs">
+        <div className="kq-container flex items-center gap-3">
+          <span className="bg-[var(--secondary)] text-white text-[10px] md:text-xs font-bold uppercase px-2 py-0.5 rounded shrink-0 select-none">
+            {locale === "kn" ? "ಪರೀಕ್ಷಾ ತಯಾರಿ" : "EXAM PREP"}
+          </span>
+          <div className="flex-1 truncate font-medium">
+            <Link href={`/${locale}/exams`} className="hover:underline flex items-center gap-2">
+              <span className="truncate">{locale === "kn" ? "KPSC KAS, PSI, FDA-SDA ಮತ್ತು VAO ಪರೀಕ್ಷೆಗಳ ಉಚಿತ ಅಣಕು ಪರೀಕ್ಷೆಗಳು ಮತ್ತು ಪಠ್ಯಕ್ರಮ ಲಭ್ಯವಿದೆ" : "Free Mock Tests, Syllabus & Practice Questions available for KPSC, PSI, FDA & VAO"}</span>
+              <span className="text-[var(--secondary)] font-bold shrink-0">→</span>
+            </Link>
           </div>
         </div>
-      )}
+      </div>
 
       {/* 1b. Trending Topics Bar */}
       <div className="bg-white border-b border-[var(--border)] py-3">

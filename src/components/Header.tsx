@@ -37,8 +37,8 @@ export function Header({ locale }: { locale: Locale }) {
           <Link href={`/${locale}/syllabus`} prefetch={false} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
             {locale === "kn" ? "ಪಠ್ಯಕ್ರಮ" : "Syllabus"}
           </Link>
-          <Link href={`/${locale}/category/current-affairs`} prefetch={false} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
-            {locale === "kn" ? "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು" : "Current Affairs"}
+          <Link href={`/${locale}/category/question-papers`} prefetch={false} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
+            {locale === "kn" ? "ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳು" : "Question Papers"}
           </Link>
           <Link href={`/${locale}/category/schemes`} prefetch={false} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
             {locale === "kn" ? "ಯೋಜನೆಗಳು" : "Schemes"}
@@ -58,8 +58,6 @@ export function Header({ locale }: { locale: Locale }) {
               <Link href={`/${locale}/category/technology`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ತಂತ್ರಜ್ಞಾನ" : "Tech & AI"}
               </Link>
-              
-              
             </div>
           </div>
         </nav>
@@ -81,14 +79,14 @@ export function Header({ locale }: { locale: Locale }) {
           >
             {locale === "kn" ? "ಕ್ವಿಜ್‌ಗಳು" : "Quizzes"}
           </Link>
+          <Link href={`/${locale}/exams`} prefetch={false} className="hover:text-[var(--secondary)] text-[var(--secondary)] font-bold">
+            {locale === "kn" ? "ಪರೀಕ್ಷೆಗಳು" : "Exams"}
+          </Link>
           <Link href={`/${locale}/jobs`} prefetch={false} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಉದ್ಯೋಗಗಳು" : "Jobs"}
           </Link>
           <Link href={`/${locale}/syllabus`} prefetch={false} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಪಠ್ಯಕ್ರಮ" : "Syllabus"}
-          </Link>
-          <Link href={`/${locale}/category/current-affairs`} prefetch={false} className="hover:text-[var(--secondary)] shrink-0">
-            {locale === "kn" ? "ಪ್ರಚಲಿತ ವಿದ್ಯಮಾನಗಳು" : "Current Affairs"}
           </Link>
           <Link href={`/${locale}/category/schemes`} prefetch={false} className="hover:text-[var(--secondary)]">
             {locale === "kn" ? "ಯೋಜನೆಗಳು" : "Schemes"}
@@ -99,7 +97,6 @@ export function Header({ locale }: { locale: Locale }) {
           <Link href={`/${locale}/category/technology`} prefetch={false} className="hover:text-[var(--secondary)] shrink-0">
             {locale === "kn" ? "ತಂತ್ರಜ್ಞಾನ" : "Technology"}
           </Link>
-          
         </div>
       </div>
     </header>

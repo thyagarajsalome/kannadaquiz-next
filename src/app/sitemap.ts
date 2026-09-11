@@ -24,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     `/${locale}/syllabus/sslc`,
     `/${locale}/syllabus/puc`,
     `/${locale}/category/jobs`,
-    `/${locale}/category/current-affairs`,
+    `/${locale}/category/question-papers`,
     `/${locale}/category/schemes`,
     `/${locale}/category/education`,
     `/${locale}/category/technology`,
@@ -70,7 +70,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [...staticRoutes, ...contentRoutes, ...seoRoutes].map((route) => {
     const isHome = route === "/kn" || route === "/en";
     const isQuiz = route.includes("/quizzes");
-    const isJob = route.includes("/jobs") || route.includes("/current-affairs");
+    const isJob = route.includes("/jobs") || route.includes("/exams");
     const isPolicy = ["/privacy", "/terms", "/disclaimer", "/about", "/contact"].some((p) => route.endsWith(p));
 
     return {

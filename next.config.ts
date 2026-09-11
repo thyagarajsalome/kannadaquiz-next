@@ -36,6 +36,21 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: '/kn/category/current-affairs',
+        destination: '/kn/exams',
+        permanent: true,
+      },
+      {
+        source: '/en/category/current-affairs',
+        destination: '/en/exams',
+        permanent: true,
+      },
+      {
+        source: '/category/current-affairs',
+        destination: '/kn/exams',
+        permanent: true,
+      },
+      {
         source: '/images/karnataka_police_news.png',
         destination: '/images/karnataka_police_news.webp',
         permanent: true,

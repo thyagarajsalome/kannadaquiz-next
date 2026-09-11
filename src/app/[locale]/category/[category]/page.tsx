@@ -7,7 +7,7 @@ import { CategoryFilterList } from "@/components/CategoryFilterList";
 export const revalidate = 86400;
 
 export function generateStaticParams() {
-  const categories = ["jobs", "education", "schemes", "technology", "current-affairs"];
+  const categories = ["jobs", "education", "schemes", "technology", "question-papers"];
   const params: { locale: string; category: string }[] = [];
   
   // Create paths for both locales and all standard categories
@@ -237,7 +237,7 @@ export default async function CategoryPage({
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "kn";
 
   const resolvedCategory = resolveCategoryKey(category);
-  const validCategories = ["jobs", "education", "schemes", "technology", "current-affairs"];
+  const validCategories = ["jobs", "education", "schemes", "technology", "question-papers"];
   if (!validCategories.includes(resolvedCategory)) {
     notFound();
   }
