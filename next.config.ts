@@ -34,6 +34,31 @@ const nextConfig: NextConfig = {
         source: '/jobs',
         destination: '/kn/category/jobs',
         permanent: true,
+      },
+      {
+        source: '/images/karnataka_police_news.png',
+        destination: '/images/karnataka_police_news.webp',
+        permanent: true,
+      },
+      {
+        source: '/images/iss_space_station.jpg',
+        destination: '/images/iss_space_station.webp',
+        permanent: true,
+      },
+      {
+        source: '/images/bengaluru_mba_colleges.jpg',
+        destination: '/images/bengaluru_mba_colleges.webp',
+        permanent: true,
+      },
+      {
+        source: '/images/programming_languages_2026.jpg',
+        destination: '/images/programming_languages_2026.webp',
+        permanent: true,
+      },
+      {
+        source: '/images/karnataka_police_recruitment.jpg',
+        destination: '/images/karnataka_police_recruitment.webp',
+        permanent: true,
       }
     ];
   },
