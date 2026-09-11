@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { isLocale, type Locale } from "@/lib/locales";
 import { getPublicJobBySlug, getPublicPostBySlug, getPublicJobs } from "@/lib/public-content";
 
@@ -154,17 +154,17 @@ export default async function JobDetailPage({
     );
   }
 
-  // 2. Check if this slug exists as a Post in the posts collection (301 Permanent Redirect)
+  // 2. Check if this slug exists as a Post in the posts collection (301/308 Permanent Redirect)
   const post = await getPublicPostBySlug(locale, slug);
   if (post) {
-    redirect(`/${locale}/posts/${slug}`);
+    permanentRedirect(`/${locale}/posts/${slug}`);
   }
 
   // Also check alternative locale in posts
   const altLocale: Locale = locale === "kn" ? "en" : "kn";
   const altPost = await getPublicPostBySlug(altLocale, slug);
   if (altPost) {
-    redirect(`/${altLocale}/posts/${slug}`);
+    permanentRedirect(`/${altLocale}/posts/${slug}`);
   }
 
   // 3. If neither exists, return true HTTP 404 (NEVER redirect to homepage!)

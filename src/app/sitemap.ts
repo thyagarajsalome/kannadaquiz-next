@@ -29,8 +29,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     `/${locale}/category/education`,
     `/${locale}/category/technology`,
     `/${locale}/category/agriculture`,
-    `/${locale}/category/karnataka`,
-    `/${locale}/category/sports`,
     `/${locale}/services`,
     `/${locale}/services/railway`,
     `/${locale}/games/gadhe`,
