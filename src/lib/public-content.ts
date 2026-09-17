@@ -1,4 +1,4 @@
-import { currentAffairs, jobs, posts, quizzes } from "@/data/content";
+import { jobs, posts, quizzes } from "@/data/content";
 import type { Locale } from "@/lib/locales";
 
 function getEnv(val: string | undefined, fallback: string): string {
@@ -11,6 +11,13 @@ function getEnv(val: string | undefined, fallback: string): string {
 const firestoreProjectId = getEnv(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID, "kannadaquiz-fc21b");
 const firestoreApiKey = getEnv(process.env.NEXT_PUBLIC_FIREBASE_API_KEY, "AIzaSyC07b-JG7h-lkTFi4m96fB_He-LeBmus7A");
 const revalidateSeconds = 3600; // Aggressive 1-hour cache to drastically cut Firebase reads
+
+const SENSITIVE_CONTENT_REGEX = /(?:politic|election|bjp|congress|jds|modi|rahul|siddaramaiah|dk-?shivakumar|priyank-?kharge|chief-minister|mla|mp|minister|party|hindu|muslim|christian|mosque|temple|church|hijab|halal|namaz|waqf|caste|communal|scam|arrest|bail|murder|rape|crime)/i;
+
+export function isSensitiveContent(text: string): boolean {
+  if (!text) return false;
+  return SENSITIVE_CONTENT_REGEX.test(text);
+}
 
 type FirestoreValue = {
   stringValue?: string;
@@ -68,13 +75,6 @@ export type PublicJob = {
   status: string;
   body: string;
   applyUrl?: string;
-};
-
-export type PublicCurrentAffair = {
-  id: string;
-  locale: Locale;
-  headline: string;
-  date: string;
 };
 
 export type PublicQuizQuestion = {
@@ -242,18 +242,6 @@ export async function getPublicJobs(locale: Locale, count = 50): Promise<PublicJ
   return Array.from(jobsMap.values()).slice(0, count);
 }
 
-export async function getPublicCurrentAffairs(
-  locale: Locale,
-  count = 10,
-): Promise<PublicCurrentAffair[]> {
-  const remote = await queryPublishedByLocale("currentAffairs", locale, count);
-  const mapped = remote
-    .map(toPublicCurrentAffair)
-    .filter((item): item is PublicCurrentAffair => Boolean(item));
-
-  return mapped;
-}
-
 export async function getPublicPostBySlug(locale: Locale, slug: string): Promise<PublicPost | undefined> {
   const decodedSlug = decodeURIComponent(slug).trim();
 
@@ -280,26 +268,6 @@ export async function getPublicPostBySlug(locale: Locale, slug: string): Promise
           body: job.body || `Job details for ${job.title}`,
           category: "Jobs",
           date: new Date().toISOString().slice(0, 10),
-        };
-      }
-    }
-  }
-
-  // 4. Try currentAffairs collection
-  if (!doc) {
-    const caDoc = (await querySingleBySlug("currentAffairs", decodedSlug, locale)) || (await querySingleBySlug("currentAffairs", slug, locale));
-    if (caDoc) {
-      const ca = toPublicCurrentAffair(caDoc);
-      if (ca) {
-        return {
-          id: ca.id,
-          slug: slug,
-          locale: ca.locale,
-          title: ca.headline,
-          excerpt: ca.headline,
-          body: ca.headline,
-          category: "Current Affairs",
-          date: ca.date,
         };
       }
     }
@@ -607,12 +575,6 @@ async function queryPublishedByLocale(collectionId: string, locale: Locale, limi
                     { fieldPath: "deadline" },
                   ];
                 }
-                if (collectionId === "currentAffairs") {
-                  return [
-                    ...baseFields,
-                    { fieldPath: "headline" },
-                  ];
-                }
                 return baseFields;
               })()
             },
@@ -775,6 +737,11 @@ function toPublicPost(doc: FirestoreDocument): PublicPost | null {
     return null;
   }
 
+  // Strict Content Safety Filter: Completely exclude politics, elections, politicians, crime, and religious disputes
+  if (isSensitiveContent(title) || isSensitiveContent(slug) || isSensitiveContent(stringOrEmpty(data.body)) || isSensitiveContent(stringOrEmpty(data.category))) {
+    return null;
+  }
+
   return {
     id: docId(doc),
     slug,
@@ -805,6 +772,11 @@ function toPublicJob(doc: FirestoreDocument): PublicJob | null {
     return null;
   }
 
+  // Strict Content Safety Filter: Exclude political controversies from job lists
+  if (isSensitiveContent(title) || isSensitiveContent(slug)) {
+    return null;
+  }
+
   return {
     id: docId(doc),
     slug,
@@ -815,23 +787,6 @@ function toPublicJob(doc: FirestoreDocument): PublicJob | null {
     status: stringOrDefault(data.status, "published"),
     body: stringOrEmpty(data.body),
     applyUrl: typeof data.applyUrl === "string" ? data.applyUrl : undefined,
-  };
-}
-
-function toPublicCurrentAffair(doc: FirestoreDocument): PublicCurrentAffair | null {
-  const data = parseFields(doc.fields);
-  const locale = parseLocale(data.locale);
-  const headline = stringOrEmpty(data.headline ?? data.title);
-
-  if (!locale || !headline) {
-    return null;
-  }
-
-  return {
-    id: docId(doc),
-    locale,
-    headline,
-    date: dateOnly(data.publishedAt ?? data.updatedAt ?? doc.updateTime),
   };
 }
 
@@ -905,15 +860,6 @@ function fallbackJobs(locale: Locale): PublicJob[] {
       locale === "kn"
         ? "ಪೂರ್ಣ ಉದ್ಯೋಗ ವಿವರಗಳನ್ನು Firestore ನಿಂದ ಇಲ್ಲಿ ತೋರಿಸಲಾಗುತ್ತದೆ."
         : "Full job details will appear here from Firestore.",
-  }));
-}
-
-function fallbackCurrentAffairs(locale: Locale): PublicCurrentAffair[] {
-  return currentAffairs.map((item) => ({
-    id: item.date,
-    locale,
-    headline: item.headline[locale],
-    date: item.date,
   }));
 }
 

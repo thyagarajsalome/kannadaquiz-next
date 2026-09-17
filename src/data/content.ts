@@ -4750,7 +4750,3 @@ export const jobs: {
   status: string;
 }[] = [];
 
-export const currentAffairs: {
-  date: string;
-  headline: Record<Locale, string>;
-}[] = [];
