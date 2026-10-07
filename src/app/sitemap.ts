@@ -33,6 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     `/${locale}/services/railway`,
     `/${locale}/games/gadhe`,
     `/${locale}/games/worldcup`,
+    `/${locale}/tools/kannada-typing`,
     `/${locale}/about`,
     `/${locale}/contact`,
     `/${locale}/privacy`,
@@ -71,13 +72,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const isHome = route === "/kn" || route === "/en";
     const isQuiz = route.includes("/quizzes");
     const isJob = route.includes("/jobs") || route.includes("/exams");
+    const isTool = route.includes("/tools/");
     const isPolicy = ["/privacy", "/terms", "/disclaimer", "/about", "/contact"].some((p) => route.endsWith(p));
 
     return {
       url: `${baseUrl}${route}`,
       lastModified: now,
-      changeFrequency: isHome || isJob ? "daily" : isQuiz ? "weekly" : isPolicy ? "monthly" : "weekly",
-      priority: isHome ? 1.0 : isQuiz || isJob ? 0.9 : isPolicy ? 0.5 : 0.8,
+      changeFrequency: isHome || isJob ? "daily" : isQuiz || isTool ? "weekly" : isPolicy ? "monthly" : "weekly",
+      priority: isHome ? 1.0 : isQuiz || isJob || isTool ? 0.9 : isPolicy ? 0.5 : 0.8,
     };
   });
 }

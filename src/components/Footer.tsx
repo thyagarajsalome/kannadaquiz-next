@@ -25,6 +25,9 @@ export function Footer({ locale }: { locale: Locale }) {
                         <Link href={`/${locale}/exams`} className="hover:text-white hover:underline text-[var(--secondary)] font-bold">
               {locale === "kn" ? "ಪರೀಕ್ಷೆಗಳು (Exams)" : "All Exams"}
             </Link>
+            <Link href={`/${locale}/tools/kannada-typing`} className="hover:text-white hover:underline text-[var(--secondary)] font-bold">
+              {locale === "kn" ? "ಕನ್ನಡ ಟೈಪಿಂಗ್" : "Kannada Typing"}
+            </Link>
             <Link href={`/${locale}/about`} className="hover:text-white hover:underline">
               {locale === "kn" ? "ನಮ್ಮ ಬಗ್ಗೆ (About)" : "About Us"}
             </Link>

@@ -55,8 +55,8 @@ export function Header({ locale }: { locale: Locale }) {
               <Link href={`/${locale}/education`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "ಶಿಕ್ಷಣ ಮಾರ್ಗದರ್ಶಿ" : "Education Guide"}
               </Link>
-              <Link href={`/${locale}/category/technology`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
-                {locale === "kn" ? "ತಂತ್ರಜ್ಞಾನ" : "Tech & AI"}
+              <Link href={`/${locale}/tools/kannada-typing`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
+                {locale === "kn" ? "⌨️ ಕನ್ನಡ ಟೈಪಿಂಗ್ ಟೆಸ್ಟ್" : "⌨️ Kannada Typing Test"}
               </Link>
             </div>
           </div>
@@ -94,8 +94,8 @@ export function Header({ locale }: { locale: Locale }) {
           <Link href={`/${locale}/education`} prefetch={false} className="hover:text-[var(--secondary)] shrink-0">
             {locale === "kn" ? "ಶಿಕ್ಷಣ" : "Education"}
           </Link>
-          <Link href={`/${locale}/category/technology`} prefetch={false} className="hover:text-[var(--secondary)] shrink-0">
-            {locale === "kn" ? "ತಂತ್ರಜ್ಞಾನ" : "Technology"}
+          <Link href={`/${locale}/tools/kannada-typing`} prefetch={false} className="hover:text-[var(--secondary)] text-[var(--secondary)] font-extrabold shrink-0">
+            {locale === "kn" ? "⌨️ ಟೈಪಿಂಗ್ ಟೆಸ್ಟ್" : "⌨️ Typing Test"}
           </Link>
         </div>
       </div>
