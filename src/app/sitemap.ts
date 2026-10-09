@@ -24,7 +24,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     `/${locale}/syllabus/sslc`,
     `/${locale}/syllabus/puc`,
     `/${locale}/category/jobs`,
-    `/${locale}/category/question-papers`,
     `/${locale}/category/schemes`,
     `/${locale}/category/education`,
     `/${locale}/category/technology`,

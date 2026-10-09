@@ -37,8 +37,8 @@ export function Header({ locale }: { locale: Locale }) {
           <Link href={`/${locale}/syllabus`} prefetch={false} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
             {locale === "kn" ? "ಪಠ್ಯಕ್ರಮ" : "Syllabus"}
           </Link>
-          <Link href={`/${locale}/category/question-papers`} prefetch={false} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
-            {locale === "kn" ? "ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳು" : "Question Papers"}
+          <Link href={`/${locale}/tools/kannada-typing`} prefetch={false} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
+            {locale === "kn" ? "ಟೈಪಿಂಗ್ ಅಭ್ಯಾಸ" : "Typing Practice"}
           </Link>
           <Link href={`/${locale}/category/schemes`} prefetch={false} className="hover:text-[var(--secondary)] transition-colors whitespace-nowrap">
             {locale === "kn" ? "ಯೋಜನೆಗಳು" : "Schemes"}

@@ -29,7 +29,7 @@ const trendingTopics: Record<string, { name: string; url: string }[]> = {
     { name: "ಪರೀಕ್ಷಾ ಮಾರ್ಗದರ್ಶಿಗಳು", url: "/kn/exams" },
     { name: "ಸ್ಪರ್ಧಾತ್ಮಕ ಪರೀಕ್ಷೆ ಕ್ವಿಜ್", url: "/kn/quizzes" },
     { name: "ಉದ್ಯೋಗ ಮಾಹಿತಿ", url: "/kn/category/jobs" },
-    { name: "ಹಿಂದಿನ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳು", url: "/kn/category/question-papers" },
+    { name: "ಕನ್ನಡ ಟೈಪಿಂಗ್ ಅಭ್ಯಾಸ", url: "/kn/tools/kannada-typing" },
     { name: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು", url: "/kn/category/schemes" },
     { name: "ಪರೀಕ್ಷಾ ಪಠ್ಯಕ್ರಮ", url: "/kn/syllabus" },
   ],
@@ -37,7 +37,7 @@ const trendingTopics: Record<string, { name: string; url: string }[]> = {
     { name: "Exam Guides 2026", url: "/en/exams" },
     { name: "Competitive Exam Quizzes", url: "/en/quizzes" },
     { name: "Government Jobs", url: "/en/category/jobs" },
-    { name: "Question Papers", url: "/en/category/question-papers" },
+    { name: "Kannada Typing Practice", url: "/en/tools/kannada-typing" },
     { name: "Government Schemes", url: "/en/category/schemes" },
     { name: "Exam Syllabus", url: "/en/syllabus" },
   ]

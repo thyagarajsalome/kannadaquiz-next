@@ -19,6 +19,7 @@ export default function robots(): MetadataRoute.Robots {
         "/*/category/movies",
         "/*/category/sports",
         "/*/category/bangalore",
+        "/*/category/question-papers",
       ],
     },
     sitemap: "https://kannadaquiz.in/sitemap.xml",
