@@ -58,6 +58,9 @@ export function Header({ locale }: { locale: Locale }) {
               <Link href={`/${locale}/tools/kannada-typing`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-[var(--secondary)] hover:bg-[var(--surface-soft)] transition-colors">
                 {locale === "kn" ? "⌨️ ಕನ್ನಡ ಟೈಪಿಂಗ್ ಟೆಸ್ಟ್" : "⌨️ Kannada Typing Test"}
               </Link>
+              <Link href={`/${locale}/tools/age-calculator`} prefetch={false} className="block px-4 py-2 text-sm font-bold text-blue-600 hover:bg-[var(--surface-soft)] transition-colors">
+                {locale === "kn" ? "🎯 ವಯಸ್ಸು ಕ್ಯಾಲ್ಕುಲೇಟರ್" : "🎯 Age Calculator"}
+              </Link>
             </div>
           </div>
         </nav>

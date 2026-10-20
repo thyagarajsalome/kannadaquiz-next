@@ -33,6 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     `/${locale}/games/gadhe`,
     `/${locale}/games/worldcup`,
     `/${locale}/tools/kannada-typing`,
+    `/${locale}/tools/age-calculator`,
     `/${locale}/about`,
     `/${locale}/contact`,
     `/${locale}/privacy`,
