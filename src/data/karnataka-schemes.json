@@ -1,0 +1,230 @@
+[
+  {
+    "id": "gruha-lakshmi",
+    "nameKn": "ಗೃಹಲಕ್ಷ್ಮಿ ಯೋಜನೆ (Gruha Lakshmi Scheme)",
+    "nameEn": "Gruha Lakshmi Scheme",
+    "taglineKn": "ಮನೆಯ ಯಜಮಾನಿ ಮಹಿಳೆಗೆ ಪ್ರತಿ ತಿಂಗಳು ₹2,000 ಆರ್ಥಿಕ ನೆರವು",
+    "taglineEn": "₹2,000 Monthly Financial Assistance to Woman Head of Family",
+    "benefitKn": "ಪ್ರತಿ ತಿಂಗಳು ₹2,000 ನೇರ ನಗದು ವರ್ಗಾವಣೆ (DBT)",
+    "benefitEn": "₹2,000 direct benefit transfer (DBT) per month",
+    "departmentKn": "ಮಹಿಳಾ ಮತ್ತು ಮಕ್ಕಳ ಅಭಿವೃದ್ಧಿ ಇಲಾಖೆ",
+    "departmentEn": "Department of Women and Child Development",
+    "eligibilityKn": [
+      "ಅಂತ್ಯೋದಯ, ಬಿಪಿಎಲ್ (BPL) ಅಥವಾ ಎಪಿಎಲ್ (APL) ಪಡಿತರ ಚೀಟಿಯಲ್ಲಿ ಕುಟುಂಬದ ಯಜಮಾನಿ ಎಂದು ನಮೂದಾಗಿರುವ ಮಹಿಳೆ.",
+      "ಒಂದು ಕುಟುಂಬದ ಒಬ್ಬ ಮಹಿಳೆಗೆ ಮಾತ್ರ ಯೋಜನೆಯ ಸೌಲಭ್ಯ ಲಭ್ಯ.",
+      "ಮಹಿಳೆ ಅಥವಾ ಆಕೆಯ ಪತಿ ಆದಾಯ ತೆರಿಗೆ (Income Tax) ಅಥವಾ GST ಪಾವತಿದಾರರಾಗಿರಬಾರದು.",
+      "ಸರ್ಕಾರಿ ನೌಕರಿಯಲ್ಲಿರುವ ಮಹಿಳೆಯರಿಗೆ ಈ ಯೋಜನೆ ಅನ್ವಯಿಸುವುದಿಲ್ಲ."
+    ],
+    "eligibilityEn": [
+      "Woman named as head of the family in Antyodaya, BPL, or APL ration cards.",
+      "Only one female head per household is eligible.",
+      "Neither the woman nor her spouse should be an income tax or GST payer.",
+      "Government employees are not eligible."
+    ],
+    "documentsKn": [
+      "ಪಡಿತರ ಚೀಟಿ (Ration Card - BPL / APL / Antyodaya)",
+      "ಆಧಾರ್ ಕಾರ್ಡ್ (Aadhaar Card) ಮತ್ತು ಆಧಾರ್ ಜೋಡಣೆಯಾಗಿರುವ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ",
+      "ಬ್ಯಾಂಕ್ ಖಾತೆಯ ಪಾಸ್‌ಬುಕ್ (ಆಧಾರ್ ಲಿಂಕ್ ಮತ್ತು NPCI ಮ್ಯಾಪಿಂಗ್ ಕಡ್ಡಾಯ)",
+      "ಪತಿಯ ಆಧಾರ್ ಕಾರ್ಡ್ (ವಿವಾಹಿತರಾಗಿದ್ದರೆ)"
+    ],
+    "documentsEn": [
+      "Ration Card (BPL / APL / Antyodaya)",
+      "Aadhaar Card linked to active mobile number",
+      "Bank Account Passbook (Aadhaar-seeded and NPCI-mapped)",
+      "Spouse Aadhaar Card (if married)"
+    ],
+    "howToApplyKn": [
+      "ನಿಮ್ಮ ಗ್ರಾಮ ಒನ್ (Grama One), ಕರ್ನಾಟಕ ಒನ್ (Karnataka One), ಅಥವಾ ಬೆಂಗಳೂರು ಒನ್ (Bengaluru One) ಕೇಂದ್ರಗಳಿಗೆ ಭೇಟಿ ನೀಡಿ.",
+      "ಬಾಪೂಜಿ ಸೇವಾ ಕೇಂದ್ರಗಳಲ್ಲಿಯೂ ಉಚಿತವಾಗಿ ನೋಂದಣಿ ಮಾಡಿಕೊಳ್ಳಬಹುದು.",
+      "ಅರ್ಜಿ ಸಲ್ಲಿಕೆಗೆ ಯಾವುದೇ ಶುಲ್ಕವಿಲ್ಲ (ಸಂಪೂರ್ಣ ಉಚಿತ).",
+      "ಅರ್ಜಿ ಅಂಗೀಕಾರವಾದ ನಂತರ ಸೇವಾ ಸಿಂಧು ಪೋರ್ಟಲ್ ಮೂಲಕ DBT ಸ್ಥಿತಿಯನ್ನು ಪರಿಶೀಲಿಸಬಹುದು."
+    ],
+    "howToApplyEn": [
+      "Visit nearest Grama One, Karnataka One, or Bengaluru One citizen centers.",
+      "Free registration is also available at Bapuji Seva Kendras.",
+      "Application registration is completely free of charge.",
+      "Check DBT payment credit status through the Seva Sindhu / DBT Karnataka portal."
+    ],
+    "statusCheckKn": "DBT Karnataka ಮೊಬೈಲ್ ಆ್ಯಪ್ ಅಥವಾ sevasindhu.karnataka.gov.in ಮೂಲಕ ಆನ್‌ಲೈನ್ ಸ್ಟೇಟಸ್ ಚೆಕ್ ಮಾಡಬಹುದು."
+  },
+  {
+    "id": "yuva-nidhi",
+    "nameKn": "ಯುವ ನಿಧಿ ಯೋಜನೆ (Yuva Nidhi Scheme)",
+    "nameEn": "Yuva Nidhi Scheme",
+    "taglineKn": "ನಿರುದ್ಯೋಗಿ ಪದವೀಧರರಿಗೆ ₹3,000 & ಡಿಪ್ಲೊಮಾ ಹೊಂದಿದವರಿಗೆ ₹1,500 ಮಾಸಿಕ ಭತ್ಯೆ",
+    "taglineEn": "₹3,000 for Unemployed Graduates & ₹1,500 for Diploma Holders",
+    "benefitKn": "ಪದವೀಧರರಿಗೆ ₹3,000/ತಿಂಗಳು, ಡಿಪ್ಲೊಮಾದಾರರಿಗೆ ₹1,500/ತಿಂಗಳು (ಗರಿಷ್ಠ 2 ವರ್ಷ)",
+    "benefitEn": "₹3,000/mo for Graduates, ₹1,500/mo for Diploma holders (up to 2 years)",
+    "departmentKn": "ಕೌಶಲ್ಯಾಭಿವೃದ್ಧಿ, ಉದ್ಯಮಶೀಲತೆ ಮತ್ತು ಜೀವನೋಪಾಯ ಇಲಾಖೆ",
+    "departmentEn": "Department of Skill Development, Entrepreneurship and Livelihood",
+    "eligibilityKn": [
+      "ಕರ್ನಾಟಕದ ನಿವಾಸಿಗಳಾಗಿದ್ದು, ಕರ್ನಾಟಕದಲ್ಲೇ ಪದವಿ ಅಥವಾ ಡಿಪ್ಲೊಮಾ ಪೂರ್ಣಗೊಳಿಸಿರಬೇಕು.",
+      "ತೇರ್ಗಡೆಯಾಗಿ ಕನಿಷ್ಠ 6 ತಿಂಗಳು ಕಳೆದಿದ್ದರೂ ಉದ್ಯೋಗ ಸಿಗದ ನಿರುದ್ಯೋಗಿ ಯುವಕ-ಯುವತಿಯರು.",
+      "ಉನ್ನತ ವ್ಯಾಸಂಗ ಮುಂದುವರಿಸುತ್ತಿರುವ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಈ ಭತ್ಯೆ ಲಭ್ಯವಿಲ್ಲ.",
+      "ಸರ್ಕಾರಿ, ಖಾಸಗಿ ಉದ್ಯೋಗದಲ್ಲಿರುವವರು ಅಥವಾ ಸ್ವಯಂ ಉದ್ಯೋಗ ಹೊಂದಿರುವವರು ಅರ್ಹರಲ್ಲ."
+    ],
+    "eligibilityEn": [
+      "Domicile of Karnataka who completed graduation/diploma from recognized Karnataka institutions.",
+      "Unemployed for at least 6 months after graduation.",
+      "Candidates enrolled in higher education studies are not eligible.",
+      "Candidates employed in govt/private sector or receiving stipend are excluded."
+    ],
+    "documentsKn": [
+      "ಪದವಿ ಅಥವಾ ಡಿಪ್ಲೊಮಾ ಅಂತಿಮ ಅಂಕಪಟ್ಟಿ ಮತ್ತು ಪ್ರಮಾಣಪತ್ರ",
+      "ಆಧಾರ್ ಕಾರ್ಡ್ ಮತ್ತು ಆಧಾರ್ ಲಿಂಕ್ ಆದ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ",
+      "ಕರ್ನಾಟಕ ವಾಸಸ್ಥಳ ದೃಢೀಕರಣ (Domicile Certificate / Ration Card)",
+      "ಬ್ಯಾಂಕ್ ಖಾತೆಯ ವಿವರಗಳು (ಆಧಾರ್ ಸೀಡಿಂಗ್ ಕಡ್ಡಾಯ)"
+    ],
+    "documentsEn": [
+      "Degree or Diploma Final Marks Card and Convocation/Provisional Certificate",
+      "Aadhaar Card linked to active mobile phone",
+      "Karnataka Domicile Certificate / Ration Card",
+      "Bank Account seeded with Aadhaar for Direct Benefit Transfer"
+    ],
+    "howToApplyKn": [
+      "ಸೇವಾ ಸಿಂಧು ಅಧಿಕೃತ ಪೋರ್ಟಲ್ (sevasindhugs.karnataka.gov.in) ಗೆ ಭೇಟಿ ನೀಡಿ.",
+      "ಯುವ ನಿಧಿ ಯೋಜನೆ ವಿಭಾಗದಲ್ಲಿ ನಿಮ್ಮ ಆಧಾರ್ ಮತ್ತು ಶೈಕ್ಷಣಿಕ ವಿವರಗಳನ್ನು ನಮೂದಿಸಿ.",
+      "ಗ್ರಾಮ ಒನ್ ಅಥವಾ ಬೆಂಗಳೂರು ಒನ್ ಕೇಂದ್ರಗಳ ಮೂಲಕವೂ ಅರ್ಜಿ ಸಲ್ಲಿಸಬಹುದು.",
+      "ಪ್ರತಿ ತಿಂಗಳು 'ನಾನು ಇನ್ನೂ ನಿರುದ್ಯೋಗಿ' ಎಂದು ಸ್ವಯಂ ಘೋಷಣೆ (Self-Declaration) ಸಲ್ಲಿಸಬೇಕು."
+    ],
+    "howToApplyEn": [
+      "Apply online via Seva Sindhu portal (sevasindhugs.karnataka.gov.in).",
+      "Enter Aadhaar and academic registration numbers to auto-verify credentials.",
+      "Can also submit through Grama One or Karnataka One service kiosks.",
+      "Must submit monthly self-declaration confirming continued unemployed status."
+    ],
+    "statusCheckKn": "ಸೇವಾ ಸಿಂಧು ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ನಿಮ್ಮ ನೋಂದಣಿ ಸಂಖ್ಯೆ (Acknowledgment Number) ನಮೂದಿಸಿ ಅರ್ಜಿಯ ಸ್ಥಿತಿ ತಿಳಿಯಿರಿ."
+  },
+  {
+    "id": "shakti-scheme",
+    "nameKn": "ಶಕ್ತಿ ಯೋಜನೆ (Shakti Scheme - Free Bus Travel)",
+    "nameEn": "Shakti Free Bus Travel Scheme",
+    "taglineKn": "ಕರ್ನಾಟಕದ ಎಲ್ಲಾ ಮಹಿಳೆಯರಿಗೆ ರಾಜ್ಯ ರಸ್ತೆ ಸಾರಿಗೆ ಬಸ್‌ಗಳಲ್ಲಿ ಉಚಿತ ಪ್ರಯಾಣ",
+    "taglineEn": "Free Bus Travel for All Karnataka Women Across State RTCs",
+    "benefitKn": "KSRTC, BMTC, NWKRTC, KKRTC ಸಾಮಾನ್ಯ ಬಸ್‌ಗಳಲ್ಲಿ ಶೂನ್ಯ ಟಿಕೆಟ್ ಉಚಿತ ಪ್ರಯಾಣ",
+    "benefitEn": "100% Free Travel in KSRTC, BMTC, NWKRTC, and KKRTC Ordinary & Express Buses",
+    "departmentKn": "ಕರ್ನಾಟಕ ಸಾರಿಗೆ ಇಲಾಖೆ",
+    "departmentEn": "Karnataka Transport Department",
+    "eligibilityKn": [
+      "ಕರ್ನಾಟಕ ರಾಜ್ಯದ ಎಲ್ಲಾ ಮಹಿಳೆಯರು ಮತ್ತು ವಿದ್ಯಾರ್ಥಿನಿಯರು ಅರ್ಹರು.",
+      "ಕರ್ನಾಟಕದ ಲಿಂಗತ್ವ ಅಲ್ಪಸಂಖ್ಯಾತರು (Transgender women) ಸಹ ಅರ್ಹರು.",
+      "ಪ್ರಯಾಣದ ವೇಳೆ ಕರ್ನಾಟಕದ ವಿಳಾಸವಿರುವ ಸರ್ಕಾರಿ ಮಾನ್ಯತೆಯ ಗುರುತಿನ ಚೀಟಿ ಹೊಂದಿರಬೇಕು.",
+      "ರಾಜಹಂಸ, ವೋಲ್ವೋ, ಐರಾವತ, ಸ್ಲೀಪರ್ ನಂತಹ ಐಷಾರಾಮಿ ಎಸಿ ಬಸ್‌ಗಳಿಗೆ ಈ ಯೋಜನೆ ಅನ್ವಯಿಸುವುದಿಲ್ಲ."
+    ],
+    "eligibilityEn": [
+      "All female residents and girl students belonging to Karnataka.",
+      "Transgender women residing in Karnataka are also eligible.",
+      "Must show a government-issued photo ID carrying a Karnataka address while traveling.",
+      "Applicable in Ordinary, City, Suburban, and Express buses (Excludes AC/Volvo/Airavat/Sleeper buses)."
+    ],
+    "documentsKn": [
+      "ಆಧಾರ್ ಕಾರ್ಡ್ (ಕರ್ನಾಟಕ ವಿಳಾಸದೊಂದಿಗೆ)",
+      "ಮತದಾರರ ಗುರುತಿನ ಚೀಟಿ (Voter ID) ಅಥವಾ ಪಡಿತರ ಚೀಟಿ",
+      "ಡ್ರೈವಿಂಗ್ ಲೈಸೆನ್ಸ್ ಅಥವಾ ಶಾಲಾ-ಕಾಲೇಜು ಗುರುತಿನ ಚೀಟಿ"
+    ],
+    "documentsEn": [
+      "Aadhaar Card (with Karnataka address)",
+      "Voter ID Card or Ration Card",
+      "Driving License or School/College ID with residence proof"
+    ],
+    "howToApplyKn": [
+      "ಬಸ್‌ಗೆ ಹತ್ತುವಾಗ ನಿರ್ವಾಹಕರಿಗೆ (Conductor) ನಿಮ್ಮ ಮೂಲ ಗುರುತಿನ ಚೀಟಿ (ಆಧಾರ್/ವೋಟರ್ ಐಡಿ) ತೋರಿಸಿ.",
+      "ನಿರ್ವಾಹಕರು ಶೂನ್ಯ ಶುಲ್ಕದ 'ಶಕ್ತಿ ಉಚಿತ ಟಿಕೆಟ್' (Zero Value Ticket) ನೀಡುತ್ತಾರೆ.",
+      "ಪ್ರತ್ಯೇಕ ಪಾಸ್ ಅಥವಾ ಆನ್‌ಲೈನ್ ಅರ್ಜಿ ಸಲ್ಲಿಕೆಯ ಅಗತ್ಯವಿಲ್ಲ."
+    ],
+    "howToApplyEn": [
+      "Simply present your physical photo identity card with Karnataka address to the bus conductor.",
+      "The conductor will instantly issue a 'Zero Value Ticket' for your trip.",
+      "No advance application or special travel pass is required."
+    ],
+    "statusCheckKn": "ನೇರ ಬಸ್ ಪ್ರಯಾಣದ ಸಮಯದಲ್ಲಿ ಗುರುತಿನ ಚೀಟಿ ತೋರಿಸಿ ಟಿಕೆಟ್ ಪಡೆಯಬಹುದು."
+  },
+  {
+    "id": "gruha-jyothi",
+    "nameKn": "ಗೃಹಜ್ಯೋತಿ ಯೋಜನೆ (Gruha Jyothi Scheme)",
+    "nameEn": "Gruha Jyothi Free Electricity Scheme",
+    "taglineKn": "ಗೃಹಬಳಕೆಯ ವಿದ್ಯುತ್ ಗ್ರಾಹಕರಿಗೆ ತಿಂಗಳಿಗೆ ಗರಿಷ್ಠ 200 ಯೂನಿಟ್ ವರೆಗೆ ಉಚಿತ ವಿದ್ಯುತ್",
+    "taglineEn": "Up to 200 Units of Free Domestic Electricity per Household per Month",
+    "benefitKn": "ಸರಾಸರಿ ಬಳಕೆಯ ಆಧಾರದಲ್ಲಿ ತಿಂಗಳಿಗೆ 200 ಯೂನಿಟ್‌ವರೆಗೆ ಶೂನ್ಯ ವಿದ್ಯುತ್ ಬಿಲ್",
+    "benefitEn": "Zero electricity bills up to 200 units monthly based on entitlement quota",
+    "departmentKn": "ಕರ್ನಾಟಕ ಇಂಧನ ಇಲಾಖೆ (ಬೆಸ್ಕಾಂ, ಹೆಸ್ಕಾಂ, ಮೆಸ್ಕಾಂ, ಚೆಸ್ಕಾಂ, ಜೆಸ್ಕಾಂ)",
+    "departmentEn": "Karnataka Energy Department (BESCOM, HESCOM, MESCOM, CHESCOM, GESCOM)",
+    "eligibilityKn": [
+      "ಕರ್ನಾಟಕದ ಎಲ್ಲಾ ಗೃಹಬಳಕೆಯ ವಿದ್ಯುತ್ ಮೀಟರ್ ಸಂಪರ್ಕ ಹೊಂದಿರುವ ಗ್ರಾಹಕರು ಅರ್ಹರು.",
+      "ಬಾಡಿಗೆದಾರರು (Tenants) ಸಹ ತಮ್ಮ ವಾಸವಿರುವ ಮನೆಯ ಮೀಟರ್ ಸಂಖ್ಯೆಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಬಹುದು.",
+      "ವಾಣಿಜ್ಯ (Commercial) ಅಥವಾ ಕೈಗಾರಿಕಾ ಸಂಪರ್ಕಗಳಿಗೆ ಈ ಯೋಜನೆ ಅನ್ವಯಿಸುವುದಿಲ್ಲ.",
+      "ಒಂದು ಆಧಾರ್ ಕಾರ್ಡ್‌ಗೆ ಒಂದೇ ಒಂದು ವಿದ್ಯುತ್ ಮೀಟರ್ ಸಂಪರ್ಕಕ್ಕೆ ಮಾತ್ರ ಉಚಿತ ಯೋಜನೆ ಸೀಮಿತ."
+    ],
+    "eligibilityEn": [
+      "All residential electricity consumers across Karnataka.",
+      "Tenants living in rented homes are also eligible with rental agreement proof.",
+      "Commercial, industrial, and agricultural connections are excluded.",
+      "Only one residential connection per Aadhaar card is eligible."
+    ],
+    "documentsKn": [
+      "ಗ್ರಾಹಕರ ಆಧಾರ್ ಕಾರ್ಡ್",
+      "ವಿದ್ಯುತ್ ಬಿಲ್‌ನಲ್ಲಿರುವ ಗ್ರಾಹಕ ಖಾತೆ ಸಂಖ್ಯೆ (Account ID / Connection ID)",
+      "ಬಾಡಿಗೆದಾರರಾಗಿದ್ದರೆ: ಮನೆ ಬಾಡಿಗೆ ಕರಾರು ಪತ್ರ (Rental Agreement) ಅಥವಾ ವೋಟರ್ ಐಡಿ"
+    ],
+    "documentsEn": [
+      "Consumer Aadhaar Card",
+      "Account ID / Connection ID found on your monthly electricity bill",
+      "If tenant: Valid Rental Agreement or Voter ID matching current residence"
+    ],
+    "howToApplyKn": [
+      "ಸೇವಾ ಸಿಂಧು ವೆಬ್‌ಸೈಟ್ (sevasindhugs.karnataka.gov.in) ನಲ್ಲಿ 'ಗೃಹ ಜ್ಯೋತಿ' ಲಿಂಕ್ ಕ್ಲಿಕ್ ಮಾಡಿ.",
+      "ನಿಮ್ಮ ಎಸ್ಕಾಂ (BESCOM/HESCOM ಇತ್ಯಾದಿ) ಆಯ್ಕೆ ಮಾಡಿ ನಿಮ್ಮ 10-ಅಂಕಿಯ ಅಕೌಂಟ್ ಐಡಿ ನಮೂದಿಸಿ.",
+      "ಆಧಾರ್ ಸಂಖ್ಯೆ ನಮೂದಿಸಿ OTP ಮೂಲಕ ಪರಿಶೀಲನೆ ಪೂರ್ಣಗೊಳಿಸಿ.",
+      "ಗ್ರಾಮ ಒನ್, ಕರ್ನಾಟಕ ಒನ್ ಅಥವಾ ವಿದ್ಯುತ್ ಇಲಾಖೆಯ ಕಚೇರಿಗಳಲ್ಲಿಯೂ ಅರ್ಜಿ ಸಲ್ಲಿಸಬಹುದು."
+    ],
+    "howToApplyEn": [
+      "Visit Seva Sindhu (sevasindhugs.karnataka.gov.in) and choose Gruha Jyothi.",
+      "Select your ESCOM (BESCOM, HESCOM, etc.) and enter your 10-digit Account ID.",
+      "Authenticate your Aadhaar via mobile OTP verification.",
+      "Can also be registered at Grama One, Karnataka One, or local electricity subdivision offices."
+    ],
+    "statusCheckKn": "ಸೇವಾ ಸಿಂಧು ಅಥವಾ ನಿಮ್ಮ ಎಸ್ಕಾಂ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ಅಕೌಂಟ್ ಐಡಿ ಹಾಕಿ ಗೃಹಜ್ಯೋತಿ ಅಪ್ಲಿಕೇಶನ್ ಸ್ಟೇಟಸ್ ತಿಳಿಯಿರಿ."
+  },
+  {
+    "id": "anna-bhagya",
+    "nameKn": "ಅನ್ನಭಾಗ್ಯ ಯೋಜನೆ (Anna Bhagya Scheme)",
+    "nameEn": "Anna Bhagya Free Food Grain Scheme",
+    "taglineKn": "ಬಿಪಿಎಲ್ ಕುಟುಂಬದ ಪ್ರತಿ ಸದಸ್ಯರಿಗೆ 10 ಕೆಜಿ ಉಚಿತ ಅಕ್ಕಿ (ಅಥವಾ ನಗದು DBT)",
+    "taglineEn": "10 kg Free Food Grains (or Cash in lieu of grains via DBT) per Person",
+    "benefitKn": "5 ಕೆಜಿ ಉಚಿತ ಅಕ್ಕಿ + ಹೆಚ್ಚುವರಿ 5 ಕೆಜಿಗೆ ತಲಾ ₹170 ನೇರ ನಗದು (DBT ವರ್ಗಾವಣೆ)",
+    "benefitEn": "5 kg free rice + ₹170 cash per person monthly directly to bank account",
+    "departmentKn": "ಆಹಾರ, ನಾಗರಿಕ ಸರಬರಾಜು ಮತ್ತು ಗ್ರಾಹಕರ ವ್ಯವಹಾರಗಳ ಇಲಾಖೆ",
+    "departmentEn": "Food, Civil Supplies and Consumer Affairs Department",
+    "eligibilityKn": [
+      "ಕರ್ನಾಟಕದ ಅಂತ್ಯೋದಯ ಅನ್ನ ಯೋಜನೆ (AAY) ಮತ್ತು ಬಿಪಿಎಲ್ (BPL) ಪಡಿತರ ಚೀಟಿ ಹೊಂದಿರುವ ಕುಟುಂಬಗಳು.",
+      "ಪಡಿತರ ಚೀಟಿಯಲ್ಲಿ ಹೆಸರು ನೋಂದಣಿಯಾಗಿರುವ ಪ್ರತಿಯೊಬ್ಬ ಸದಸ್ಯರಿಗೂ ಈ ಸೌಲಭ್ಯ ಅನ್ವಯಿಸುತ್ತದೆ.",
+      "ಕುಟುಂಬದ ಮುಖ್ಯಸ್ಥರ ಬ್ಯಾಂಕ್ ಖಾತೆಗೆ ಆಧಾರ್ ಲಿಂಕ್ ಮತ್ತು ಇ-ಕೆವೈಸಿ (e-KYC) ಕಡ್ಡಾಯವಾಗಿರಬೇಕು."
+    ],
+    "eligibilityEn": [
+      "All families holding valid Antyodaya Anna Yojana (AAY) and BPL Ration Cards in Karnataka.",
+      "Calculated per individual family member registered on the ration card.",
+      "Family head's bank account must be Aadhaar-seeded with active e-KYC."
+    ],
+    "documentsKn": [
+      "ಬಿಪಿಎಲ್ ಅಥವಾ ಅಂತ್ಯೋದಯ ಪಡಿತರ ಚೀಟಿ",
+      "ಕುಟುಂಬದ ಎಲ್ಲಾ ಸದಸ್ಯರ ಆಧಾರ್ ಕಾರ್ಡ್‌ಗಳು",
+      "ಪಡಿತರ ಚೀಟಿ ಮುಖ್ಯಸ್ಥರ ಸಕ್ರಿಯ ಬ್ಯಾಂಕ್ ಖಾತೆ (NPCI ಮ್ಯಾಪಿಂಗ್‌ನೊಂದಿಗೆ)"
+    ],
+    "documentsEn": [
+      "Valid BPL or Antyodaya Ration Card",
+      "Aadhaar Cards of all enrolled household members",
+      "Aadhaar-seeded active bank account of the cardhead"
+    ],
+    "howToApplyKn": [
+      "ಬಿಪಿಎಲ್ ಪಡಿತರ ಚೀಟಿ ಹೊಂದಿರುವವರಿಗೆ ಈ ಯೋಜನೆ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅನ್ವಯಿಸುತ್ತದೆ; ಪ್ರತ್ಯೇಕ ಅರ್ಜಿ ಅಗತ್ಯವಿಲ್ಲ.",
+      "ನಿಮ್ಮ ಹತ್ತಿರದ ನ್ಯಾಯಬೆಲೆ ಅಂಗಡಿಯಲ್ಲಿ (Fair Price Shop) ಇ-ಕೆವೈಸಿ (e-KYC) ಪೂರ್ಣಗೊಂಡಿದೆಯೇ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ.",
+      "ಹಣ ಜಮೆಯಾಗದಿದ್ದರೆ ಆಹಾರ ಇಲಾಖೆಯ ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿ ಬ್ಯಾಂಕ್ ಲಿಂಕಿಂಗ್ ಸ್ಟೇಟಸ್ ಪರಿಶೀಲಿಸಿ."
+    ],
+    "howToApplyEn": [
+      "No separate application required for existing BPL/Antyodaya cardholders.",
+      "Ensure all family members have completed biometric e-KYC at your local Fair Price ration shop.",
+      "Check DBT payment status at ahara.kar.nic.in using your ration card number."
+    ],
+    "statusCheckKn": "ahara.kar.nic.in ನಲ್ಲಿ ಪಡಿತರ ಚೀಟಿ ಸಂಖ್ಯೆ ಹಾಕಿ 'ಅನ್ನಭಾಗ್ಯ ಡಿಬಿಟಿ ಸ್ಟೇಟಸ್' ಪರೀಕ್ಷಿಸಬಹುದು."
+  }
+]
