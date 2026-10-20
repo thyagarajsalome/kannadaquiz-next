@@ -34,6 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     `/${locale}/games/worldcup`,
     `/${locale}/tools/kannada-typing`,
     `/${locale}/tools/age-calculator`,
+    `/${locale}/papers`,
     `/${locale}/about`,
     `/${locale}/contact`,
     `/${locale}/privacy`,
@@ -54,6 +55,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...posts.map((post) => `/${locale}/posts/${post.slug}`),
   ]);
 
+  // Load Solved Previous Papers
+  let paperRoutes: string[] = [];
+  try {
+    const papersFilePath = path.join(process.cwd(), "src", "data", "previous-papers.json");
+    if (fs.existsSync(papersFilePath)) {
+      const papersData = JSON.parse(fs.readFileSync(papersFilePath, "utf8"));
+      paperRoutes = locales.flatMap((l) => papersData.map((p: any) => `/${l}/papers/${p.slug}`));
+    }
+  } catch (error) {
+    console.error("Failed to load solved papers for sitemap:", error);
+  }
+
   // Load SEO Pages
   let seoRoutes: string[] = [];
   try {
@@ -68,9 +81,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const now = new Date();
 
-  return [...staticRoutes, ...contentRoutes, ...seoRoutes].map((route) => {
+  return [...staticRoutes, ...contentRoutes, ...seoRoutes, ...paperRoutes].map((route) => {
     const isHome = route === "/kn" || route === "/en";
-    const isQuiz = route.includes("/quizzes");
+    const isQuiz = route.includes("/quizzes") || route.includes("/papers");
     const isJob = route.includes("/jobs") || route.includes("/exams");
     const isTool = route.includes("/tools/");
     const isPolicy = ["/privacy", "/terms", "/disclaimer", "/about", "/contact"].some((p) => route.endsWith(p));
